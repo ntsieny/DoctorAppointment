@@ -5,13 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.LoginActivity"
-    android:gravity="center">
+    tools:context=".activity.MakeAppointmentActivity">
 
-    <Button
-        android:id="@+id/btnDistricts"
+    <TextView
+        android:id="@+id/tvHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Список районов" />
+        android:text="@string/choose_district" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvDistrict"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

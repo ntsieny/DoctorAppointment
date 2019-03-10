@@ -113,6 +113,10 @@ public class Doctor {
         this.nearestDate = nearestDate;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 
     public class Date {
         @SerializedName("day")

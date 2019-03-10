@@ -11,7 +11,7 @@ public class Speciality {
 
     @SerializedName("CountFreeTicket")
     @Expose
-    private String countFreeTickets;
+    private int countFreeTickets;
 
     @SerializedName("FerIdSpesiality")
     @Expose
@@ -27,7 +27,7 @@ public class Speciality {
 
     @SerializedName("NameSpesiality")
     @Expose
-    private String nameSpesiality;
+    private String nameSpeciality;
 
     @SerializedName("NearestDate")
     @Expose
@@ -41,11 +41,11 @@ public class Speciality {
         this.countFreeParticipants = countFreeParticipants;
     }
 
-    public String getCountFreeTickets() {
+    public int getCountFreeTickets() {
         return countFreeTickets;
     }
 
-    public void setCountFreeTickets(String countFreeTickets) {
+    public void setCountFreeTickets(int countFreeTickets) {
         this.countFreeTickets = countFreeTickets;
     }
 
@@ -73,12 +73,12 @@ public class Speciality {
         this.lastDate = lastDate;
     }
 
-    public String getNameSpesiality() {
-        return nameSpesiality;
+    public String getNameSpeciality() {
+        return nameSpeciality;
     }
 
-    public void setNameSpesiality(String nameSpesiality) {
-        this.nameSpesiality = nameSpesiality;
+    public void setNameSpeciality(String nameSpeciality) {
+        this.nameSpeciality = nameSpeciality;
     }
 
     public Date getNearestDate() {
@@ -89,6 +89,12 @@ public class Speciality {
         this.nearestDate = nearestDate;
     }
 
+    @Override
+    public String toString() {
+        if(getCountFreeTickets() > 0)
+            return nameSpeciality + " (" + getCountFreeTickets() + " талонов)";
+        else return nameSpeciality;
+    }
 
     public class Date {
         @SerializedName("day")

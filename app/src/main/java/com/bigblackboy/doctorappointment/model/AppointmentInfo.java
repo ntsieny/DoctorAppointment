@@ -38,7 +38,7 @@ public class AppointmentInfo {
 
     @Override
     public String toString() {
-        return "DateStart:\n" + dateStart.toString() + "\n" + "DateEnd:\n" + dateEnd.toString() + "\nID: " + getId() + "\n";
+        return dateStart.getDay() + " " + dateStart.getMonthVerbose() + " " + dateStart.getTime() + ", " + dateStart.getDayVerbose();
     }
 }
 

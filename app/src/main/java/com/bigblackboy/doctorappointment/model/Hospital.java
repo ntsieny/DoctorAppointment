@@ -7,6 +7,15 @@ public class Hospital {
     @SerializedName("District")
     @Expose
     private Integer district;
+    @SerializedName("Id")
+    @Expose
+    private Integer id;
+    @SerializedName("IdDistrict")
+    @Expose
+    private Integer IdDistrict;
+    @SerializedName("IsActive")
+    @Expose
+    private boolean IsActive;
     @SerializedName("IsEnableAppointment")
     @Expose
     private Boolean isEnableAppointment;
@@ -16,6 +25,10 @@ public class Hospital {
     @SerializedName("IsEnableInternet")
     @Expose
     private Boolean isEnableInternet;
+    @SerializedName("LPUFullName")
+    @Expose
+    private String LPUFullName;
+
     @SerializedName("LPUShortName")
     @Expose
     private String lPUShortName;
@@ -55,6 +68,9 @@ public class Hospital {
     @SerializedName("ExternalHubId")
     @Expose
     private Double externalHubId;
+    @SerializedName("ExternalGisId")
+    @Expose
+    private String externalGisId;
     @SerializedName("Description")
     @Expose
     private String description;
@@ -214,7 +230,7 @@ public class Hospital {
         this.comment = comment;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return "District: " + district + "\nIsEnableAppointment: " + isEnableAppointment + "\nInfoStand: " + infoStand +
                 "\nIsEnableInternet: " + isEnableInternet + "\nLPUShortName: " + lPUShortName + "\nEmail: " + email +
@@ -222,5 +238,10 @@ public class Hospital {
                 "\nAddress: " + address + "\nLpuType: " + lpuType + "\nLpuName: " + lpuName + "\nInternetReference: " +
                 internetReference + "\nIdLPU: " + idLPU + "\nPhoneCallCentre: " + phoneCallCentre + "\nExternalHubId: " +
                 externalHubId + "\nDescription: " + description + "\nComment: " + comment;
+    }*/
+
+    @Override
+    public String toString() {
+        return lpuName;
     }
 }

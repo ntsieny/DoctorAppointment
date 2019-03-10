@@ -77,7 +77,7 @@ public class Patient {
     }
 
     public String getBirthdayFormatted() {
-        return String.format("%d-%d-%dT00:00:00.000Z", yearBirth, monthBirth + 1, dayBirth);
+        return String.format("%d-%d-%dT00:00:00.000Z", yearBirth, monthBirth, dayBirth);
     }
 
     public String getId() {

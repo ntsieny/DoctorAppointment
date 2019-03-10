@@ -38,4 +38,9 @@ public class District {
     public void setId(String id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return name + " - " + id;
+    }
 }

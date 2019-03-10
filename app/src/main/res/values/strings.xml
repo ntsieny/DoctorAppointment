@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">DoctorAppointment</string>
+    <string name="choose_district">Выберите район</string>
+    <string name="choose_hospital">Выберите медучреждение</string>
+    <string name="choose_speciality">Выберите специальность</string>
+    <string name="choose_doctor">Выберите врача</string>
+    <string name="choose_appointment">Выберите дату и время</string>
+    <string name="logout_item">Выйти из аккаунта</string>
 </resources>

@@ -13,6 +13,12 @@ public class HospitalApiResponse extends ApiResponse {
     @Expose
     private List<Hospital> hospitals;
 
+    @SerializedName("success")
+    @Expose
+    private Boolean success;
+    @SerializedName("error")
+    private Error error;
+
     public List<Hospital> getHospitals() {
         return hospitals;
     }

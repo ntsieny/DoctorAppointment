@@ -18,21 +18,21 @@ import retrofit2.http.POST;
 
 public interface HospitalApi {
 
-    //@Headers({
-           //"Host: www.kuban-online.ru",
-            //"Connection: keep-alive",
-            //"Content-Length: 27",
-            //"Accept: */*",
-            //"Origin: http://www.kuban-online.ru",
-            //"X-Requested-With: XMLHttpRequest",
-            //"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
-            //"DNT: 1",
-            //"Content-Type: application/x-www-form-urlencoded; charset=UTF-8",
-            //"Referer: http://www.kuban-online.ru/signup/free/",
-            //"Accept-Encoding: gzip, deflate",
-            //"Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-            //"Cookie: _ym_uid=15360594171004491340; _ym_d=1536059417; jv_visits_count_Tmyx3k0Kz1=7; _ym_isad=1"
-    //})
+    @Headers({
+            "Host: www.kuban-online.ru",
+            "Connection: keep-alive",
+            "Content-Length: 307",
+            "Accept: */*",
+            "Origin: http://www.kuban-online.ru",
+            "X-Requested-With: XMLHttpRequest",
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
+            "DNT: 1",
+            "Content-Type: application/x-www-form-urlencoded; charset=UTF-8",
+            "Referer: http://www.kuban-online.ru/signup/free/",
+            "Accept-Encoding: gzip, deflate",
+            "Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Cookie: _ym_uid=15360594171004491340; _ym_d=1536059417; jv_visits_count_Tmyx3k0Kz1=7; _ym_isad=1"
+    })
     @FormUrlEncoded
     @POST("api/clinic_list/")
     Call<HospitalApiResponse> getHospitals(@Field("district_form-district_id") String districtId);
@@ -50,7 +50,7 @@ public interface HospitalApi {
             "Referer: http://www.kuban-online.ru/signup/free/",
             "Accept-Encoding: gzip, deflate",
             "Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Cookie: _ym_uid=15360594171004491340; _ym_d=1536059417; jv_visits_count_Tmyx3k0Kz1=7; _ym_isad=1"
+            "Cookie: _ym_uid=15360594171004491340; _ym_d=1551982263; _ym_isad=1; jv_visits_count_Tmyx3k0Kz1=30; sessionid=zaz44uvkmpjhg74jfrx0pi8pz7z89kqe"
             })
     @FormUrlEncoded
     @POST("api/check_patient/")
@@ -93,7 +93,7 @@ public interface HospitalApi {
             "Referer: http://www.kuban-online.ru/signup/free/",
             "Accept-Encoding: gzip, deflate",
             "Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Cookie: _ym_uid=15360594171004491340; _ym_d=1536059417; jv_visits_count_Tmyx3k0Kz1=7; _ym_isad=1"
+            "Cookie: _ym_uid=15360594171004491340; _ym_d=1551982263; _ym_isad=1; jv_visits_count_Tmyx3k0Kz1=30; sessionid=zaz44uvkmpjhg74jfrx0pi8pz7z89kqe"
             })
     @FormUrlEncoded
     @POST("api/doctor_list/")
@@ -114,7 +114,7 @@ public interface HospitalApi {
             "Referer: http://www.kuban-online.ru/signup/free/",
             "Accept-Encoding: gzip, deflate",
             "Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Cookie: _ym_uid=15360594171004491340; _ym_d=1536059417; sessionid=qzuhb1oswdg8kzry3fqsx6cpmudbgkps; _ym_isad=1; jv_enter_ts_Tmyx3k0Kz1=1541604378017; jv_visits_count_Tmyx3k0Kz1=21; jv_utm_Tmyx3k0Kz1=; jv_invitation_time_Tmyx3k0Kz1=1541604399197; jv_close_time_Tmyx3k0Kz1=1541604447645; jv_pages_count_Tmyx3k0Kz1=2"
+            "Cookie: _ym_uid=15360594171004491340; _ym_d=1536059417; sessionid=zaz44uvkmpjhg74jfrx0pi8pz7z89kqe; _ym_isad=1; jv_enter_ts_Tmyx3k0Kz1=1541604378017; jv_visits_count_Tmyx3k0Kz1=21; jv_utm_Tmyx3k0Kz1=; jv_invitation_time_Tmyx3k0Kz1=1541604399197; jv_close_time_Tmyx3k0Kz1=1541604447645; jv_pages_count_Tmyx3k0Kz1=2"
     })
     @FormUrlEncoded
     @POST("api/appointment_list/")
