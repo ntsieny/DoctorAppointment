@@ -1,7 +1,6 @@
 package com.bigblackboy.doctorappointment.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,14 +19,9 @@ import com.bigblackboy.doctorappointment.Controller;
 import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.activity.MainActivity;
 import com.bigblackboy.doctorappointment.activity.OnDataPass;
-import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
-import com.bigblackboy.doctorappointment.api.HospitalApiResponse;
 import com.bigblackboy.doctorappointment.api.SpecialitiesApiResponse;
-import com.bigblackboy.doctorappointment.model.Hospital;
 import com.bigblackboy.doctorappointment.model.Patient;
-import com.bigblackboy.doctorappointment.model.Session;
 import com.bigblackboy.doctorappointment.model.Speciality;
 
 import java.util.HashMap;
@@ -64,7 +58,7 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
             dataHashMap = (HashMap) this.getArguments().getSerializable("hashmap");
             hospitalId = dataHashMap.get("hospital_id");
         }
-        return inflater.inflate(R.layout.speciality_fragment, null);
+        return inflater.inflate(R.layout.fragment_speciality, null);
     }
 
     @Override

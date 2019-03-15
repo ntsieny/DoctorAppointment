@@ -44,7 +44,7 @@ public class MakeAppointmentActivity extends AppCompatActivity implements OnData
                 bundle = new Bundle();
                 bundle.putSerializable("hashmap", hashMap);
                 hospitalFragment.setArguments(bundle);
-                fTrans.replace(R.id.linLayoutMakeAppointment, hospitalFragment).addToBackStack("district_fragment");
+                fTrans.replace(R.id.linLayoutMakeAppointment, hospitalFragment).addToBackStack("fragment_district");
                 fTrans.commit();
                 break;
             case 2:
@@ -54,7 +54,7 @@ public class MakeAppointmentActivity extends AppCompatActivity implements OnData
                 bundle = new Bundle();
                 bundle.putSerializable("hashmap", hashMap);
                 specFragment.setArguments(bundle);
-                fTrans.replace(R.id.linLayoutMakeAppointment, specFragment).addToBackStack("hospital_fragment");
+                fTrans.replace(R.id.linLayoutMakeAppointment, specFragment).addToBackStack("fragment_hospital");
                 fTrans.commit();
                 break;
             case 3:
@@ -74,7 +74,7 @@ public class MakeAppointmentActivity extends AppCompatActivity implements OnData
                 bundle = new Bundle();
                 bundle.putSerializable("hashmap", hashMap);
                 appointmentFragment.setArguments(bundle);
-                fTrans.replace(R.id.linLayoutMakeAppointment, appointmentFragment).addToBackStack("doctor_fragment");
+                fTrans.replace(R.id.linLayoutMakeAppointment, appointmentFragment).addToBackStack("fragment_doctor");
                 fTrans.commit();
                 break;
             case 5:
@@ -84,7 +84,7 @@ public class MakeAppointmentActivity extends AppCompatActivity implements OnData
                 bundle = new Bundle();
                 bundle.putSerializable("hashmap", hashMap);
                 appointmentFragment.setArguments(bundle);
-                fTrans.replace(R.id.linLayoutDistrict, appointmentFragment).addToBackStack("doctor_fragment");
+                fTrans.replace(R.id.linLayoutDistrict, appointmentFragment).addToBackStack("fragment_doctor");
                 fTrans.commit();*/
                 break;
 

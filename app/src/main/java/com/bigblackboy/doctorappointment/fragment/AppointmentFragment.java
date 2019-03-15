@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bigblackboy.doctorappointment.AppointmentRecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.Controller;
 import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
@@ -58,7 +57,7 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
             hospitalId = dataHashMap.get("hospital_id");
             patientId = dataHashMap.get("patient_id");
         }
-        return inflater.inflate(R.layout.appointment_fragment, null);
+        return inflater.inflate(R.layout.fragment_appointment, null);
     }
 
     @Override

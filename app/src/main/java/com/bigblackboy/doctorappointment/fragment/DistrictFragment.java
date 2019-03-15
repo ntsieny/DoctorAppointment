@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import com.bigblackboy.doctorappointment.HtmlParser;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.activity.MainActivity;
+import com.bigblackboy.doctorappointment.activity.MainMenuActivity;
 import com.bigblackboy.doctorappointment.activity.OnDataPass;
 import com.bigblackboy.doctorappointment.model.District;
 
@@ -38,7 +38,7 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.district_fragment, null);
+        return inflater.inflate(R.layout.fragment_district, null);
     }
 
     @Override
@@ -78,9 +78,9 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
         hashMap.put("district_id", districtId);
         mDataPasser.onDataPass(1, hashMap);
 
-        mSettings = this.getActivity().getSharedPreferences(MainActivity.APP_SETTINGS, Context.MODE_PRIVATE);
+        mSettings = this.getActivity().getSharedPreferences(MainMenuActivity.APP_SETTINGS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSettings.edit();
-        editor.putString(MainActivity.APP_SETTINGS_DISTRICT_ID, districtId);
+        editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_ID, districtId);
         editor.apply();
 
         Log.d(LOG_TAG, "DistrictId: " + districtId);

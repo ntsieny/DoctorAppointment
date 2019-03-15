@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <Button
+        android:id="@+id/btnLoginUser"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="@string/login_as_user" />
+
+    <Button
+        android:id="@+id/btnLoginGuest"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="@string/login_as_guest" />
+</LinearLayout>

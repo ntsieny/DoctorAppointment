@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/profile"
+            android:icon="@drawable/profile"
+            android:title="Мой профиль" />
+        <item
+            android:id="@+id/make_appointment"
+            android:icon="@drawable/calendar"
+            android:title="Запись к врачу" />
+        <item
+            android:id="@+id/doctor_schedule"
+            android:icon="@drawable/schedule"
+            android:title="Расписание врачей" />
+        <item
+            android:id="@+id/appointment_history"
+            android:icon="@drawable/ticket"
+            android:title="Мои заявки" />
+        <item
+            android:id="@+id/area_number"
+            android:icon="@drawable/area_number"
+            android:title="Узнать номер участка" />
+        <item
+            android:id="@+id/reviews"
+            android:icon="@drawable/review"
+            android:title="Отзывы о врачах" />
+    </group>
+
+</menu>

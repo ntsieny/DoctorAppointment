@@ -6,4 +6,15 @@
     <string name="choose_doctor">Выберите врача</string>
     <string name="choose_appointment">Выберите дату и время</string>
     <string name="logout_item">Выйти из аккаунта</string>
+    <string name="make_appointment_menu_item">Записаться к врачу</string>
+    <string name="login_as_user">Войти в качестве пользователя</string>
+    <string name="login_as_guest">Войти гостем</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
 </resources>

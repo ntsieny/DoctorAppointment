@@ -20,7 +20,7 @@ import com.bigblackboy.doctorappointment.Controller;
 import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.activity.MainActivity;
+import com.bigblackboy.doctorappointment.activity.MainMenuActivity;
 import com.bigblackboy.doctorappointment.activity.OnDataPass;
 import com.bigblackboy.doctorappointment.api.HospitalApiResponse;
 import com.bigblackboy.doctorappointment.model.Hospital;
@@ -58,7 +58,7 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
             dataHashMap = (HashMap) this.getArguments().getSerializable("hashmap");
             districtId = dataHashMap.get("district_id");
         }
-        return inflater.inflate(R.layout.hospital_fragment, null);
+        return inflater.inflate(R.layout.fragment_hospital, null);
     }
 
     @Override
@@ -110,9 +110,9 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
         dataHashMap.put("hospital_id", hospitalId);
         mDataPasser.onDataPass(2, dataHashMap);
 
-        mSettings = this.getActivity().getSharedPreferences(MainActivity.APP_SETTINGS, Context.MODE_PRIVATE);
+        mSettings = this.getActivity().getSharedPreferences(MainMenuActivity.APP_SETTINGS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSettings.edit();
-        editor.putString(MainActivity.APP_SETTINGS_HOSPITAL_ID, hospitalId);
+        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, hospitalId);
         editor.apply();
 
         Log.d(LOG_TAG, "HospitalID: " + hospitalId);

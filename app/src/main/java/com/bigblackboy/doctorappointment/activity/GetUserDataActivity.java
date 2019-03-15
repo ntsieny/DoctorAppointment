@@ -1,6 +1,7 @@
 package com.bigblackboy.doctorappointment.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -26,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, OnDataPass {
+public class GetUserDataActivity extends AppCompatActivity implements View.OnClickListener, OnDataPass {
 
     private static HospitalApi hospitalApi;
     private Patient patient;
@@ -46,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         hospitalApi = Controller.getApi();
         patient = new Patient();
-        mSettings = getSharedPreferences(MainActivity.APP_SETTINGS, Context.MODE_PRIVATE);
+        mSettings = getSharedPreferences(MainMenuActivity.APP_SETTINGS, Context.MODE_PRIVATE);
         fm = getSupportFragmentManager();
         districtFragment = new DistrictFragment();
         fm.beginTransaction().add(R.id.linLayoutLogin, districtFragment).commit();
@@ -89,26 +90,36 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Log.d("myLog", "patientId: " + patient.getId() + ", cookie: " + cookie);
 
                         editor = mSettings.edit();
-                        editor.putString(MainActivity.APP_SETTINGS_PATIENT_ID, patient.getId());
-                        editor.putBoolean(MainActivity.APP_SETTINGS_USER_LOGGED_IN, true);
+                        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, patient.getId());
+                        editor.putBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, true);
                         editor.apply();
 
                         String welcomePhr = "Добро пожаловать, " + patient.getName().substring(0,1).toUpperCase() + patient.getName().substring(1) + "!";
-                        Toast.makeText(LoginActivity.this, welcomePhr , Toast.LENGTH_LONG).show();
+                        Toast.makeText(GetUserDataActivity.this, welcomePhr , Toast.LENGTH_LONG).show();
+
+                        Intent intent = new Intent(getApplicationContext(), MainMenuActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+
+                        editor = mSettings.edit();
+                        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, patient.getName());
+                        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, patient.getLastName());
+                        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_BIRTHDAY, patient.getBirthdayFormatted());
+                        editor.apply();
                     }
                     else {
                         //Log.d(LOG_TAG, "Ошибка авторизации: " + response.body().getError().getErrorDescription());
-                        Toast.makeText(LoginActivity.this, "Ошибка авторизации: " + response.body().getError().getErrorDescription(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(GetUserDataActivity.this, "Ошибка авторизации: " + response.body().getError().getErrorDescription(), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     //Log.d(LOG_TAG, "Запрос не прошел (" + response.code() + ")");
-                    Toast.makeText(LoginActivity.this, "Запрос не прошел (" + response.code() + ")", Toast.LENGTH_LONG).show();
+                    Toast.makeText(GetUserDataActivity.this, "Запрос не прошел (" + response.code() + ")", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<CheckPatientApiResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(GetUserDataActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -125,7 +136,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 bundle = new Bundle();
                 bundle.putSerializable("hashmap", hashMap);
                 hospitalFragment.setArguments(bundle);
-                fTrans.replace(R.id.linLayoutLogin, hospitalFragment).addToBackStack("district_fragment");
+                fTrans.replace(R.id.linLayoutLogin, hospitalFragment).addToBackStack("fragment_district");
                 fTrans.commit();
                 break;
             case 2:
@@ -136,7 +147,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 bundle = new Bundle();
                 bundle.putSerializable("hashmap", hashMap);
                 loginFragment.setArguments(bundle);
-                fTrans.replace(R.id.linLayoutLogin, loginFragment).addToBackStack("hospital_fragment");
+                fTrans.replace(R.id.linLayoutLogin, loginFragment).addToBackStack("fragment_hospital");
                 fTrans.commit();
                 break;
             case 3:

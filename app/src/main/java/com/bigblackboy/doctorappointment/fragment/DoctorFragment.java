@@ -55,7 +55,7 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
             hospitalId = dataHashMap.get("hospital_id");
             patientId = dataHashMap.get("patient_id");
         }
-        return inflater.inflate(R.layout.doctor_fragment, null);
+        return inflater.inflate(R.layout.fragment_doctor, null);
     }
 
     @Override
