@@ -11,7 +11,7 @@ import com.bigblackboy.doctorappointment.R;
 
 public class ChooseLoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btnLoginUser, btnLoginGuest;
+    Button btnLoginUser, btnLoginGuest, btnRegistration;
     SharedPreferences mSettings;
     SharedPreferences.Editor editor;
 
@@ -31,6 +31,8 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
             btnLoginUser.setOnClickListener(this);
             btnLoginGuest = findViewById(R.id.btnLoginGuest);
             btnLoginGuest.setOnClickListener(this);
+            btnRegistration = findViewById(R.id.btnRegistration);
+            btnRegistration.setOnClickListener(this);
         }
     }
 
@@ -39,12 +41,19 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
         Intent intent = null;
         switch (v.getId()) {
             case R.id.btnLoginUser:
-                intent = new Intent(this, GetUserDataActivity.class);
+                intent = new Intent(this, MainMenuActivity.class);
+                intent.putExtra("btn", "loginUser");
                 break;
             case R.id.btnLoginGuest:
                 intent = new Intent(this, MainMenuActivity.class);
+                intent.putExtra("btn", "loginGuest");
                 break;
                 //добавить, что зашел гостем
+            case R.id.btnRegistration:
+                intent = new Intent(this, MainMenuActivity.class);
+                intent.putExtra("btn", "registration");
+            // открыть фрагмент регистрации в MainMenuActivity
+                break;
         }
         startActivity(intent);
     }

@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,10 +22,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.fragment.AppointmentFragment;
+import com.bigblackboy.doctorappointment.fragment.DistrictFragment;
+import com.bigblackboy.doctorappointment.fragment.DoctorFragment;
+import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
+import com.bigblackboy.doctorappointment.fragment.MainMenuFragment;
+import com.bigblackboy.doctorappointment.fragment.SpecialityFragment;
 
-public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+import java.util.HashMap;
 
-    Button btnMakeAppointment;
+public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, OnDataPass {
+
     public static final String APP_SETTINGS = "app_settings";
     public static final String APP_SETTINGS_USER_LOGGED_IN = "user_logged_in";
     public static final String APP_SETTINGS_DISTRICT_ID = "district_id";
@@ -34,15 +43,48 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     public static final String APP_SETTINGS_PATIENT_BIRTHDAY = "patient_birthday";
     SharedPreferences mSettings;
     FragmentManager fm;
+    FragmentTransaction fTrans;
+    Fragment districtFragment;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        btnMakeAppointment = findViewById(R.id.btnMakeAppointment);
-        btnMakeAppointment.setOnClickListener(this);
         mSettings = getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
+        fm = getSupportFragmentManager();
 
+        if (mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, false)) {
+            MainMenuFragment mainMenuFragment = new MainMenuFragment();
+            fm.beginTransaction().add(R.id.fragContainer, mainMenuFragment).commit();
+
+            setNavigationDrawer();
+
+            String lastname = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, "");
+            String name = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, "");
+            String fio = lastname + " " + name;
+            TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
+            tvPatientFIO.setText(fio);
+        }
+        else {
+            String btnAction = getIntent().getStringExtra("btn");
+            if(btnAction.equals("loginUser")) {
+                // создание фрагмента логина
+                Toast.makeText(this, "Здесь будет логин", Toast.LENGTH_SHORT).show();
+            }
+            else if(btnAction.equals("loginGuest")) {
+                // создание фрагмента выбора района и города для гостя
+                DistrictFragment districtFragment = new DistrictFragment();
+                fm.beginTransaction().add(R.id.fragContainer, districtFragment).commit();
+                setNavigationDrawer();
+            } else if (btnAction.equals("registration")) {
+                // открытие фрагмента регистрации
+                Toast.makeText(this, "Здесь будет регистрация", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void setNavigationDrawer() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -52,14 +94,8 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        String lastname = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, "");
-        String name = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, "");
-        String fio = lastname + " " + name;
-        TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
-        tvPatientFIO.setText(fio);
     }
 
     @Override
@@ -86,17 +122,33 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        Intent intent;
-        switch (v.getId()) {
+        /*switch (v.getId()) {
             case R.id.btnMakeAppointment:
-                intent = new Intent(this, MakeAppointmentActivity.class);
-                startActivity(intent);
+                fm = getSupportFragmentManager();
+                districtFragment = new DistrictFragment();
+                fm.beginTransaction().replace(R.id.linLayoutMainMenu, districtFragment).commit();
                 break;
+        }*/
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.profile) {
+            Toast.makeText(this, "Hi", Toast.LENGTH_SHORT).show();
         }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -106,26 +158,54 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+    public void onDataPass(int fragmentId, HashMap hashMap) {
+        Bundle bundle;
+        switch (fragmentId) {
+            case 1:
+                fTrans = fm.beginTransaction();
+                HospitalFragment hospitalFragment = new HospitalFragment();
 
-        /*if (id == R.id.nav_camera) {
-            Toast.makeText(getApplicationContext(), "Вы выбрали камеру", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_gallery) {
+                bundle = new Bundle();
+                bundle.putSerializable("hashmap", hashMap);
+                hospitalFragment.setArguments(bundle);
+                fTrans.replace(R.id.fragContainer, hospitalFragment).addToBackStack("fragment_district");
+                fTrans.commit();
+                break;
+            case 2:
+                fTrans = fm.beginTransaction();
+                SpecialityFragment specFragment = new SpecialityFragment();
 
-        } else if (id == R.id.nav_slideshow) {
+                bundle = new Bundle();
+                bundle.putSerializable("hashmap", hashMap);
+                specFragment.setArguments(bundle);
+                fTrans.replace(R.id.fragContainer, specFragment).addToBackStack("fragment_hospital");
+                fTrans.commit();
+                break;
+            case 3:
+                fTrans = fm.beginTransaction();
+                DoctorFragment doctorFragment = new DoctorFragment();
 
-        } else if (id == R.id.nav_manage) {
+                bundle = new Bundle();
+                bundle.putSerializable("hashmap", hashMap);
+                doctorFragment.setArguments(bundle);
+                fTrans.replace(R.id.fragContainer, doctorFragment).addToBackStack("spec_fragment");
+                fTrans.commit();
+                break;
+            case 4:
+                fTrans = fm.beginTransaction();
+                AppointmentFragment appointmentFragment = new AppointmentFragment();
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }*/
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+                bundle = new Bundle();
+                bundle.putSerializable("hashmap", hashMap);
+                appointmentFragment.setArguments(bundle);
+                fTrans.replace(R.id.fragContainer, appointmentFragment).addToBackStack("fragment_doctor");
+                fTrans.commit();
+                break;
+            case 100:
+                fm = getSupportFragmentManager();
+                districtFragment = new DistrictFragment();
+                fm.beginTransaction().replace(R.id.fragContainer, districtFragment).commit();
+                break;
+        }
     }
 }

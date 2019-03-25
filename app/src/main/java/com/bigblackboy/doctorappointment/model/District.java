@@ -41,6 +41,6 @@ public class District {
 
     @Override
     public String toString() {
-        return name + " - " + id;
+        return name;
     }
 }
