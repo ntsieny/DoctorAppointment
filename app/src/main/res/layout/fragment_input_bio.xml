@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.RegistrationActivity">
+
+    <EditText
+        android:id="@+id/etNameReg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Введите имя"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/etLastnameReg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Введите фамилию"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/etBirthdayReg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Введите дату рождения"
+        android:inputType="date" />
+
+    <Button
+        android:id="@+id/btnBioReg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_register" />
+</LinearLayout>

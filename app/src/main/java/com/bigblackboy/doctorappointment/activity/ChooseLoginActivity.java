@@ -50,8 +50,7 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
                 break;
                 //добавить, что зашел гостем
             case R.id.btnRegistration:
-                intent = new Intent(this, MainMenuActivity.class);
-                intent.putExtra("btn", "registration");
+                intent = new Intent(this, RegistrationActivity.class);
             // открыть фрагмент регистрации в MainMenuActivity
                 break;
         }
