@@ -1,10 +1,11 @@
 package com.bigblackboy.doctorappointment.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +19,6 @@ import com.bigblackboy.doctorappointment.Controller;
 import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.activity.OnDataPass;
 import com.bigblackboy.doctorappointment.api.AppointmentListApiResponse;
 import com.bigblackboy.doctorappointment.model.AppointmentInfo;
 
@@ -39,24 +39,32 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
     List<AppointmentInfo> appointments;
     RecyclerView recyclerView;
     private String doctorId, patientId, hospitalId;
-    private OnDataPass mDataPasser;
     private HashMap<String, String> dataHashMap;
+    private OnAppointmentFragmentDataListener mListener;
+
+    public interface OnAppointmentFragmentDataListener {
+        void onAppointmentFragmentDataListener(AppointmentInfo appointmentInfo);
+    }
+
+    public void setInfo(String doctorId, String hospitalId, String patientId) {
+        this.doctorId = doctorId;
+        this.hospitalId = hospitalId;
+        this.patientId = patientId;
+    }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDataPasser = (OnDataPass) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnAppointmentFragmentDataListener) {
+            mListener = (OnAppointmentFragmentDataListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnAppointmentFragmentDataListener");
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(getArguments() != null) {
-            dataHashMap = (HashMap) this.getArguments().getSerializable("hashmap");
-            doctorId = dataHashMap.get("doctor_id");
-            hospitalId = dataHashMap.get("hospital_id");
-            patientId = dataHashMap.get("patient_id");
-        }
         return inflater.inflate(R.layout.fragment_appointment, null);
     }
 
@@ -90,18 +98,23 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
                     List<AppointmentInfo> infoList;
                     List<AppointmentInfo> appoints = new ArrayList<>();
                     Map<String, List<AppointmentInfo>> resp = respObj.getResponse();
-                    for (Map.Entry entry : resp.entrySet()) {
-                        //Log.d("myLog", "Дата: " + entry.getKey() + "\n");
-                        infoList = (List<AppointmentInfo>) entry.getValue();
-                        for (AppointmentInfo info : infoList) {
-                            appoints.add(info);
-                            Log.d("myLog", info.toString() + "\n");
+                    if(resp != null) {
+                        for (Map.Entry entry : resp.entrySet()) {
+                            //Log.d("myLog", "Дата: " + entry.getKey() + "\n");
+                            infoList = (List<AppointmentInfo>) entry.getValue();
+                            for (AppointmentInfo info : infoList) {
+                                appoints.add(info);
+                                Log.d("myLog", info.toString() + "\n");
+                            }
                         }
+
+                        adapter.setData(appoints);
+                        recyclerView.setAdapter(adapter);
+                    } else {
+                        Toast.makeText(getContext(), "Нет данных", Toast.LENGTH_SHORT).show();
+                        FragmentManager fm = getActivity().getSupportFragmentManager();
+                        fm.popBackStack();
                     }
-
-                    adapter.setData(appoints);
-                    recyclerView.setAdapter(adapter);
-
 
                     /*Log.w("Full JSON:\n", new GsonBuilder().setPrettyPrinting().create().toJson(response.body()));
                     Gson gson = new Gson();
@@ -164,9 +177,6 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(getContext(), ((AppointmentInfo)adapter.getItem(position)).getDateStart().toString(), Toast.LENGTH_SHORT).show();
-        Log.d(LOG_TAG, "DateTime: " + ((AppointmentInfo)adapter.getItem(position)).getDateStart().toString());
-        dataHashMap.put("date_time", ((AppointmentInfo)adapter.getItem(position)).getDateStart().getDateTime());
-        mDataPasser.onDataPass(5, dataHashMap);
+        mListener.onAppointmentFragmentDataListener((AppointmentInfo)adapter.getItem(position));
     }
 }

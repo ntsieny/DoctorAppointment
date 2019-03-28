@@ -1,26 +1,46 @@
 package com.bigblackboy.doctorappointment.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
 import com.bigblackboy.doctorappointment.fragment.DistrictFragment;
+import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.fragment.InputBioFragment;
 import com.bigblackboy.doctorappointment.fragment.SignUpFragment;
 import com.bigblackboy.doctorappointment.model.District;
+import com.bigblackboy.doctorappointment.model.Hospital;
+import com.bigblackboy.doctorappointment.model.Patient;
+import com.bigblackboy.doctorappointment.model.Session;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegistrationActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener,
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class RegistrationActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener,
         SignUpFragment.OnSignUpFragmentDataListener, InputBioFragment.OnInputBioFragmentDataListener {
 
     FragmentManager fm;
+    private Patient patient;
+    private static final String LOG_TAG = "myLog";
+    private String hospitalId;
+    private String districtId;
+    private String login, password;
+    SharedPreferences mSettings;
+    SharedPreferences.Editor editor;
+    FragmentTransaction fTrans;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,34 +48,45 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         setContentView(R.layout.activity_registration);
 
         fm = getSupportFragmentManager();
-        Fragment signUpFragment = new SignUpFragment();
-        fm.beginTransaction().add(R.id.linLayoutRegistration, signUpFragment).commit();
+        DistrictFragment districtFragment = new DistrictFragment();
+        fm.beginTransaction().add(R.id.linLayoutRegistration, districtFragment).commit();
     }
 
     @Override
     public void onDistrictFragmentDataListener(District district) {
-        Toast.makeText(this, district.toString(), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, MainMenuActivity.class);
-        intent.putExtra("btn", "registration");
-        startActivity(intent);
+        districtId = district.getId();
+        HospitalFragment hospitalFragment = new HospitalFragment();
+        hospitalFragment.setDistrict(district);
+        fm.beginTransaction().replace(R.id.linLayoutRegistration, hospitalFragment).addToBackStack("district_fragment").commit();
+    }
+
+    @Override
+    public void onHospitalFragmentDataListener(Hospital hospital) {
+        hospitalId = String.valueOf(hospital.getIdLPU());
+        SignUpFragment signUpFragment = new SignUpFragment();
+        fm.beginTransaction().replace(R.id.linLayoutRegistration, signUpFragment).addToBackStack("hospital_fragment").commit();
     }
 
     @Override
     public void onSignUpFragmentDataListener(Map<String, String> loginAndPassword) {
-        String login = loginAndPassword.get("login");
-        String password = loginAndPassword.get("password");
+        login = loginAndPassword.get("login");
+        password = loginAndPassword.get("password");
         InputBioFragment inputBioFragment = new InputBioFragment();
+        inputBioFragment.setInfo(hospitalId);
         fm.beginTransaction().replace(R.id.linLayoutRegistration, inputBioFragment).commit();
-        Toast.makeText(this, login + " " + password, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onInputBioFragmentDataListener(Map<String, String> bioData) {
-        String name = bioData.get("name");
-        String lastname = bioData.get("lastname");
-        String birthday = bioData.get("birthday");
-        Toast.makeText(this, name + " " + lastname + " " + birthday, Toast.LENGTH_SHORT).show();
-        DistrictFragment districtFragment = new DistrictFragment();
-        fm.beginTransaction().replace(R.id.linLayoutRegistration, districtFragment).commit();
+    public void onInputBioFragmentDataListener(Patient patient) {
+        String name = patient.getName();
+        String lastname = patient.getLastName();
+        int dayBirth = patient.getDayBirth();
+        int monthBirth = patient.getMonthBirth();
+        int yearBirth = patient.getYearBirth();
+        //запрос на создание профиля пользователя
+        // ...
+        // открытие окна профиля/главное меню
     }
+
+
 }

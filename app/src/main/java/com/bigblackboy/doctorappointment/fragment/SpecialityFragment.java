@@ -1,7 +1,6 @@
 package com.bigblackboy.doctorappointment.fragment;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +17,9 @@ import com.bigblackboy.doctorappointment.Controller;
 import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.activity.OnDataPass;
 import com.bigblackboy.doctorappointment.api.SpecialitiesApiResponse;
-import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Speciality;
 
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -38,26 +33,32 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
     RecyclerViewAdapter adapter;
     List<Speciality> specialities;
     RecyclerView recyclerView;
-    private final String patientId = "037600000794946";
+    private String patientId;
     private String hospitalId;
-    Patient patient;
-    private OnDataPass mDataPasser;
-    private HashMap<String, String> dataHashMap;
-    SharedPreferences mSettings;
+    OnSpecialityFragmentDataListener mListener;
+
+    public interface OnSpecialityFragmentDataListener {
+        void onSpecialityFragmentDataListener(Speciality speciality);
+    }
+
+    public void setInfo(String hospitalId, String patientId) {
+        this.hospitalId = hospitalId;
+        this.patientId = patientId;
+    }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDataPasser = (OnDataPass) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnSpecialityFragmentDataListener) {
+            mListener = (OnSpecialityFragmentDataListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnSpecialityFragmentDataListener");
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(getArguments() != null) {
-            dataHashMap = (HashMap) this.getArguments().getSerializable("hashmap");
-            hospitalId = dataHashMap.get("hospital_id");
-        }
         return inflater.inflate(R.layout.fragment_speciality, null);
     }
 
@@ -77,12 +78,8 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
     @Override
     public void onResume() {
         super.onResume();
-        //checkPatient();
         getSpecialities();
     }
-
-
-
 
     private void getSpecialities() {
         hospitalApi.getSpecialities(hospitalId, "", "", patientId).enqueue(new Callback<SpecialitiesApiResponse>() {
@@ -115,9 +112,6 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
 
     @Override
     public void onItemClick(View view, int position) {
-        //Toast.makeText(getContext(), "You clicked " + ((Speciality)adapter.getItem(position)).getNameSpeciality() + " on row number " + position, Toast.LENGTH_SHORT).show();
-        dataHashMap.put("speciality_id", String.valueOf(((Speciality)adapter.getItem(position)).getIdSpeciality()));
-        mDataPasser.onDataPass(3, dataHashMap);
-        Log.d(LOG_TAG, "SpecialityID: " + String.valueOf(((Speciality)adapter.getItem(position)).getIdSpeciality()));
+        mListener.onSpecialityFragmentDataListener((Speciality)adapter.getItem(position));
     }
 }

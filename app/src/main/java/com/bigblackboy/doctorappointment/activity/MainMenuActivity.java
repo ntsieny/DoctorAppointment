@@ -26,14 +26,17 @@ import com.bigblackboy.doctorappointment.fragment.DoctorFragment;
 import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.fragment.MainMenuFragment;
 import com.bigblackboy.doctorappointment.fragment.SpecialityFragment;
+import com.bigblackboy.doctorappointment.model.AppointmentInfo;
 import com.bigblackboy.doctorappointment.model.District;
+import com.bigblackboy.doctorappointment.model.Doctor;
 import com.bigblackboy.doctorappointment.model.Hospital;
+import com.bigblackboy.doctorappointment.model.Speciality;
 
 import java.util.HashMap;
 
-public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener,
-        NavigationView.OnNavigationItemSelectedListener, OnDataPass, DistrictFragment.OnDistrictFragmentDataListener,
-        HospitalFragment.OnHospitalFragmentDataListener {
+public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, DistrictFragment.OnDistrictFragmentDataListener,
+        HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
+        AppointmentFragment.OnAppointmentFragmentDataListener {
 
     public static final String APP_SETTINGS = "app_settings";
     public static final String APP_SETTINGS_USER_LOGGED_IN = "user_logged_in";
@@ -46,8 +49,11 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     SharedPreferences mSettings;
     FragmentManager fm;
     FragmentTransaction fTrans;
-    Fragment districtFragment;
     NavigationView navigationView;
+    private String patientId = "037600000794946";
+    private String specialityId;
+    private String hospitalId;
+    private String doctorId;
     private District district;
     //public DistrictToFragment districtToFragment;
 
@@ -160,48 +166,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onDataPass(int fragmentId, HashMap hashMap) {
-        Bundle bundle;
-        switch (fragmentId) {
-            case 2:
-                fTrans = fm.beginTransaction();
-                SpecialityFragment specFragment = new SpecialityFragment();
-
-                bundle = new Bundle();
-                bundle.putSerializable("hashmap", hashMap);
-                specFragment.setArguments(bundle);
-                fTrans.replace(R.id.fragContainer, specFragment).addToBackStack("fragment_hospital");
-                fTrans.commit();
-                break;
-            case 3:
-                fTrans = fm.beginTransaction();
-                DoctorFragment doctorFragment = new DoctorFragment();
-
-                bundle = new Bundle();
-                bundle.putSerializable("hashmap", hashMap);
-                doctorFragment.setArguments(bundle);
-                fTrans.replace(R.id.fragContainer, doctorFragment).addToBackStack("spec_fragment");
-                fTrans.commit();
-                break;
-            case 4:
-                fTrans = fm.beginTransaction();
-                AppointmentFragment appointmentFragment = new AppointmentFragment();
-
-                bundle = new Bundle();
-                bundle.putSerializable("hashmap", hashMap);
-                appointmentFragment.setArguments(bundle);
-                fTrans.replace(R.id.fragContainer, appointmentFragment).addToBackStack("fragment_doctor");
-                fTrans.commit();
-                break;
-            case 100:
-                fm = getSupportFragmentManager();
-                districtFragment = new DistrictFragment();
-                fm.beginTransaction().replace(R.id.fragContainer, districtFragment).commit();
-                break;
-        }
-    }
-
-    @Override
     public void onDistrictFragmentDataListener(District district) {
         HospitalFragment hospitalFragment = new HospitalFragment();
 
@@ -216,8 +180,36 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onHospitalFragmentDataListener(Hospital hospital) {
-        Toast.makeText(this, "Активити получила hospital " + hospital.getLPUShortName(), Toast.LENGTH_SHORT).show();
+        hospitalId = String.valueOf(hospital.getIdLPU());
         // открытие фрагмента главного меню
+        MainMenuFragment mainMenuFragment = new MainMenuFragment();
+        fm.beginTransaction().replace(R.id.fragContainer, mainMenuFragment).commit();
+
+        /*SpecialityFragment specialityFragment = new SpecialityFragment();
+        specialityFragment.setInfo(hospitalId, patientId);
+        fm.beginTransaction().replace(R.id.fragContainer, specialityFragment).addToBackStack("hospital_fragment").commit();*/
+    }
+
+    @Override
+    public void onSpecialityFragmentDataListener(Speciality speciality) {
+        specialityId = speciality.getIdSpeciality();
+        fTrans = fm.beginTransaction();
+        DoctorFragment doctorFragment = new DoctorFragment();
+        doctorFragment.setInfo(specialityId, hospitalId, patientId);
+        fTrans.replace(R.id.fragContainer, doctorFragment).addToBackStack("spec_fragment").commit();
+    }
+
+    @Override
+    public void onDoctorFragmentDataListener(Doctor doctor) {
+        doctorId = doctor.getIdDoc();
+        AppointmentFragment appointmentFragment = new AppointmentFragment();
+        appointmentFragment.setInfo(doctorId, hospitalId, patientId);
+        fm.beginTransaction().replace(R.id.fragContainer, appointmentFragment).addToBackStack("doctor_fragment").commit();
+    }
+
+    @Override
+    public void onAppointmentFragmentDataListener(AppointmentInfo appointmentInfo) {
+        Toast.makeText(this, appointmentInfo.getDateStart().getDateTime(), Toast.LENGTH_SHORT).show();
     }
 
     /*public interface DistrictToFragment {

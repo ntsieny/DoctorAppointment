@@ -87,4 +87,9 @@ public class Patient {
     public void setId(String id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s %s", name, lastName, getBirthdayFormatted());
+    }
 }

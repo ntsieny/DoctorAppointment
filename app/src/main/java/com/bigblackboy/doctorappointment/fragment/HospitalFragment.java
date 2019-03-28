@@ -1,6 +1,5 @@
 package com.bigblackboy.doctorappointment.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.activity.MainMenuActivity;
-import com.bigblackboy.doctorappointment.activity.OnDataPass;
 import com.bigblackboy.doctorappointment.api.HospitalApiResponse;
 import com.bigblackboy.doctorappointment.model.District;
 import com.bigblackboy.doctorappointment.model.Hospital;

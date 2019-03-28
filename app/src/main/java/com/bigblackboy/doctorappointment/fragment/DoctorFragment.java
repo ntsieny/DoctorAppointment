@@ -1,6 +1,6 @@
 package com.bigblackboy.doctorappointment.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,9 @@ import com.bigblackboy.doctorappointment.Controller;
 import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.activity.OnDataPass;
 import com.bigblackboy.doctorappointment.api.DoctorsApiResponse;
 import com.bigblackboy.doctorappointment.model.Doctor;
 
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,28 +30,35 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
 
     private String LOG_TAG = "myLog";
     private static HospitalApi hospitalApi;
-    private OnDataPass mDataPasser;
     RecyclerViewAdapter adapter;
     List<Doctor> doctors;
     RecyclerView recyclerView;
     private String specialityId, hospitalId, patientId;
-    private HashMap<String, String> dataHashMap;
+    private OnDoctorFragmentDataListener mListener;
+
+    public interface OnDoctorFragmentDataListener {
+        void onDoctorFragmentDataListener(Doctor doctor);
+    }
+
+    public void setInfo(String specialityId, String hospitalId, String patientId) {
+        this.specialityId = specialityId;
+        this.hospitalId = hospitalId;
+        this.patientId = patientId;
+    }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDataPasser = (OnDataPass) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnDoctorFragmentDataListener) {
+            mListener = (OnDoctorFragmentDataListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnDoctorFragmentDataListener");
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(getArguments() != null) {
-            dataHashMap = (HashMap) this.getArguments().getSerializable("hashmap");
-            specialityId = dataHashMap.get("speciality_id");
-            hospitalId = dataHashMap.get("hospital_id");
-            patientId = dataHashMap.get("patient_id");
-        }
         return inflater.inflate(R.layout.fragment_doctor, null);
     }
 
@@ -92,10 +96,8 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
                             Log.d(LOG_TAG, doctor.getName() + " Участок: " + doctor.getAriaNumber() + " СНИЛС: " + doctor.getSnils() + "\n");
                             Log.d(LOG_TAG, doctor.getIdDoc()); // сохранить для form-data
                         }*/
-                    }
-                    else Toast.makeText(getContext(), "Ошибка: " + response.body().getError().getErrorDescription(), Toast.LENGTH_SHORT).show();
-                }
-                else Toast.makeText(getContext(), "Запрос не прошел (" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                    } else Toast.makeText(getContext(), "Ошибка: " + response.body().getError().getErrorDescription(), Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(getContext(), "Запрос не прошел (" + response.code() + ")", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -107,9 +109,6 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(getContext(), "You clicked " + ((Doctor)adapter.getItem(position)).getName() + " on row number " + position, Toast.LENGTH_SHORT).show();
-        dataHashMap.put("doctor_id", String.valueOf(((Doctor)adapter.getItem(position)).getIdDoc()));
-        mDataPasser.onDataPass(4, dataHashMap);
-        Log.d(LOG_TAG, "DoctorID: " + String.valueOf(((Doctor)adapter.getItem(position)).getIdDoc()));
+        mListener.onDoctorFragmentDataListener((Doctor)adapter.getItem(position));
     }
 }

@@ -1,6 +1,5 @@
 package com.bigblackboy.doctorappointment.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -11,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +18,6 @@ import com.bigblackboy.doctorappointment.HtmlParser;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.activity.MainMenuActivity;
-import com.bigblackboy.doctorappointment.activity.OnDataPass;
 import com.bigblackboy.doctorappointment.model.District;
 
 import java.util.ArrayList;
