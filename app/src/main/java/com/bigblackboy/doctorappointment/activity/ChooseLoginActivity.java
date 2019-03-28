@@ -41,15 +41,18 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
         Intent intent = null;
         switch (v.getId()) {
             case R.id.btnLoginUser:
+                finish();
                 intent = new Intent(this, LoginActivity.class);
                 //intent.putExtra("btn", "loginUser");
                 break;
             case R.id.btnLoginGuest:
+                finish();
                 intent = new Intent(this, MainMenuActivity.class);
                 intent.putExtra("btn", "loginGuest");
                 break;
                 //добавить, что зашел гостем
             case R.id.btnRegistration:
+                finish();
                 intent = new Intent(this, RegistrationActivity.class);
             // открыть фрагмент регистрации в MainMenuActivity
                 break;

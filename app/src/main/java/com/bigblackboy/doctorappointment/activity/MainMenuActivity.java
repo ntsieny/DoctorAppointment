@@ -41,16 +41,20 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     public static final String APP_SETTINGS = "app_settings";
     public static final String APP_SETTINGS_USER_LOGGED_IN = "user_logged_in";
     public static final String APP_SETTINGS_DISTRICT_ID = "district_id";
+    public static final String APP_SETTINGS_DISTRICT_NAME = "district_name";
     public static final String APP_SETTINGS_HOSPITAL_ID = "hospital_id";
+    public static final String APP_SETTINGS_HOSPITAL_NAME = "hospital_name";
     public static final String APP_SETTINGS_PATIENT_ID = "patient_id";
     public static final String APP_SETTINGS_PATIENT_NAME = "patient_name";
     public static final String APP_SETTINGS_PATIENT_LASTNAME = "patient_lastname";
-    public static final String APP_SETTINGS_PATIENT_BIRTHDAY = "patient_birthday";
+    public static final String APP_SETTINGS_PATIENT_DAYBIRTH = "patient_daybirth";
+    public static final String APP_SETTINGS_PATIENT_MONTHBIRTH = "patient_monthbirth";
+    public static final String APP_SETTINGS_PATIENT_YEARBIRTH = "patient_yearbirth";
     SharedPreferences mSettings;
     FragmentManager fm;
     FragmentTransaction fTrans;
     NavigationView navigationView;
-    private String patientId = "037600000794946";
+    private String patientId;
     private String specialityId;
     private String hospitalId;
     private String doctorId;
@@ -75,6 +79,12 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
             String fio = lastname + " " + name;
             TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
             tvPatientFIO.setText(fio);
+            String hospitalName = mSettings.getString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME, "");
+            String districtName = mSettings.getString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, "");
+            TextView tvPatientAddress = navigationView.getHeaderView(0).findViewById(R.id.tvPatientAddress);
+            tvPatientAddress.setText(hospitalName + ", " + districtName);
+            hospitalId = mSettings.getString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, null);
+            patientId = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, null);
         }
         else {
             String btnAction = getIntent().getStringExtra("btn");
@@ -104,6 +114,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     @Override
@@ -120,7 +131,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                 SharedPreferences.Editor editor = mSettings.edit();
                 editor.putBoolean(APP_SETTINGS_USER_LOGGED_IN, false);
                 editor.apply();
-
+                finish();
                 intent = new Intent(this, ChooseLoginActivity.class);
                 startActivity(intent);
                 break;
@@ -145,8 +156,23 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.profile) {
-            Toast.makeText(this, "Hi", Toast.LENGTH_SHORT).show();
+        if (id == R.id.main_menu) {
+            MainMenuFragment mainMenuFragment = new MainMenuFragment();
+            fm.beginTransaction().replace(R.id.fragContainer, mainMenuFragment).commit();
+        } else if (id == R.id.profile) {
+            Toast.makeText(this, "Profile fragment", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.make_appointment) {
+            SpecialityFragment specialityFragment = new SpecialityFragment();
+            specialityFragment.setInfo(hospitalId, patientId);
+            fm.beginTransaction().replace(R.id.fragContainer, specialityFragment).commit();
+        } else if (id == R.id.doctor_schedule) {
+
+        } else if (id == R.id.appointment_history) {
+
+        } else if (id == R.id.area_number) {
+
+        } else if (id == R.id.reviews) {
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -156,12 +182,14 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        int backstackCount = fm.getBackStackEntryCount();
+        if (backstackCount == 0) {
+            super.onBackPressed();
+        } else fm.popBackStack();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
     }
 
@@ -193,10 +221,9 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onSpecialityFragmentDataListener(Speciality speciality) {
         specialityId = speciality.getIdSpeciality();
-        fTrans = fm.beginTransaction();
         DoctorFragment doctorFragment = new DoctorFragment();
         doctorFragment.setInfo(specialityId, hospitalId, patientId);
-        fTrans.replace(R.id.fragContainer, doctorFragment).addToBackStack("spec_fragment").commit();
+        fm.beginTransaction().replace(R.id.fragContainer, doctorFragment).addToBackStack("spec_fragment").commit();
     }
 
     @Override

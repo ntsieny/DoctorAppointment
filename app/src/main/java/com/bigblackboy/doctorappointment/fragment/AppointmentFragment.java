@@ -98,7 +98,7 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
                     List<AppointmentInfo> infoList;
                     List<AppointmentInfo> appoints = new ArrayList<>();
                     Map<String, List<AppointmentInfo>> resp = respObj.getResponse();
-                    if(resp != null) {
+                    if(respObj.getSuccess()) {
                         for (Map.Entry entry : resp.entrySet()) {
                             //Log.d("myLog", "Дата: " + entry.getKey() + "\n");
                             infoList = (List<AppointmentInfo>) entry.getValue();
@@ -107,11 +107,11 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
                                 Log.d("myLog", info.toString() + "\n");
                             }
                         }
-
                         adapter.setData(appoints);
                         recyclerView.setAdapter(adapter);
                     } else {
-                        Toast.makeText(getContext(), "Нет данных", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, "Ошибка " + respObj.getError().getIdError() + ". " + respObj.getError().getErrorDescription());
+                        Toast.makeText(getContext(), respObj.getError().getErrorDescription(), Toast.LENGTH_SHORT).show();
                         FragmentManager fm = getActivity().getSupportFragmentManager();
                         fm.popBackStack();
                     }

@@ -1,5 +1,6 @@
 package com.bigblackboy.doctorappointment.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
@@ -35,8 +36,8 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
     FragmentManager fm;
     private Patient patient;
     private static final String LOG_TAG = "myLog";
-    private String hospitalId;
-    private String districtId;
+    private String hospitalId, hospitalName;
+    private String districtId, districtName;
     private String login, password;
     SharedPreferences mSettings;
     SharedPreferences.Editor editor;
@@ -47,6 +48,8 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        mSettings = getSharedPreferences(MainMenuActivity.APP_SETTINGS, Context.MODE_PRIVATE);
+
         fm = getSupportFragmentManager();
         DistrictFragment districtFragment = new DistrictFragment();
         fm.beginTransaction().add(R.id.linLayoutRegistration, districtFragment).commit();
@@ -55,6 +58,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
     @Override
     public void onDistrictFragmentDataListener(District district) {
         districtId = district.getId();
+        districtName = district.getName();
         HospitalFragment hospitalFragment = new HospitalFragment();
         hospitalFragment.setDistrict(district);
         fm.beginTransaction().replace(R.id.linLayoutRegistration, hospitalFragment).addToBackStack("district_fragment").commit();
@@ -63,6 +67,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
     @Override
     public void onHospitalFragmentDataListener(Hospital hospital) {
         hospitalId = String.valueOf(hospital.getIdLPU());
+        hospitalName = hospital.getLPUShortName();
         SignUpFragment signUpFragment = new SignUpFragment();
         fm.beginTransaction().replace(R.id.linLayoutRegistration, signUpFragment).addToBackStack("hospital_fragment").commit();
     }
@@ -83,10 +88,28 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         int dayBirth = patient.getDayBirth();
         int monthBirth = patient.getMonthBirth();
         int yearBirth = patient.getYearBirth();
+        String id = patient.getId();
+
+        editor = mSettings.edit();
+        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, name);
+        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, lastname);
+        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_DAYBIRTH, dayBirth);
+        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_MONTHBIRTH, monthBirth);
+        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_YEARBIRTH, yearBirth);
+        editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_ID, districtId);
+        editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, districtName);
+        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, hospitalId);
+        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME, hospitalName);
+        editor.putBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, true);
+        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, id);
+        editor.apply();
+
         //запрос на создание профиля пользователя
         // ...
+        finish();
         // открытие окна профиля/главное меню
+        Intent intent = new Intent(this, MainMenuActivity.class);
+        startActivity(intent);
+
     }
-
-
 }
