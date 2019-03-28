@@ -20,9 +20,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.GetUserDataActivity" />
-        <activity android:name=".activity.MakeAppointmentActivity" />
         <activity android:name=".activity.MainMenuActivity" />
-        <activity android:name=".activity.RegistrationActivity"></activity>
+        <activity android:name=".activity.RegistrationActivity" />
+        <activity android:name=".activity.LoginActivity"></activity>
     </application>
 
 </manifest>

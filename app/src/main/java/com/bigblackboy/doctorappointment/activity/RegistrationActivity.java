@@ -1,19 +1,24 @@
 package com.bigblackboy.doctorappointment.activity;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.fragment.InputBioFragment;
 import com.bigblackboy.doctorappointment.fragment.SignUpFragment;
+import com.bigblackboy.doctorappointment.model.District;
 
 import java.util.HashMap;
+import java.util.Map;
 
-public class RegistrationActivity extends AppCompatActivity implements OnDataPass {
+public class RegistrationActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener,
+        SignUpFragment.OnSignUpFragmentDataListener, InputBioFragment.OnInputBioFragmentDataListener {
 
     FragmentManager fm;
 
@@ -28,26 +33,29 @@ public class RegistrationActivity extends AppCompatActivity implements OnDataPas
     }
 
     @Override
-    public void onDataPass(int fragmentId, HashMap<String, String> data) {
-        switch (fragmentId) {
-            case 1:
-                String login = data.get("login");
-                String password = data.get("password");
-                Toast.makeText(this, login + " " + password, Toast.LENGTH_SHORT).show();
-                InputBioFragment inputBioFragment = new InputBioFragment();
-                fm.beginTransaction().replace(R.id.linLayoutRegistration, inputBioFragment).commit();
-                break;
-            case 2:
-                String name = data.get("name");
-                String lastname = data.get("lastname");
-                String birthday = data.get("birthday");
-                Toast.makeText(this, name + " " + lastname + " " + birthday, Toast.LENGTH_SHORT).show();
-                DistrictFragment districtFragment = new DistrictFragment();
-                fm.beginTransaction().replace(R.id.linLayoutRegistration, districtFragment).commit();
-                break;
-            case 3:
-                // получаем район от DistrictFrament
-                break;
-        }
+    public void onDistrictFragmentDataListener(District district) {
+        Toast.makeText(this, district.toString(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MainMenuActivity.class);
+        intent.putExtra("btn", "registration");
+        startActivity(intent);
+    }
+
+    @Override
+    public void onSignUpFragmentDataListener(Map<String, String> loginAndPassword) {
+        String login = loginAndPassword.get("login");
+        String password = loginAndPassword.get("password");
+        InputBioFragment inputBioFragment = new InputBioFragment();
+        fm.beginTransaction().replace(R.id.linLayoutRegistration, inputBioFragment).commit();
+        Toast.makeText(this, login + " " + password, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onInputBioFragmentDataListener(Map<String, String> bioData) {
+        String name = bioData.get("name");
+        String lastname = bioData.get("lastname");
+        String birthday = bioData.get("birthday");
+        Toast.makeText(this, name + " " + lastname + " " + birthday, Toast.LENGTH_SHORT).show();
+        DistrictFragment districtFragment = new DistrictFragment();
+        fm.beginTransaction().replace(R.id.linLayoutRegistration, districtFragment).commit();
     }
 }

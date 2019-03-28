@@ -23,6 +23,7 @@ import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.activity.MainMenuActivity;
 import com.bigblackboy.doctorappointment.activity.OnDataPass;
 import com.bigblackboy.doctorappointment.api.HospitalApiResponse;
+import com.bigblackboy.doctorappointment.model.District;
 import com.bigblackboy.doctorappointment.model.Hospital;
 
 import java.util.HashMap;
@@ -36,7 +37,6 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
 
     private String LOG_TAG = "myLog";
     private static HospitalApi hospitalApi;
-    private OnDataPass mDataPasser;
 
     RecyclerViewAdapter adapter;
     List<Hospital> hospitals;
@@ -44,20 +44,35 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
     private String districtId;
     private HashMap<String, String> dataHashMap;
     SharedPreferences mSettings;
+    private OnHospitalFragmentDataListener mListener;
+
+
+    public interface OnHospitalFragmentDataListener {
+        void onHospitalFragmentDataListener(Hospital hospital);
+    }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDataPasser = (OnDataPass) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        //((MainMenuActivity)context).districtToFragment = this;
+        if(context instanceof OnHospitalFragmentDataListener) {
+            mListener = (OnHospitalFragmentDataListener)context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnHospitalFragmentDataListener");
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        /*if(getActivity() instanceof MainMenuActivity) {
+            ((MainMenuActivity) getActivity()).setDistrictToFragmentListener(this);
+        }*/
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(getArguments() != null) {
-            dataHashMap = (HashMap) this.getArguments().getSerializable("hashmap");
-            districtId = dataHashMap.get("district_id");
-        }
         return inflater.inflate(R.layout.fragment_hospital, null);
     }
 
@@ -107,8 +122,10 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
     public void onItemClick(View view, int position) {
         //Toast.makeText(getContext(), "You clicked " + ((Hospital)adapter.getItem(position)).getLpuName() + " on row number " + position, Toast.LENGTH_SHORT).show();
         String hospitalId = String.valueOf(((Hospital)adapter.getItem(position)).getIdLPU());
-        dataHashMap.put("hospital_id", hospitalId);
-        mDataPasser.onDataPass(2, dataHashMap);
+        //dataHashMap.put("hospital_id", hospitalId);
+        //mDataPasser.onDataPass(2, dataHashMap);
+
+        mListener.onHospitalFragmentDataListener((Hospital)adapter.getItem(position));
 
         mSettings = this.getActivity().getSharedPreferences(MainMenuActivity.APP_SETTINGS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSettings.edit();
@@ -116,5 +133,15 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
         editor.apply();
 
         Log.d(LOG_TAG, "HospitalID: " + hospitalId);
+    }
+
+    /*@Override
+    public void districtToFragment(District district) {
+        //districtId = district.getId();
+        Toast.makeText(getContext(), districtId + " хаха", Toast.LENGTH_SHORT).show();
+    }*/
+
+    public void setDistrict(District district) {
+        this.districtId = district.getId();
     }
 }

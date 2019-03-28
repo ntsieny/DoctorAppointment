@@ -3,7 +3,6 @@ package com.bigblackboy.doctorappointment.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,10 +26,14 @@ import com.bigblackboy.doctorappointment.fragment.DoctorFragment;
 import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.fragment.MainMenuFragment;
 import com.bigblackboy.doctorappointment.fragment.SpecialityFragment;
+import com.bigblackboy.doctorappointment.model.District;
+import com.bigblackboy.doctorappointment.model.Hospital;
 
 import java.util.HashMap;
 
-public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, OnDataPass {
+public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener,
+        NavigationView.OnNavigationItemSelectedListener, OnDataPass, DistrictFragment.OnDistrictFragmentDataListener,
+        HospitalFragment.OnHospitalFragmentDataListener {
 
     public static final String APP_SETTINGS = "app_settings";
     public static final String APP_SETTINGS_USER_LOGGED_IN = "user_logged_in";
@@ -46,6 +48,8 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     FragmentTransaction fTrans;
     Fragment districtFragment;
     NavigationView navigationView;
+    private District district;
+    //public DistrictToFragment districtToFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,18 +72,16 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         }
         else {
             String btnAction = getIntent().getStringExtra("btn");
-            if(btnAction.equals("loginUser")) {
-                // создание фрагмента логина
-                Toast.makeText(this, "Здесь будет логин", Toast.LENGTH_SHORT).show();
+            if(btnAction.equals("loginUser") || btnAction.equals("registration")) {
+                //открытие меню пользователя
+                Toast.makeText(this, btnAction + " Здесь будет инфо о пользователе/меню", Toast.LENGTH_SHORT).show();
+                setNavigationDrawer();
             }
             else if(btnAction.equals("loginGuest")) {
                 // создание фрагмента выбора района и города для гостя
                 DistrictFragment districtFragment = new DistrictFragment();
                 fm.beginTransaction().add(R.id.fragContainer, districtFragment).commit();
                 setNavigationDrawer();
-            } else if (btnAction.equals("registration")) {
-                // открытие фрагмента регистрации
-                Toast.makeText(this, "Здесь будет регистрация", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -161,16 +163,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     public void onDataPass(int fragmentId, HashMap hashMap) {
         Bundle bundle;
         switch (fragmentId) {
-            case 1:
-                fTrans = fm.beginTransaction();
-                HospitalFragment hospitalFragment = new HospitalFragment();
-
-                bundle = new Bundle();
-                bundle.putSerializable("hashmap", hashMap);
-                hospitalFragment.setArguments(bundle);
-                fTrans.replace(R.id.fragContainer, hospitalFragment).addToBackStack("fragment_district");
-                fTrans.commit();
-                break;
             case 2:
                 fTrans = fm.beginTransaction();
                 SpecialityFragment specFragment = new SpecialityFragment();
@@ -208,4 +200,27 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
+
+    @Override
+    public void onDistrictFragmentDataListener(District district) {
+        HospitalFragment hospitalFragment = new HospitalFragment();
+
+        fTrans = fm.beginTransaction().replace(R.id.fragContainer, hospitalFragment).addToBackStack("fragment_district");
+        fTrans.commit();
+
+        hospitalFragment.setDistrict(district);
+        /*if(districtToFragment != null) {
+            districtToFragment.districtToFragment(district);
+        } else Toast.makeText(this, "mDistrictFragment is NULL", Toast.LENGTH_SHORT).show();*/
+    }
+
+    @Override
+    public void onHospitalFragmentDataListener(Hospital hospital) {
+        Toast.makeText(this, "Активити получила hospital " + hospital.getLPUShortName(), Toast.LENGTH_SHORT).show();
+        // открытие фрагмента главного меню
+    }
+
+    /*public interface DistrictToFragment {
+        void districtToFragment (District district);
+    }*/
 }

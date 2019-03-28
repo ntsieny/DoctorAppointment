@@ -1,6 +1,6 @@
 package com.bigblackboy.doctorappointment.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,20 +14,28 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.activity.OnDataPass;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class SignUpFragment extends Fragment implements View.OnClickListener {
 
-    OnDataPass mDataPasser;
     EditText etLoginReg, etPasswordReg, etPasswordRepeat;
     Button btnSignup;
+    OnSignUpFragmentDataListener mListener;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDataPasser = (OnDataPass) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof OnSignUpFragmentDataListener) {
+            mListener = (OnSignUpFragmentDataListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement onSignUpFragmentDataListener");
+        }
+    }
+
+    public interface OnSignUpFragmentDataListener {
+        void onSignUpFragmentDataListener(Map<String, String> loginAndPassword);
     }
 
     @Nullable
@@ -55,7 +63,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                         HashMap<String, String> hashMap = new HashMap();
                         hashMap.put("login", etLoginReg.getText().toString());
                         hashMap.put("password", etPasswordReg.getText().toString());
-                        mDataPasser.onDataPass(1, hashMap);
+                        mListener.onSignUpFragmentDataListener(hashMap);
                     } else Toast.makeText(getContext(), "Пароли не совпадают", Toast.LENGTH_SHORT).show();
                 } else Toast.makeText(getContext(), "Введите данные!", Toast.LENGTH_SHORT).show();
                 break;

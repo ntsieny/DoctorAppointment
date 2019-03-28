@@ -1,6 +1,7 @@
 package com.bigblackboy.doctorappointment.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,17 +18,26 @@ import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.activity.OnDataPass;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class InputBioFragment extends Fragment implements View.OnClickListener {
 
     EditText etNameReg, etLastnameReg, etBirthdayReg;
     Button btnBioReg;
-    OnDataPass mDataPasser;
+    OnInputBioFragmentDataListener mListener;
+
+    public interface OnInputBioFragmentDataListener {
+        void onInputBioFragmentDataListener(Map<String, String> bioData);
+    }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mDataPasser = (OnDataPass) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof OnInputBioFragmentDataListener) {
+            mListener = (OnInputBioFragmentDataListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnInputBioFragmentDataListener");
+        }
     }
 
     @Nullable
@@ -53,7 +63,7 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
                     hashMap.put("name", etNameReg.getText().toString());
                     hashMap.put("lastname", etLastnameReg.getText().toString());
                     hashMap.put("birthday", etBirthdayReg.getText().toString());
-                    mDataPasser.onDataPass(2, hashMap);
+                    mListener.onInputBioFragmentDataListener(hashMap);
                 } else Toast.makeText(getContext(), "Введите данные!", Toast.LENGTH_SHORT).show();
                 break;
         }

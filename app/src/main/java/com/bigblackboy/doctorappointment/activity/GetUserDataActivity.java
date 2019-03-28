@@ -43,14 +43,14 @@ public class GetUserDataActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        //setContentView(R.layout.activity_login);
 
         hospitalApi = Controller.getApi();
         patient = new Patient();
         mSettings = getSharedPreferences(MainMenuActivity.APP_SETTINGS, Context.MODE_PRIVATE);
         fm = getSupportFragmentManager();
         districtFragment = new DistrictFragment();
-        fm.beginTransaction().add(R.id.linLayoutLogin, districtFragment).commit();
+        //fm.beginTransaction().add(R.id.linLayoutLogin, districtFragment).commit();
     }
 
     @Override
@@ -136,7 +136,7 @@ public class GetUserDataActivity extends AppCompatActivity implements View.OnCli
                 bundle = new Bundle();
                 bundle.putSerializable("hashmap", hashMap);
                 hospitalFragment.setArguments(bundle);
-                fTrans.replace(R.id.linLayoutLogin, hospitalFragment).addToBackStack("fragment_district");
+                //fTrans.replace(R.id.linLayoutLogin, hospitalFragment).addToBackStack("fragment_district");
                 fTrans.commit();
                 break;
             case 2:
@@ -147,7 +147,7 @@ public class GetUserDataActivity extends AppCompatActivity implements View.OnCli
                 bundle = new Bundle();
                 bundle.putSerializable("hashmap", hashMap);
                 loginFragment.setArguments(bundle);
-                fTrans.replace(R.id.linLayoutLogin, loginFragment).addToBackStack("fragment_hospital");
+                //fTrans.replace(R.id.linLayoutLogin, loginFragment).addToBackStack("fragment_hospital");
                 fTrans.commit();
                 break;
             case 3:
