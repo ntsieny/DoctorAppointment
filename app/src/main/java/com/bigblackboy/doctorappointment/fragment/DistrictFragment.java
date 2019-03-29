@@ -31,15 +31,12 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
     private String LOG_TAG = "myLog";
     SharedPreferences mSettings;
     private OnDistrictFragmentDataListener mListener;
+    private String barTitle = "Выбор района";
 
     public interface OnDistrictFragmentDataListener {
         void onDistrictFragmentDataListener(District district);
-    }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_district, null);
+        void onDistrictUpdateActionBarTitle(String barTitle);
     }
 
     @Override
@@ -50,6 +47,13 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
         } else {
             throw new RuntimeException(context.toString() + " must implement OnDistrictFragmentDataListener");
         }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mListener.onDistrictUpdateActionBarTitle(barTitle);
+        return inflater.inflate(R.layout.fragment_district, null);
     }
 
     @Override

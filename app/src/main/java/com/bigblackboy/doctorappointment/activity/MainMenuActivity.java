@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -15,8 +14,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,11 +30,9 @@ import com.bigblackboy.doctorappointment.model.Doctor;
 import com.bigblackboy.doctorappointment.model.Hospital;
 import com.bigblackboy.doctorappointment.model.Speciality;
 
-import java.util.HashMap;
-
 public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DistrictFragment.OnDistrictFragmentDataListener,
         HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
-        AppointmentFragment.OnAppointmentFragmentDataListener {
+        AppointmentFragment.OnAppointmentFragmentDataListener, MainMenuFragment.OnMainMenuFragmentDataListener {
 
     public static final String APP_SETTINGS = "app_settings";
     public static final String APP_SETTINGS_USER_LOGGED_IN = "user_logged_in";
@@ -204,6 +199,11 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     @Override
+    public void onDistrictUpdateActionBarTitle(String barTitle) {
+        getSupportActionBar().setTitle(barTitle);
+    }
+
+    @Override
     public void onHospitalFragmentDataListener(Hospital hospital) {
         hospitalId = String.valueOf(hospital.getIdLPU());
         // открытие фрагмента главного меню
@@ -216,10 +216,20 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     @Override
+    public void onHospitalUpdateActionBarTitle(String barTitle) {
+        getSupportActionBar().setTitle(barTitle);
+    }
+
+    @Override
     public void onSpecialityFragmentDataListener(Speciality speciality) {
         specialityId = speciality.getIdSpeciality();
         DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patientId, specialityId);
         fm.beginTransaction().replace(R.id.fragContainer, doctorFragment).addToBackStack("spec_fragment").commit();
+    }
+
+    @Override
+    public void onSpecialityUpdateActionBarTitle(String barTitle) {
+        getSupportActionBar().setTitle(barTitle);
     }
 
     @Override
@@ -230,8 +240,32 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     @Override
+    public void onDoctorUpdateActionBarTitle(String barTitle) {
+        getSupportActionBar().setTitle(barTitle);
+    }
+
+    @Override
     public void onAppointmentFragmentDataListener(AppointmentInfo appointmentInfo) {
         Toast.makeText(this, appointmentInfo.getDateStart().getDateTime(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAppointmentUpdateActionBarTitle(String barTitle) {
+        getSupportActionBar().setTitle(barTitle);
+    }
+
+    @Override
+    public void onMainMenuFragmentBtnClicked(int btnId) {
+        switch (btnId) {
+            case R.id.btnMakeAppointment:
+                showSpecialityFragment();
+                break;
+        }
+    }
+
+    @Override
+    public void onMainMenuUpdateActionBarTitle(String barTitle) {
+        getSupportActionBar().setTitle(barTitle);
     }
 
     /*public interface DistrictToFragment {

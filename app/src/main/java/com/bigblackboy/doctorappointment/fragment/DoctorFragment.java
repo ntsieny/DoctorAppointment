@@ -35,9 +35,12 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
     RecyclerView recyclerView;
     private String specialityId, hospitalId, patientId;
     private OnDoctorFragmentDataListener mListener;
+    private String barTitle = "Выбор врача";
 
     public interface OnDoctorFragmentDataListener {
         void onDoctorFragmentDataListener(Doctor doctor);
+
+        void onDoctorUpdateActionBarTitle(String barTitle);
     }
 
     public static DoctorFragment newInstance(String hospitalId, String patientId, String specialityId) {
@@ -71,6 +74,7 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mListener.onDoctorUpdateActionBarTitle(barTitle);
         return inflater.inflate(R.layout.fragment_doctor, null);
     }
 

@@ -43,10 +43,13 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
     private HashMap<String, String> dataHashMap;
     SharedPreferences mSettings;
     private OnHospitalFragmentDataListener mListener;
+    private String barTitle = "Выбор медучреждения";
 
 
     public interface OnHospitalFragmentDataListener {
         void onHospitalFragmentDataListener(Hospital hospital);
+
+        void onHospitalUpdateActionBarTitle(String barTitle);
     }
 
     public static HospitalFragment newInstance(District district) {
@@ -80,6 +83,7 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mListener.onHospitalUpdateActionBarTitle(barTitle);
         return inflater.inflate(R.layout.fragment_hospital, null);
     }
 

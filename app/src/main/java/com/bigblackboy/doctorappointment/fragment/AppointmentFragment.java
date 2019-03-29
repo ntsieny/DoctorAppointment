@@ -41,9 +41,12 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
     private String doctorId, patientId, hospitalId;
     private HashMap<String, String> dataHashMap;
     private OnAppointmentFragmentDataListener mListener;
+    private String barTitle = "Выбор даты и времени";
 
     public interface OnAppointmentFragmentDataListener {
         void onAppointmentFragmentDataListener(AppointmentInfo appointmentInfo);
+
+        void onAppointmentUpdateActionBarTitle(String barTitle);
     }
 
     public static AppointmentFragment newInstance(String doctorId, String hospitalId, String patientId) {
@@ -77,6 +80,7 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mListener.onAppointmentUpdateActionBarTitle(barTitle);
         return inflater.inflate(R.layout.fragment_appointment, null);
     }
 

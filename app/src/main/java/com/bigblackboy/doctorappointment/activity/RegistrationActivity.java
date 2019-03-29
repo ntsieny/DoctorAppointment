@@ -64,11 +64,20 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
     }
 
     @Override
+    public void onDistrictUpdateActionBarTitle(String barTitle) {
+
+    }
+
+    @Override
     public void onHospitalFragmentDataListener(Hospital hospital) {
         hospitalId = String.valueOf(hospital.getIdLPU());
         hospitalName = hospital.getLPUShortName();
         SignUpFragment signUpFragment = new SignUpFragment();
         fm.beginTransaction().replace(R.id.linLayoutRegistration, signUpFragment).addToBackStack("hospital_fragment").commit();
+    }
+
+    @Override
+    public void onHospitalUpdateActionBarTitle(String barTitle) {
     }
 
     @Override
