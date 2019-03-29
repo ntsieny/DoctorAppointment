@@ -40,10 +40,14 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
         void onDoctorFragmentDataListener(Doctor doctor);
     }
 
-    public void setInfo(String specialityId, String hospitalId, String patientId) {
-        this.specialityId = specialityId;
-        this.hospitalId = hospitalId;
-        this.patientId = patientId;
+    public static DoctorFragment newInstance(String hospitalId, String patientId, String specialityId) {
+        DoctorFragment doctorFragment = new DoctorFragment();
+        Bundle args = new Bundle();
+        args.putString("hospital_id", hospitalId);
+        args.putString("patient_id", patientId);
+        args.putString("speciality_id", specialityId);
+        doctorFragment.setArguments(args);
+        return doctorFragment;
     }
 
     @Override
@@ -54,6 +58,14 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
         } else {
             throw new RuntimeException(context.toString() + " must implement OnDoctorFragmentDataListener");
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        hospitalId = getArguments().getString("hospital_id");
+        patientId = getArguments().getString("patient_id");
+        specialityId = getArguments().getString("speciality_id");
     }
 
     @Nullable

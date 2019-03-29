@@ -49,6 +49,14 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
         void onHospitalFragmentDataListener(Hospital hospital);
     }
 
+    public static HospitalFragment newInstance(District district) {
+        HospitalFragment hospitalFragment = new HospitalFragment();
+        Bundle args = new Bundle();
+        args.putString("district_id", district.getId());
+        hospitalFragment.setArguments(args);
+        return hospitalFragment;
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -63,6 +71,7 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        districtId = getArguments().getString("district_id");
         /*if(getActivity() instanceof MainMenuActivity) {
             ((MainMenuActivity) getActivity()).setDistrictToFragmentListener(this);
         }*/
@@ -138,8 +147,4 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
         //districtId = district.getId();
         Toast.makeText(getContext(), districtId + " хаха", Toast.LENGTH_SHORT).show();
     }*/
-
-    public void setDistrict(District district) {
-        this.districtId = district.getId();
-    }
 }

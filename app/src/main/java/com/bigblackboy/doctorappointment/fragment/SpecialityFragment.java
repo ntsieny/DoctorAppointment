@@ -41,9 +41,13 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
         void onSpecialityFragmentDataListener(Speciality speciality);
     }
 
-    public void setInfo(String hospitalId, String patientId) {
-        this.hospitalId = hospitalId;
-        this.patientId = patientId;
+    public static SpecialityFragment newInstance(String hospitalId, String patientId) {
+        SpecialityFragment specialityFragment = new SpecialityFragment();
+        Bundle args = new Bundle();
+        args.putString("hospital_id", hospitalId);
+        args.putString("patient_id", patientId);
+        specialityFragment.setArguments(args);
+        return specialityFragment;
     }
 
     @Override
@@ -54,6 +58,13 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
         } else {
             throw new RuntimeException(context.toString() + " must implement OnSpecialityFragmentDataListener");
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        hospitalId = getArguments().getString("hospital_id");
+        patientId = getArguments().getString("patient_id");
     }
 
     @Nullable

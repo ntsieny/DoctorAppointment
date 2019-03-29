@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +35,7 @@ import com.bigblackboy.doctorappointment.model.Speciality;
 
 import java.util.HashMap;
 
-public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, DistrictFragment.OnDistrictFragmentDataListener,
+public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DistrictFragment.OnDistrictFragmentDataListener,
         HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
         AppointmentFragment.OnAppointmentFragmentDataListener {
 
@@ -65,6 +66,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
         mSettings = getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
         fm = getSupportFragmentManager();
 
@@ -139,17 +141,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View v) {
-        /*switch (v.getId()) {
-            case R.id.btnMakeAppointment:
-                fm = getSupportFragmentManager();
-                districtFragment = new DistrictFragment();
-                fm.beginTransaction().replace(R.id.linLayoutMainMenu, districtFragment).commit();
-                break;
-        }*/
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -157,14 +148,11 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         int id = item.getItemId();
 
         if (id == R.id.main_menu) {
-            MainMenuFragment mainMenuFragment = new MainMenuFragment();
-            fm.beginTransaction().replace(R.id.fragContainer, mainMenuFragment).commit();
+            showMainMenuFragment();
         } else if (id == R.id.profile) {
             Toast.makeText(this, "Profile fragment", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.make_appointment) {
-            SpecialityFragment specialityFragment = new SpecialityFragment();
-            specialityFragment.setInfo(hospitalId, patientId);
-            fm.beginTransaction().replace(R.id.fragContainer, specialityFragment).commit();
+            showSpecialityFragment();
         } else if (id == R.id.doctor_schedule) {
 
         } else if (id == R.id.appointment_history) {
@@ -193,14 +181,23 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    private void showMainMenuFragment() {
+        MainMenuFragment mainMenuFragment = new MainMenuFragment();
+        fm.beginTransaction().replace(R.id.fragContainer, mainMenuFragment).commit();
+    }
+
+    private void showSpecialityFragment() {
+        SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patientId);
+        fm.beginTransaction().replace(R.id.fragContainer, specialityFragment).commit();
+    }
+
     @Override
     public void onDistrictFragmentDataListener(District district) {
-        HospitalFragment hospitalFragment = new HospitalFragment();
+        HospitalFragment hospitalFragment = HospitalFragment.newInstance(district);
 
         fTrans = fm.beginTransaction().replace(R.id.fragContainer, hospitalFragment).addToBackStack("fragment_district");
         fTrans.commit();
 
-        hospitalFragment.setDistrict(district);
         /*if(districtToFragment != null) {
             districtToFragment.districtToFragment(district);
         } else Toast.makeText(this, "mDistrictFragment is NULL", Toast.LENGTH_SHORT).show();*/
@@ -221,16 +218,14 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onSpecialityFragmentDataListener(Speciality speciality) {
         specialityId = speciality.getIdSpeciality();
-        DoctorFragment doctorFragment = new DoctorFragment();
-        doctorFragment.setInfo(specialityId, hospitalId, patientId);
+        DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patientId, specialityId);
         fm.beginTransaction().replace(R.id.fragContainer, doctorFragment).addToBackStack("spec_fragment").commit();
     }
 
     @Override
     public void onDoctorFragmentDataListener(Doctor doctor) {
         doctorId = doctor.getIdDoc();
-        AppointmentFragment appointmentFragment = new AppointmentFragment();
-        appointmentFragment.setInfo(doctorId, hospitalId, patientId);
+        AppointmentFragment appointmentFragment = AppointmentFragment.newInstance(doctorId, hospitalId, patientId);
         fm.beginTransaction().replace(R.id.fragContainer, appointmentFragment).addToBackStack("doctor_fragment").commit();
     }
 

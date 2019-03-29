@@ -46,10 +46,14 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
         void onAppointmentFragmentDataListener(AppointmentInfo appointmentInfo);
     }
 
-    public void setInfo(String doctorId, String hospitalId, String patientId) {
-        this.doctorId = doctorId;
-        this.hospitalId = hospitalId;
-        this.patientId = patientId;
+    public static AppointmentFragment newInstance(String doctorId, String hospitalId, String patientId) {
+        AppointmentFragment appointmentFragment = new AppointmentFragment();
+        Bundle args = new Bundle();
+        args.putString("doctor_id", doctorId);
+        args.putString("hospital_id", hospitalId);
+        args.putString("patient_id", patientId);
+        appointmentFragment.setArguments(args);
+        return appointmentFragment;
     }
 
     @Override
@@ -60,6 +64,14 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
         } else {
             throw new RuntimeException(context.toString() + " must implement OnAppointmentFragmentDataListener");
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        doctorId = getArguments().getString("doctor_id");
+        hospitalId = getArguments().getString("hospital_id");
+        patientId = getArguments().getString("patient_id");
     }
 
     @Nullable

@@ -59,8 +59,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
     public void onDistrictFragmentDataListener(District district) {
         districtId = district.getId();
         districtName = district.getName();
-        HospitalFragment hospitalFragment = new HospitalFragment();
-        hospitalFragment.setDistrict(district);
+        HospitalFragment hospitalFragment = HospitalFragment.newInstance(district);
         fm.beginTransaction().replace(R.id.linLayoutRegistration, hospitalFragment).addToBackStack("district_fragment").commit();
     }
 
