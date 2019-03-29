@@ -98,6 +98,8 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         int yearBirth = patient.getYearBirth();
         String id = patient.getId();
 
+        // TODO запрос на создание профиля пользователя
+        // если запрос успешен
         editor = mSettings.edit();
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, name);
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, lastname);
@@ -112,12 +114,12 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, id);
         editor.apply();
 
-        //запрос на создание профиля пользователя
-        // ...
         finish();
-        // открытие окна профиля/главное меню
         Intent intent = new Intent(this, MainMenuActivity.class);
         startActivity(intent);
+
+        // если запрос не удался
+        //...
 
     }
 }

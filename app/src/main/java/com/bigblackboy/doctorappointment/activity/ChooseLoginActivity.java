@@ -20,7 +20,9 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
 
         mSettings = getSharedPreferences(MainMenuActivity.APP_SETTINGS, MODE_PRIVATE);
-        if (mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, false)) {
+        boolean loggedId = mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, false);
+        boolean guestMode = mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_GUEST_MODE, false);
+        if (loggedId | guestMode) {
             Intent intent = new Intent(this, MainMenuActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -43,18 +45,17 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
             case R.id.btnLoginUser:
                 finish();
                 intent = new Intent(this, LoginActivity.class);
-                //intent.putExtra("btn", "loginUser");
                 break;
-            case R.id.btnLoginGuest:
-                finish();
-                intent = new Intent(this, MainMenuActivity.class);
-                intent.putExtra("btn", "loginGuest");
-                break;
-                //добавить, что зашел гостем
             case R.id.btnRegistration:
                 finish();
                 intent = new Intent(this, RegistrationActivity.class);
-            // открыть фрагмент регистрации в MainMenuActivity
+                break;
+            case R.id.btnLoginGuest:
+                editor = mSettings.edit();
+                editor.putBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, false);
+                editor.apply();
+                finish();
+                intent = new Intent(this, MainMenuActivity.class);
                 break;
         }
         startActivity(intent);

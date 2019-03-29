@@ -28,6 +28,7 @@ import com.bigblackboy.doctorappointment.model.AppointmentInfo;
 import com.bigblackboy.doctorappointment.model.District;
 import com.bigblackboy.doctorappointment.model.Doctor;
 import com.bigblackboy.doctorappointment.model.Hospital;
+import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Speciality;
 
 public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DistrictFragment.OnDistrictFragmentDataListener,
@@ -36,6 +37,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     public static final String APP_SETTINGS = "app_settings";
     public static final String APP_SETTINGS_USER_LOGGED_IN = "user_logged_in";
+    public static final String APP_SETTINGS_GUEST_MODE = "guest_mode";
     public static final String APP_SETTINGS_DISTRICT_ID = "district_id";
     public static final String APP_SETTINGS_DISTRICT_NAME = "district_name";
     public static final String APP_SETTINGS_HOSPITAL_ID = "hospital_id";
@@ -47,15 +49,17 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     public static final String APP_SETTINGS_PATIENT_MONTHBIRTH = "patient_monthbirth";
     public static final String APP_SETTINGS_PATIENT_YEARBIRTH = "patient_yearbirth";
     SharedPreferences mSettings;
+    SharedPreferences.Editor editor;
     FragmentManager fm;
     FragmentTransaction fTrans;
     NavigationView navigationView;
     private String patientId;
-    private String specialityId;
-    private String hospitalId;
-    private String doctorId;
+    private Patient patient;
     private District district;
-    //public DistrictToFragment districtToFragment;
+    private Hospital hospital;
+    private Speciality speciality;
+    private Doctor doctor;
+    private boolean loggedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +68,21 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
         mSettings = getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
         fm = getSupportFragmentManager();
+        // TODO получить patient из Bundle
+        patient = new Patient();
+        district = new District();
+        hospital = new Hospital();
+        speciality = new Speciality();
+        doctor = new Doctor();
+        String hospitalName = mSettings.getString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME, "");
+        String districtName = mSettings.getString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, "");
+        boolean userLoggedIn = mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, false);
+        boolean guestMode = mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_GUEST_MODE, false);
 
-        if (mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, false)) {
+        if (userLoggedIn) {
+            loggedIn = true;
             MainMenuFragment mainMenuFragment = new MainMenuFragment();
             fm.beginTransaction().add(R.id.fragContainer, mainMenuFragment).commit();
-
             setNavigationDrawer();
 
             String lastname = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, "");
@@ -76,26 +90,29 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
             String fio = lastname + " " + name;
             TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
             tvPatientFIO.setText(fio);
-            String hospitalName = mSettings.getString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME, "");
-            String districtName = mSettings.getString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, "");
+
             TextView tvPatientAddress = navigationView.getHeaderView(0).findViewById(R.id.tvPatientAddress);
             tvPatientAddress.setText(hospitalName + ", " + districtName);
-            hospitalId = mSettings.getString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, null);
+
+            String hospitalId = mSettings.getString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, null);
+            hospital.setIdLPU(Integer.parseInt(hospitalId));
             patientId = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, null);
         }
+        else if (guestMode) {
+            MainMenuFragment mainMenuFragment = new MainMenuFragment();
+            fm.beginTransaction().add(R.id.fragContainer, mainMenuFragment).commit();
+            setNavigationDrawer();
+
+            TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
+            tvPatientFIO.setText("Гость");
+
+            TextView tvPatientAddress = navigationView.getHeaderView(0).findViewById(R.id.tvPatientAddress);
+            tvPatientAddress.setText(hospitalName + ", " + districtName);
+        }
         else {
-            String btnAction = getIntent().getStringExtra("btn");
-            if(btnAction.equals("loginUser") || btnAction.equals("registration")) {
-                //открытие меню пользователя
-                Toast.makeText(this, btnAction + " Здесь будет инфо о пользователе/меню", Toast.LENGTH_SHORT).show();
-                setNavigationDrawer();
-            }
-            else if(btnAction.equals("loginGuest")) {
-                // создание фрагмента выбора района и города для гостя
-                DistrictFragment districtFragment = new DistrictFragment();
-                fm.beginTransaction().add(R.id.fragContainer, districtFragment).commit();
-                setNavigationDrawer();
-            }
+            DistrictFragment districtFragment = new DistrictFragment();
+            fm.beginTransaction().add(R.id.fragContainer, districtFragment).commit();
+            setNavigationDrawer();
         }
     }
 
@@ -104,8 +121,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -125,9 +141,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         Intent intent;
         switch (item.getItemId()) {
             case R.id.logoutItem:
-                SharedPreferences.Editor editor = mSettings.edit();
-                editor.putBoolean(APP_SETTINGS_USER_LOGGED_IN, false);
-                editor.apply();
+                clearSettings();
                 finish();
                 intent = new Intent(this, ChooseLoginActivity.class);
                 startActivity(intent);
@@ -136,28 +150,43 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         return super.onOptionsItemSelected(item);
     }
 
+    private void clearSettings() {
+        editor = mSettings.edit();
+        editor.clear().apply();
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        switch (id) {
+            case R.id.main_menu:
+                showMainMenuFragment();
+                break;
+            case R.id.profile:
+                Toast.makeText(this, "Profile fragment", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.make_appointment:
+                if(loggedIn)
+                    showSpecialityFragment();
+                else Toast.makeText(this, "Необходимо войти в аккаунт", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.doctor_schedule:
 
-        if (id == R.id.main_menu) {
-            showMainMenuFragment();
-        } else if (id == R.id.profile) {
-            Toast.makeText(this, "Profile fragment", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.make_appointment) {
-            showSpecialityFragment();
-        } else if (id == R.id.doctor_schedule) {
+                break;
+            case R.id.appointment_history:
+                if (loggedIn) {
 
-        } else if (id == R.id.appointment_history) {
+                } else Toast.makeText(this, "Необходимо войти в аккаунт", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.area_number:
 
-        } else if (id == R.id.area_number) {
+                break;
+            case R.id.reviews:
 
-        } else if (id == R.id.reviews) {
-
+                break;
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -182,20 +211,17 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     private void showSpecialityFragment() {
+        String hospitalId = String.valueOf(hospital.getIdLPU());
         SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patientId);
         fm.beginTransaction().replace(R.id.fragContainer, specialityFragment).commit();
     }
 
     @Override
     public void onDistrictFragmentDataListener(District district) {
+        this.district = district;
         HospitalFragment hospitalFragment = HospitalFragment.newInstance(district);
-
         fTrans = fm.beginTransaction().replace(R.id.fragContainer, hospitalFragment).addToBackStack("fragment_district");
         fTrans.commit();
-
-        /*if(districtToFragment != null) {
-            districtToFragment.districtToFragment(district);
-        } else Toast.makeText(this, "mDistrictFragment is NULL", Toast.LENGTH_SHORT).show();*/
     }
 
     @Override
@@ -205,14 +231,23 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public void onHospitalFragmentDataListener(Hospital hospital) {
-        hospitalId = String.valueOf(hospital.getIdLPU());
-        // открытие фрагмента главного меню
+        this.hospital = hospital;
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         MainMenuFragment mainMenuFragment = new MainMenuFragment();
         fm.beginTransaction().replace(R.id.fragContainer, mainMenuFragment).commit();
 
-        /*SpecialityFragment specialityFragment = new SpecialityFragment();
-        specialityFragment.setInfo(hospitalId, patientId);
-        fm.beginTransaction().replace(R.id.fragContainer, specialityFragment).addToBackStack("hospital_fragment").commit();*/
+        if(!loggedIn) {
+            editor = mSettings.edit();
+            editor.putBoolean(MainMenuActivity.APP_SETTINGS_GUEST_MODE, true);
+            editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, district.getName());
+            editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME, hospital.getLPUShortName());
+            editor.apply();
+        }
+
+        TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
+        tvPatientFIO.setText("Гость");
+        TextView tvPatientAddress = navigationView.getHeaderView(0).findViewById(R.id.tvPatientAddress);
+        tvPatientAddress.setText(hospital.getLPUShortName() + ", " + district.getName());
     }
 
     @Override
@@ -222,7 +257,10 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public void onSpecialityFragmentDataListener(Speciality speciality) {
-        specialityId = speciality.getIdSpeciality();
+        this.speciality = speciality;
+        String hospitalId = String.valueOf(hospital.getIdLPU());
+        String specialityId = speciality.getIdSpeciality();
+        // TODO создать Patient для работы с пациентом, убрать поле patientID
         DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patientId, specialityId);
         fm.beginTransaction().replace(R.id.fragContainer, doctorFragment).addToBackStack("spec_fragment").commit();
     }
@@ -234,7 +272,10 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public void onDoctorFragmentDataListener(Doctor doctor) {
-        doctorId = doctor.getIdDoc();
+        this.doctor = doctor;
+        String doctorId = doctor.getIdDoc();
+        String hospitalId = String.valueOf(hospital.getIdLPU());
+        // TODO взять patientID из объекта Patient
         AppointmentFragment appointmentFragment = AppointmentFragment.newInstance(doctorId, hospitalId, patientId);
         fm.beginTransaction().replace(R.id.fragContainer, appointmentFragment).addToBackStack("doctor_fragment").commit();
     }
@@ -258,7 +299,9 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     public void onMainMenuFragmentBtnClicked(int btnId) {
         switch (btnId) {
             case R.id.btnMakeAppointment:
-                showSpecialityFragment();
+                if(loggedIn)
+                    showSpecialityFragment();
+                else Toast.makeText(this, "Необходимо войти в аккаунт", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -267,8 +310,4 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     public void onMainMenuUpdateActionBarTitle(String barTitle) {
         getSupportActionBar().setTitle(barTitle);
     }
-
-    /*public interface DistrictToFragment {
-        void districtToFragment (District district);
-    }*/
 }
