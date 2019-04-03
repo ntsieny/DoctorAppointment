@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     editor = mSettings.edit();
                     editor.putBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, true);
                     editor.apply();
+                    // получаем данные пациента и закидываем их через Bundle дальше
                     Intent intent = new Intent(this, MainMenuActivity.class);
                     startActivity(intent);
                     // иначе выдается ошибка

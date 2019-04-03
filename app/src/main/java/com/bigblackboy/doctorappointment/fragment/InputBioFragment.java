@@ -38,7 +38,7 @@ import static com.bigblackboy.doctorappointment.activity.MainMenuActivity.APP_SE
 
 public class InputBioFragment extends Fragment implements View.OnClickListener {
 
-    EditText etNameReg, etLastnameReg;
+    EditText etNameReg, etLastnameReg, etMiddlanameReg;
     TextView tvBirthdayReg;
     Button btnBioReg;
     OnInputBioFragmentDataListener mListener;
@@ -77,6 +77,7 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
         View v = inflater.inflate(R.layout.fragment_input_bio, container, false);
         etNameReg = v.findViewById(R.id.etNameReg);
         etLastnameReg = v.findViewById(R.id.etLastnameReg);
+        etMiddlanameReg = v.findViewById(R.id.etMiddlenameReg);
         tvBirthdayReg = v.findViewById(R.id.tvBirthdayReg);
         tvBirthdayReg.setOnClickListener(this);
         btnBioReg = v.findViewById(R.id.btnBioReg);
@@ -92,6 +93,7 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
                 if(!(TextUtils.isEmpty(etNameReg.getText().toString())) && !(TextUtils.isEmpty(etLastnameReg.getText().toString()))) {
                     patient.setName(etNameReg.getText().toString());
                     patient.setLastName(etLastnameReg.getText().toString());
+                    patient.setMiddleName(etMiddlanameReg.getText().toString());
                     Log.d(LOG_TAG, patient.toString());
                     checkPatient(new RetrofitResponseListener() {
                         @Override

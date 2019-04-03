@@ -23,6 +23,7 @@ import com.bigblackboy.doctorappointment.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.fragment.DoctorFragment;
 import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.fragment.MainMenuFragment;
+import com.bigblackboy.doctorappointment.fragment.ProfileFragment;
 import com.bigblackboy.doctorappointment.fragment.SpecialityFragment;
 import com.bigblackboy.doctorappointment.model.AppointmentInfo;
 import com.bigblackboy.doctorappointment.model.District;
@@ -41,7 +42,8 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     public static final String APP_SETTINGS_DISTRICT_ID = "district_id";
     public static final String APP_SETTINGS_DISTRICT_NAME = "district_name";
     public static final String APP_SETTINGS_HOSPITAL_ID = "hospital_id";
-    public static final String APP_SETTINGS_HOSPITAL_NAME = "hospital_name";
+    public static final String APP_SETTINGS_HOSPITAL_NAME_SHORT = "hospital_name_short";
+    public static final String APP_SETTINGS_HOSPITAL_NAME_FULL = "hospital_name_full";
     public static final String APP_SETTINGS_PATIENT_ID = "patient_id";
     public static final String APP_SETTINGS_PATIENT_NAME = "patient_name";
     public static final String APP_SETTINGS_PATIENT_LASTNAME = "patient_lastname";
@@ -68,13 +70,13 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
         mSettings = getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
         fm = getSupportFragmentManager();
-        // TODO получить patient из Bundle
+        // TODO получить patient из Bundle/или не получать, а считывать данные из SharedPreferences
         patient = new Patient();
         district = new District();
         hospital = new Hospital();
         speciality = new Speciality();
         doctor = new Doctor();
-        String hospitalName = mSettings.getString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME, "");
+        String hospitalName = mSettings.getString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_SHORT, "");
         String districtName = mSettings.getString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, "");
         boolean userLoggedIn = mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, false);
         boolean guestMode = mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_GUEST_MODE, false);
@@ -86,7 +88,9 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
             setNavigationDrawer();
 
             String lastname = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, "");
+            patient.setLastName(lastname);
             String name = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, "");
+            patient.setName(name);
             String fio = lastname + " " + name;
             TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
             tvPatientFIO.setText(fio);
@@ -103,8 +107,10 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
             fm.beginTransaction().add(R.id.fragContainer, mainMenuFragment).commit();
             setNavigationDrawer();
 
+            patient.setName("Гость");
+
             TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
-            tvPatientFIO.setText("Гость");
+            tvPatientFIO.setText(patient.getName());
 
             TextView tvPatientAddress = navigationView.getHeaderView(0).findViewById(R.id.tvPatientAddress);
             tvPatientAddress.setText(hospitalName + ", " + districtName);
@@ -165,7 +171,8 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
                 showMainMenuFragment();
                 break;
             case R.id.profile:
-                Toast.makeText(this, "Profile fragment", Toast.LENGTH_SHORT).show();
+                ProfileFragment profileFragment = ProfileFragment.newInstance(patient);
+                fm.beginTransaction().replace(R.id.fragContainer, profileFragment).commit();
                 break;
             case R.id.make_appointment:
                 if(loggedIn)
@@ -240,7 +247,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
             editor = mSettings.edit();
             editor.putBoolean(MainMenuActivity.APP_SETTINGS_GUEST_MODE, true);
             editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, district.getName());
-            editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME, hospital.getLPUShortName());
+            editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
             editor.apply();
         }
 

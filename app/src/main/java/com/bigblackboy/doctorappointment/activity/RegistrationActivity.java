@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.SpringApi;
+import com.bigblackboy.doctorappointment.SpringController;
 import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
 import com.bigblackboy.doctorappointment.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
@@ -22,21 +24,23 @@ import com.bigblackboy.doctorappointment.model.District;
 import com.bigblackboy.doctorappointment.model.Hospital;
 import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Session;
+import com.bigblackboy.doctorappointment.springserver.Response;
+import com.bigblackboy.doctorappointment.springserver.springmodel.User;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 public class RegistrationActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener,
         SignUpFragment.OnSignUpFragmentDataListener, InputBioFragment.OnInputBioFragmentDataListener {
 
+    SpringApi springApi;
     FragmentManager fm;
     private Patient patient;
     private static final String LOG_TAG = "myLog";
-    private String hospitalId, hospitalName;
+    private Hospital hospital;
     private String districtId, districtName;
     private String login, password;
     SharedPreferences mSettings;
@@ -53,6 +57,8 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         fm = getSupportFragmentManager();
         DistrictFragment districtFragment = new DistrictFragment();
         fm.beginTransaction().add(R.id.linLayoutRegistration, districtFragment).commit();
+
+        springApi = SpringController.getApi();
     }
 
     @Override
@@ -70,8 +76,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
 
     @Override
     public void onHospitalFragmentDataListener(Hospital hospital) {
-        hospitalId = String.valueOf(hospital.getIdLPU());
-        hospitalName = hospital.getLPUShortName();
+        this.hospital = hospital;
         SignUpFragment signUpFragment = new SignUpFragment();
         fm.beginTransaction().replace(R.id.linLayoutRegistration, signUpFragment).addToBackStack("hospital_fragment").commit();
     }
@@ -85,8 +90,8 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         login = loginAndPassword.get("login");
         password = loginAndPassword.get("password");
         InputBioFragment inputBioFragment = new InputBioFragment();
-        inputBioFragment.setInfo(hospitalId);
-        fm.beginTransaction().replace(R.id.linLayoutRegistration, inputBioFragment).commit();
+        inputBioFragment.setInfo(String.valueOf(hospital.getIdLPU()));
+        fm.beginTransaction().replace(R.id.linLayoutRegistration, inputBioFragment).addToBackStack("signup_fragment").commit();
     }
 
     @Override
@@ -99,6 +104,32 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         String id = patient.getId();
 
         // TODO запрос на создание профиля пользователя
+        User user = new User();
+        user.setId(0);
+        user.setLogin(login);
+        user.setPassword(password);
+        user.setPatientId(0);
+        user.setDistrictId(Integer.parseInt(districtId));
+        user.setDistrictName(districtName);
+        user.setHospitalId(hospital.getIdLPU());
+        user.setLpuNameShort(hospital.getLPUShortName());
+        user.setLpuNameFull(hospital.getLpuName());
+        user.setLpuAddress(hospital.getAddress());
+        user.setLpuEmail(hospital.getEmail());
+        user.setLpuType(hospital.getLpuType());
+        user.setLpuWorkTime(hospital.getWorkTime());
+        com.bigblackboy.doctorappointment.springserver.springmodel.Patient p = new com.bigblackboy.doctorappointment.springserver.springmodel.Patient();
+        p.setName(name);
+        p.setLastname(lastname);
+        p.setMiddlename(patient.getMiddleName());
+        p.setDayBirth(dayBirth);
+        p.setMonthBirth(monthBirth);
+        p.setYearBirth(yearBirth);
+        p.setServiceId(id);
+        user.setPatient(p);
+
+        createUser(user);
+
         // если запрос успешен
         editor = mSettings.edit();
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, name);
@@ -108,8 +139,9 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_YEARBIRTH, yearBirth);
         editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_ID, districtId);
         editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, districtName);
-        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, hospitalId);
-        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME, hospitalName);
+        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, String.valueOf(hospital.getIdLPU()));
+        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
+        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_FULL, hospital.getLpuName());
         editor.putBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, true);
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, id);
         editor.apply();
@@ -121,5 +153,25 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         // если запрос не удался
         //...
 
+    }
+
+    private void createUser(User user) {
+        springApi.createUser(user).enqueue(new Callback<Response>() {
+            @Override
+            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                Response resp = response.body();
+                if (resp.isSuccess()) {
+                    Log.d(LOG_TAG, "Пользователь создан");
+                }
+                else {
+                    Log.d(LOG_TAG, "Пользователь не создан. " + resp.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Response> call, Throwable t) {
+                Log.d(LOG_TAG, t.getMessage());
+            }
+        });
     }
 }

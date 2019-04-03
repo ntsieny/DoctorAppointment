@@ -8,6 +8,14 @@
     tools:context=".activity.RegistrationActivity">
 
     <EditText
+        android:id="@+id/etLastnameReg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Введите фамилию"
+        android:inputType="textPersonName" />
+
+    <EditText
         android:id="@+id/etNameReg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,17 +24,17 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/etLastnameReg"
+        android:id="@+id/etMiddlenameReg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Введите фамилию"
+        android:hint="Введите отчество"
         android:inputType="textPersonName" />
 
     <TextView
         android:id="@+id/tvBirthdayReg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="34dp"
         android:text="Выбрать дату рождения"
         android:textSize="18sp" />
 

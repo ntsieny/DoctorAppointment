@@ -46,7 +46,7 @@ public class Hospital {
     private String oid;
     @SerializedName("WorkTime")
     @Expose
-    private Object workTime;
+    private String workTime;
     @SerializedName("Address")
     @Expose
     private String address;
@@ -150,11 +150,11 @@ public class Hospital {
         this.oid = oid;
     }
 
-    public Object getWorkTime() {
+    public String getWorkTime() {
         return workTime;
     }
 
-    public void setWorkTime(Object workTime) {
+    public void setWorkTime(String workTime) {
         this.workTime = workTime;
     }
 
