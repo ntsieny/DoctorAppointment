@@ -130,7 +130,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
 
         createUser(user);
 
-        // если запрос успешен
+        // TODO ПРОВЕРКА УСПЕШНОСТИ ЗАПРОСА
         editor = mSettings.edit();
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, name);
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, lastname);

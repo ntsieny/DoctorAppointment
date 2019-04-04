@@ -1,17 +1,22 @@
 package com.bigblackboy.doctorappointment.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
@@ -30,6 +35,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     EditText etLoginReg, etPasswordReg, etPasswordRepeat;
     Button btnSignup;
+    ImageView ivCheckLogin;
     OnSignUpFragmentDataListener mListener;
     private SpringApi springApi;
     private static final String LOG_TAG = "myLog";
@@ -54,7 +60,17 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_signup, container, false);
         btnSignup = view.findViewById(R.id.btnSignup);
         btnSignup.setOnClickListener(this);
+        ivCheckLogin = view.findViewById(R.id.ivCheckLogin);
         etLoginReg = view.findViewById(R.id.etLoginReg);
+        etLoginReg.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (v == etLoginReg && !hasFocus) {
+                    checkLoginUnique(etLoginReg.getText().toString());
+                    ivCheckLogin.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         etPasswordReg = view.findViewById(R.id.etPasswordReg);
         etPasswordRepeat = view.findViewById(R.id.etPasswordRepeat);
         springApi = SpringController.getApi();
@@ -67,47 +83,40 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             case R.id.btnSignup:
                 if(!(TextUtils.isEmpty(etLoginReg.getText().toString())) && !(TextUtils.isEmpty(etPasswordReg.getText().toString())
                         && !(TextUtils.isEmpty(etPasswordRepeat.getText().toString())))) {
-                    // проверка логина на уникальность
-                    checkLoginUnique(etLoginReg.getText().toString(), new RetrofitResponseListener() {
-                        @Override
-                        public void onSuccess() {
-                            if(etPasswordReg.getText().toString().equals(etPasswordRepeat.getText().toString())) {
-                                // создание пользователя и передача в ActivityRegistration
-                                HashMap<String, String> hashMap = new HashMap();
-                                hashMap.put("login", etLoginReg.getText().toString());
-                                hashMap.put("password", etPasswordReg.getText().toString());
-                                mListener.onSignUpFragmentDataListener(hashMap);
-                            } else Toast.makeText(getContext(), "Пароли не совпадают", Toast.LENGTH_SHORT).show();
-                        }
-                        @Override
-                        public void onFailure() {
-                            Toast.makeText(getContext(), "Логин занят!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    if(etPasswordReg.getText().toString().equals(etPasswordRepeat.getText().toString())) {
+                        // создание пользователя и передача в ActivityRegistration
+                        HashMap<String, String> hashMap = new HashMap();
+                        hashMap.put("login", etLoginReg.getText().toString());
+                        hashMap.put("password", etPasswordReg.getText().toString());
+                        mListener.onSignUpFragmentDataListener(hashMap);
+                    } else Toast.makeText(getContext(), "Пароли не совпадают", Toast.LENGTH_SHORT).show();
                 } else Toast.makeText(getContext(), "Введите данные!", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
-    private void checkLoginUnique(String login, final RetrofitResponseListener retrofitListener) {
+    private void checkLoginUnique(String login) {
         springApi.checkLoginUnique(login).enqueue(new Callback<Response>() {
             @Override
             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
                 Response resp = response.body();
                 if (resp.isSuccess()) {
                     Log.d(LOG_TAG, "Логин свободен!");
-                    retrofitListener.onSuccess();
+                    Toast.makeText(getContext(), "Логин свободен", Toast.LENGTH_SHORT).show();
+                    ivCheckLogin.setImageDrawable(getResources().getDrawable(R.drawable.checked));
                 }
                 else {
                     Log.d(LOG_TAG, "Такой логин уже занят!");
-                    retrofitListener.onFailure();
+                    Toast.makeText(getContext(), "Логин занят", Toast.LENGTH_SHORT).show();
+                    ivCheckLogin.setImageDrawable(getResources().getDrawable(R.drawable.not_checked));
                 }
             }
 
             @Override
             public void onFailure(Call<Response> call, Throwable t) {
                 Log.d(LOG_TAG, t.getMessage());
-                retrofitListener.onFailure();
+                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
+                ivCheckLogin.setVisibility(View.INVISIBLE);
             }
         });
     }
