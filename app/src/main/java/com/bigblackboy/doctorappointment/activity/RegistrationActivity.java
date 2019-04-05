@@ -3,19 +3,16 @@ package com.bigblackboy.doctorappointment.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.SpringApi;
 import com.bigblackboy.doctorappointment.SpringController;
-import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
 import com.bigblackboy.doctorappointment.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.fragment.InputBioFragment;
@@ -23,11 +20,13 @@ import com.bigblackboy.doctorappointment.fragment.SignUpFragment;
 import com.bigblackboy.doctorappointment.model.District;
 import com.bigblackboy.doctorappointment.model.Hospital;
 import com.bigblackboy.doctorappointment.model.Patient;
-import com.bigblackboy.doctorappointment.model.Session;
 import com.bigblackboy.doctorappointment.springserver.Response;
 import com.bigblackboy.doctorappointment.springserver.springmodel.User;
 
-import java.util.HashMap;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -96,14 +95,11 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
 
     @Override
     public void onInputBioFragmentDataListener(Patient patient) {
-        String name = patient.getName();
-        String lastname = patient.getLastName();
-        int dayBirth = patient.getDayBirth();
-        int monthBirth = patient.getMonthBirth();
-        int yearBirth = patient.getYearBirth();
-        String id = patient.getId();
+        this.patient = patient;
+        createUser(createUserObjectForRequest());
+    }
 
-        // TODO запрос на создание профиля пользователя
+    private User createUserObjectForRequest() {
         User user = new User();
         user.setId(0);
         user.setLogin(login);
@@ -119,40 +115,38 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         user.setLpuType(hospital.getLpuType());
         user.setLpuWorkTime(hospital.getWorkTime());
         com.bigblackboy.doctorappointment.springserver.springmodel.Patient p = new com.bigblackboy.doctorappointment.springserver.springmodel.Patient();
-        p.setName(name);
-        p.setLastname(lastname);
+        p.setName(patient.getName());
+        p.setLastname(patient.getLastName());
         p.setMiddlename(patient.getMiddleName());
-        p.setDayBirth(dayBirth);
-        p.setMonthBirth(monthBirth);
-        p.setYearBirth(yearBirth);
-        p.setServiceId(id);
+        p.setDayBirth(patient.getDayBirth());
+        p.setMonthBirth(patient.getMonthBirth());
+        p.setYearBirth(patient.getYearBirth());
+        p.setServiceId(patient.getId());
         user.setPatient(p);
+        return user;
+    }
 
-        createUser(user);
-
-        // TODO ПРОВЕРКА УСПЕШНОСТИ ЗАПРОСА
+    private void writeSharedPreferences() {
         editor = mSettings.edit();
-        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, name);
-        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, lastname);
-        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_DAYBIRTH, dayBirth);
-        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_MONTHBIRTH, monthBirth);
-        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_YEARBIRTH, yearBirth);
+        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, patient.getId());
+        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, patient.getName());
+        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, patient.getLastName());
+        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_DAYBIRTH, patient.getDayBirth());
+        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_MONTHBIRTH, patient.getMonthBirth());
+        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_YEARBIRTH, patient.getYearBirth());
         editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_ID, districtId);
         editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, districtName);
         editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, String.valueOf(hospital.getIdLPU()));
         editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
         editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_FULL, hospital.getLpuName());
         editor.putBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, true);
-        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, id);
         editor.apply();
+    }
 
+    private void openMainMenuAcvitity() {
         finish();
         Intent intent = new Intent(this, MainMenuActivity.class);
         startActivity(intent);
-
-        // если запрос не удался
-        //...
-
     }
 
     private void createUser(User user) {
@@ -160,11 +154,22 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
             @Override
             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
                 Response resp = response.body();
-                if (resp.isSuccess()) {
-                    Log.d(LOG_TAG, "Пользователь создан");
-                }
-                else {
-                    Log.d(LOG_TAG, "Пользователь не создан. " + resp.getMessage());
+                if (response.isSuccessful()) {
+                    if (resp.isSuccess()) {
+                        Log.d(LOG_TAG, "Пользователь создан");
+                        writeSharedPreferences();
+                        openMainMenuAcvitity();
+                    }
+                    else {
+                        Log.d(LOG_TAG, "Пользователь не создан. " + resp.getMessage());
+                    }
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        Toast.makeText(RegistrationActivity.this, error.getString("message"), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Toast.makeText(RegistrationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 

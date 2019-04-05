@@ -21,6 +21,9 @@ public interface SpringApi {
     @POST("user/create/")
     Call<Response> createUser(@Body User user);
 
+    @POST("user/get/")
+    Call<User> getUserByLoginPassword(@Body User user);
+
     @POST("checklogin/{login}")
     Call<Response> checkLoginUnique(@Path("login") String login);
 }

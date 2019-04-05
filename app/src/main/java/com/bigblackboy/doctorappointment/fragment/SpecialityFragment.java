@@ -28,7 +28,7 @@ import retrofit2.Response;
 
 public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
 
-    private String LOG_TAG = "myLog";
+    private String LOG_TAG = "myLog: SpecialityFragment";
     private static HospitalApi hospitalApi;
     RecyclerViewAdapter adapter;
     List<Speciality> specialities;
