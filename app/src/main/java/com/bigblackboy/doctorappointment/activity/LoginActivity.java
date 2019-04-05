@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, user.getPatient().getServiceId());
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, user.getPatient().getName());
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, user.getPatient().getLastname());
+        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_MIDDLENAME, user.getPatient().getMiddlename());
         editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_DAYBIRTH, user.getPatient().getDayBirth());
         editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_MONTHBIRTH, user.getPatient().getMonthBirth());
         editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_YEARBIRTH, user.getPatient().getYearBirth());
@@ -94,10 +95,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 User user = response.body();
                 if (response.isSuccessful() && user.getPatient() != null) {
                     Log.d(LOG_TAG, "Пользователь найден");
-                    Toast.makeText(LoginActivity.this, "Пользователь " + user.getPatient().getLastname() + " найден", Toast.LENGTH_SHORT).show();
                     writeSharedPreferences(user);
-                    // TODO получаем данные пациента и закидываем их через Bundle дальше
                     openMainMenuActivity();
+                    Toast.makeText(LoginActivity.this, String.format("Добро пожаловать, %s %s!", user.getPatient().getName(), user.getPatient().getMiddlename()), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(LoginActivity.this, "Пользователь не найден", Toast.LENGTH_SHORT).show();
                     Log.d(LOG_TAG, "Пользователь не найден");

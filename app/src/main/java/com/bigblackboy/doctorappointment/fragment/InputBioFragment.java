@@ -2,7 +2,6 @@ package com.bigblackboy.doctorappointment.fragment;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,7 +22,6 @@ import com.bigblackboy.doctorappointment.Controller;
 import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.activity.MainMenuActivity;
-import com.bigblackboy.doctorappointment.activity.RetrofitResponseListener;
 import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
 import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Session;
@@ -34,17 +32,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.bigblackboy.doctorappointment.activity.MainMenuActivity.APP_SETTINGS;
-
 public class InputBioFragment extends Fragment implements View.OnClickListener {
 
+    private static final String LOG_TAG = "myLog: InputBioFragment";
     EditText etNameReg, etLastnameReg, etMiddlanameReg;
     TextView tvBirthdayReg;
     Button btnBioReg;
     OnInputBioFragmentDataListener mListener;
     Patient patient;
     private static HospitalApi hospitalApi;
-    private static final String LOG_TAG = "myLog";
     private String hospitalId;
     private String districtId;
     SharedPreferences mSettings;
@@ -54,8 +50,12 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
         void onInputBioFragmentDataListener(Patient patient);
     }
 
-    public void setInfo(String hospitalId) {
-        this.hospitalId = hospitalId;
+    public static InputBioFragment newInstance(String hospitalId) {
+        InputBioFragment inputBioFragment = new InputBioFragment();
+        Bundle args = new Bundle();
+        args.putString("hospital_id", hospitalId);
+        inputBioFragment.setArguments(args);
+        return inputBioFragment;
     }
 
     @Override
@@ -66,6 +66,12 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
         } else {
             throw new RuntimeException(context.toString() + " must implement OnInputBioFragmentDataListener");
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        hospitalId = getArguments().getString("hospital_id");
     }
 
     @Nullable
@@ -94,20 +100,7 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
                     patient.setName(etNameReg.getText().toString());
                     patient.setLastName(etLastnameReg.getText().toString());
                     patient.setMiddleName(etMiddlanameReg.getText().toString());
-                    Log.d(LOG_TAG, patient.toString());
-                    checkPatient(new RetrofitResponseListener() {
-                        @Override
-                        public void onSuccess() {
-                            mListener.onInputBioFragmentDataListener(patient);
-                            Log.d(LOG_TAG, "Пациент найден");
-                        }
-
-                        @Override
-                        public void onFailure() {
-                            Toast.makeText(getContext(), "Пациент с такими данными отсутствует в поликлинике. Обратитесь в регистратуру", Toast.LENGTH_SHORT).show();
-                            Log.d(LOG_TAG, "Пациент с такими данными отсутствует в поликлинике. Обратитесь в регистратуру");
-                        }
-                    });
+                    checkPatient(patient.getName(), patient.getLastName(), patient.getMiddleName());
                 } else Toast.makeText(getContext(), "Введите данные!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tvBirthdayReg:
@@ -143,8 +136,8 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
         }
     };
 
-    private void checkPatient(final RetrofitResponseListener retrofitResponseListener) {
-        hospitalApi.getMetadata(patient.getName(), patient.getLastName(), patient.getMiddleName(), patient.getInsuranceSeries(), patient.getInsuranceNumber(),
+    private void checkPatient(String name, String lastname, String middlename) {
+        hospitalApi.getMetadata(name, lastname, middlename, patient.getInsuranceSeries(), patient.getInsuranceNumber(),
                 patient.getBirthdayFormatted(), hospitalId, "").enqueue(new Callback<CheckPatientApiResponse>() {
             @Override
             public void onResponse(Call<CheckPatientApiResponse> call, Response<CheckPatientApiResponse> response) {
@@ -158,7 +151,7 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
 
                         String cookie = response.headers().get("Set-Cookie");
                         if (cookie != null) session.setCookies(cookie);
-                        Log.d("myLog", "patientId: " + patient.getId() + ", cookie: " + cookie);
+                        Log.d(LOG_TAG, "patientId: " + patient.getId() + ", cookie: " + cookie);
 
                         /*editor = mSettings.edit();
                         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, patient.getId());
@@ -177,23 +170,27 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
                         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, patient.getLastName());
                         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_BIRTHDAY, patient.getBirthdayFormatted());
                         editor.apply();*/
-                        Log.d(LOG_TAG, "Добро пожаловать, " + patient.getName().substring(0,1).toUpperCase() + patient.getName().substring(1) + "!");
-                        retrofitResponseListener.onSuccess();
+                        mListener.onInputBioFragmentDataListener(patient);
+                        Log.d(LOG_TAG, "Пациент найден");
                     }
                     else {
                         Log.d(LOG_TAG, "Ошибка авторизации: " + response.body().getError().getErrorDescription());
-                        retrofitResponseListener.onFailure();
+                        Toast.makeText(getContext(), "Ошибка авторизации: " + response.body().getError().getErrorDescription(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Log.d(LOG_TAG, "Запрос не прошел (" + response.code() + ")");
-                    retrofitResponseListener.onFailure();
+                    Toast.makeText(getContext(), "Запрос не прошел (\" + response.code() + \")", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<CheckPatientApiResponse> call, Throwable t) {
                 Log.d(LOG_TAG, "Error: " + t.getMessage());
-                retrofitResponseListener.onFailure();
+                String errorMessage;
+                if (t.getMessage() == null) {
+                    errorMessage = "Удаленный сервер недоступен";
+                } else errorMessage = "Error: " + t.getMessage();
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
             }
         });
     }

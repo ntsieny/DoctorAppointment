@@ -33,7 +33,7 @@ import retrofit2.Response;
 
 public class AppointmentFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
 
-    private String LOG_TAG = "myLog";
+    private String LOG_TAG = "myLog: AppointmentFragment";
     private static HospitalApi hospitalApi;
     RecyclerViewAdapter adapter;
     List<AppointmentInfo> appointments;
@@ -116,11 +116,11 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
                     Map<String, List<AppointmentInfo>> resp = respObj.getResponse();
                     if(respObj.getSuccess()) {
                         for (Map.Entry entry : resp.entrySet()) {
-                            //Log.d("myLog", "Дата: " + entry.getKey() + "\n");
+                            //Log.d(LOG_TAG, "Дата: " + entry.getKey() + "\n");
                             infoList = (List<AppointmentInfo>) entry.getValue();
                             for (AppointmentInfo info : infoList) {
                                 appoints.add(info);
-                                Log.d("myLog", info.toString() + "\n");
+                                Log.d(LOG_TAG, info.toString() + "\n");
                             }
                         }
                         adapter.setData(appoints);

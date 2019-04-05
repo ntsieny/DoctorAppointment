@@ -26,9 +26,9 @@ import java.util.concurrent.ExecutionException;
 
 public class DistrictFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
 
+    private String LOG_TAG = "myLog: DistrictFragment";
     RecyclerViewAdapter adapter;
     ArrayList<District> districts;
-    private String LOG_TAG = "myLog";
     SharedPreferences mSettings;
     private OnDistrictFragmentDataListener mListener;
     private String barTitle = "Выбор района";

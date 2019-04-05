@@ -35,10 +35,10 @@ import retrofit2.Callback;
 public class RegistrationActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener,
         SignUpFragment.OnSignUpFragmentDataListener, InputBioFragment.OnInputBioFragmentDataListener {
 
+    private static final String LOG_TAG = "myLog: RegActivity";
     SpringApi springApi;
     FragmentManager fm;
     private Patient patient;
-    private static final String LOG_TAG = "myLog";
     private Hospital hospital;
     private String districtId, districtName;
     private String login, password;
@@ -88,8 +88,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
     public void onSignUpFragmentDataListener(Map<String, String> loginAndPassword) {
         login = loginAndPassword.get("login");
         password = loginAndPassword.get("password");
-        InputBioFragment inputBioFragment = new InputBioFragment();
-        inputBioFragment.setInfo(String.valueOf(hospital.getIdLPU()));
+        InputBioFragment inputBioFragment = InputBioFragment.newInstance(String.valueOf(hospital.getIdLPU()));
         fm.beginTransaction().replace(R.id.linLayoutRegistration, inputBioFragment).addToBackStack("signup_fragment").commit();
     }
 
@@ -131,6 +130,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, patient.getId());
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, patient.getName());
         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, patient.getLastName());
+        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_MIDDLENAME, patient.getMiddleName());
         editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_DAYBIRTH, patient.getDayBirth());
         editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_MONTHBIRTH, patient.getMonthBirth());
         editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_YEARBIRTH, patient.getYearBirth());
@@ -149,7 +149,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         startActivity(intent);
     }
 
-    private void createUser(User user) {
+    private void createUser(final User user) {
         springApi.createUser(user).enqueue(new Callback<Response>() {
             @Override
             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
@@ -159,6 +159,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
                         Log.d(LOG_TAG, "Пользователь создан");
                         writeSharedPreferences();
                         openMainMenuAcvitity();
+                        Toast.makeText(RegistrationActivity.this, String.format("Добро пожаловать, %s!", user.getPatient().getName()), Toast.LENGTH_SHORT).show();
                     }
                     else {
                         Log.d(LOG_TAG, "Пользователь не создан. " + resp.getMessage());

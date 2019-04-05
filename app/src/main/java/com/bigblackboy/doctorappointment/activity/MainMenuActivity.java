@@ -47,6 +47,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     public static final String APP_SETTINGS_PATIENT_ID = "patient_id";
     public static final String APP_SETTINGS_PATIENT_NAME = "patient_name";
     public static final String APP_SETTINGS_PATIENT_LASTNAME = "patient_lastname";
+    public static final String APP_SETTINGS_PATIENT_MIDDLENAME = "patient_middlename";
     public static final String APP_SETTINGS_PATIENT_DAYBIRTH = "patient_daybirth";
     public static final String APP_SETTINGS_PATIENT_MONTHBIRTH = "patient_monthbirth";
     public static final String APP_SETTINGS_PATIENT_YEARBIRTH = "patient_yearbirth";
@@ -91,7 +92,9 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
             patient.setLastName(lastname);
             String name = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, "");
             patient.setName(name);
-            String fio = lastname + " " + name;
+            String middleName = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_MIDDLENAME, "");
+            patient.setMiddleName(middleName);
+            String fio = String.format("%s %s %s", lastname, name, middleName);
             TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
             tvPatientFIO.setText(fio);
 

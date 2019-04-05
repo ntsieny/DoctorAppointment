@@ -33,7 +33,7 @@ import retrofit2.Response;
 
 public class HospitalFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
 
-    private String LOG_TAG = "myLog";
+    private String LOG_TAG = "myLog: HospitalFragment";
     private static HospitalApi hospitalApi;
 
     RecyclerViewAdapter adapter;
