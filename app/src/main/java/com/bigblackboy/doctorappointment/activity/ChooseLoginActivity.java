@@ -9,6 +9,10 @@ import android.widget.Button;
 
 import com.bigblackboy.doctorappointment.R;
 
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_GUEST_MODE;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_USER_LOGGED_IN;
+
 public class ChooseLoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button btnLoginUser, btnLoginGuest, btnRegistration;
@@ -19,9 +23,9 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mSettings = getSharedPreferences(MainMenuActivity.APP_SETTINGS, MODE_PRIVATE);
-        boolean loggedId = mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, false);
-        boolean guestMode = mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_GUEST_MODE, false);
+        mSettings = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
+        boolean loggedId = mSettings.getBoolean(APP_SETTINGS_USER_LOGGED_IN, false);
+        boolean guestMode = mSettings.getBoolean(APP_SETTINGS_GUEST_MODE, false);
         if (loggedId | guestMode) {
             Intent intent = new Intent(this, MainMenuActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -52,7 +56,7 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.btnLoginGuest:
                 editor = mSettings.edit();
-                editor.putBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, false);
+                editor.putBoolean(APP_SETTINGS_USER_LOGGED_IN, false);
                 editor.apply();
                 finish();
                 intent = new Intent(this, MainMenuActivity.class);

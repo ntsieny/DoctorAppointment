@@ -11,6 +11,8 @@ public class Patient {
     private int dayBirth;
     private int monthBirth;
     private int yearBirth;
+    private District district;
+    private Hospital hospital;
 
     public String getName() {
         return name;
@@ -91,5 +93,21 @@ public class Patient {
     @Override
     public String toString() {
         return String.format("%s %s %s", name, lastName, getBirthdayFormatted());
+    }
+
+    public District getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(District district) {
+        this.district = district;
+    }
+
+    public Hospital getHospital() {
+        return hospital;
+    }
+
+    public void setHospital(Hospital hospital) {
+        this.hospital = hospital;
     }
 }

@@ -19,7 +19,6 @@ import com.bigblackboy.doctorappointment.Controller;
 import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.activity.MainMenuActivity;
 import com.bigblackboy.doctorappointment.api.HospitalApiResponse;
 import com.bigblackboy.doctorappointment.model.District;
 import com.bigblackboy.doctorappointment.model.Hospital;
@@ -30,6 +29,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_ID;
 
 public class HospitalFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
 
@@ -132,15 +134,15 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
     @Override
     public void onItemClick(View view, int position) {
         //Toast.makeText(getContext(), "You clicked " + ((Hospital)adapter.getItem(position)).getLpuName() + " on row number " + position, Toast.LENGTH_SHORT).show();
-        String hospitalId = String.valueOf(((Hospital)adapter.getItem(position)).getIdLPU());
+        int hospitalId = ((Hospital)adapter.getItem(position)).getIdLPU();
         //dataHashMap.put("hospital_id", hospitalId);
         //mDataPasser.onDataPass(2, dataHashMap);
 
         mListener.onHospitalFragmentDataListener((Hospital)adapter.getItem(position));
 
-        mSettings = this.getActivity().getSharedPreferences(MainMenuActivity.APP_SETTINGS, Context.MODE_PRIVATE);
+        mSettings = this.getActivity().getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSettings.edit();
-        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, hospitalId);
+        editor.putInt(APP_SETTINGS_HOSPITAL_ID, hospitalId);
         editor.apply();
 
         Log.d(LOG_TAG, "HospitalID: " + hospitalId);

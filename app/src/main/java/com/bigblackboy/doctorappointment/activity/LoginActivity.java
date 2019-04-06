@@ -3,8 +3,8 @@ package com.bigblackboy.doctorappointment.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -16,13 +16,25 @@ import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.SpringApi;
 import com.bigblackboy.doctorappointment.SpringController;
 import com.bigblackboy.doctorappointment.model.Patient;
-import com.bigblackboy.doctorappointment.springserver.Response;
 import com.bigblackboy.doctorappointment.springserver.springmodel.User;
-
-import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_DISTRICT_ID;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_DISTRICT_NAME;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_ID;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_NAME_FULL;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_NAME_SHORT;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_DAYBIRTH;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_ID;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_LASTNAME;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_MIDDLENAME;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_MONTHBIRTH;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_NAME;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_YEARBIRTH;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_USER_LOGGED_IN;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -46,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         etLogin = findViewById(R.id.etLogin);
         etPassword = findViewById(R.id.etPassword);
 
-        mSettings = getSharedPreferences(MainMenuActivity.APP_SETTINGS, Context.MODE_PRIVATE);
+        mSettings = getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
         springApi = SpringController.getApi();
     }
 
@@ -63,19 +75,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void writeSharedPreferences(User user) {
         editor = mSettings.edit();
-        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, user.getPatient().getServiceId());
-        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, user.getPatient().getName());
-        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, user.getPatient().getLastname());
-        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_MIDDLENAME, user.getPatient().getMiddlename());
-        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_DAYBIRTH, user.getPatient().getDayBirth());
-        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_MONTHBIRTH, user.getPatient().getMonthBirth());
-        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_YEARBIRTH, user.getPatient().getYearBirth());
-        editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_ID, String.valueOf(user.getDistrictId()));
-        editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, user.getDistrictName());
-        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, String.valueOf(user.getHospitalId()));
-        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_SHORT, user.getLpuNameShort());
-        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_FULL, user.getLpuNameFull());
-        editor.putBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, true);
+        editor.putString(APP_SETTINGS_PATIENT_ID, user.getPatient().getServiceId());
+        editor.putString(APP_SETTINGS_PATIENT_NAME, user.getPatient().getName());
+        editor.putString(APP_SETTINGS_PATIENT_LASTNAME, user.getPatient().getLastname());
+        editor.putString(APP_SETTINGS_PATIENT_MIDDLENAME, user.getPatient().getMiddlename());
+        editor.putInt(APP_SETTINGS_PATIENT_DAYBIRTH, user.getPatient().getDayBirth());
+        editor.putInt(APP_SETTINGS_PATIENT_MONTHBIRTH, user.getPatient().getMonthBirth());
+        editor.putInt(APP_SETTINGS_PATIENT_YEARBIRTH, user.getPatient().getYearBirth());
+        editor.putString(APP_SETTINGS_DISTRICT_ID, String.valueOf(user.getDistrictId()));
+        editor.putString(APP_SETTINGS_DISTRICT_NAME, user.getDistrictName());
+        editor.putInt(APP_SETTINGS_HOSPITAL_ID, user.getHospitalId());
+        editor.putString(APP_SETTINGS_HOSPITAL_NAME_SHORT, user.getLpuNameShort());
+        editor.putString(APP_SETTINGS_HOSPITAL_NAME_FULL, user.getLpuNameFull());
+        editor.putBoolean(APP_SETTINGS_USER_LOGGED_IN, true);
         editor.apply();
     }
 

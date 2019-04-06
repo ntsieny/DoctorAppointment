@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.fragment.AppointmentFragment;
 import com.bigblackboy.doctorappointment.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.fragment.DoctorFragment;
@@ -32,34 +33,22 @@ import com.bigblackboy.doctorappointment.model.Hospital;
 import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Speciality;
 
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_DISTRICT_NAME;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_GUEST_MODE;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_NAME_SHORT;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_USER_LOGGED_IN;
+
 public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DistrictFragment.OnDistrictFragmentDataListener,
         HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
         AppointmentFragment.OnAppointmentFragmentDataListener, MainMenuFragment.OnMainMenuFragmentDataListener {
 
-    public static final String APP_SETTINGS = "app_settings";
-    public static final String APP_SETTINGS_USER_LOGGED_IN = "user_logged_in";
-    public static final String APP_SETTINGS_GUEST_MODE = "guest_mode";
-    public static final String APP_SETTINGS_DISTRICT_ID = "district_id";
-    public static final String APP_SETTINGS_DISTRICT_NAME = "district_name";
-    public static final String APP_SETTINGS_HOSPITAL_ID = "hospital_id";
-    public static final String APP_SETTINGS_HOSPITAL_NAME_SHORT = "hospital_name_short";
-    public static final String APP_SETTINGS_HOSPITAL_NAME_FULL = "hospital_name_full";
-    public static final String APP_SETTINGS_PATIENT_ID = "patient_id";
-    public static final String APP_SETTINGS_PATIENT_NAME = "patient_name";
-    public static final String APP_SETTINGS_PATIENT_LASTNAME = "patient_lastname";
-    public static final String APP_SETTINGS_PATIENT_MIDDLENAME = "patient_middlename";
-    public static final String APP_SETTINGS_PATIENT_DAYBIRTH = "patient_daybirth";
-    public static final String APP_SETTINGS_PATIENT_MONTHBIRTH = "patient_monthbirth";
-    public static final String APP_SETTINGS_PATIENT_YEARBIRTH = "patient_yearbirth";
+
     SharedPreferences mSettings;
     SharedPreferences.Editor editor;
     FragmentManager fm;
     FragmentTransaction fTrans;
     NavigationView navigationView;
-    private String patientId;
     private Patient patient;
-    private District district;
-    private Hospital hospital;
     private Speciality speciality;
     private Doctor doctor;
     private boolean loggedIn;
@@ -69,18 +58,16 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        mSettings = getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
+        mSettings = getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE);
+        SharedPreferencesManager prefManager = new SharedPreferencesManager(mSettings);
+
         fm = getSupportFragmentManager();
-        // TODO получить patient из Bundle/или не получать, а считывать данные из SharedPreferences
-        patient = new Patient();
-        district = new District();
-        hospital = new Hospital();
+        patient = prefManager.getCurrentPatient();
+
         speciality = new Speciality();
         doctor = new Doctor();
-        String hospitalName = mSettings.getString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_SHORT, "");
-        String districtName = mSettings.getString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, "");
-        boolean userLoggedIn = mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, false);
-        boolean guestMode = mSettings.getBoolean(MainMenuActivity.APP_SETTINGS_GUEST_MODE, false);
+        boolean userLoggedIn = mSettings.getBoolean(APP_SETTINGS_USER_LOGGED_IN, false);
+        boolean guestMode = mSettings.getBoolean(APP_SETTINGS_GUEST_MODE, false);
 
         if (userLoggedIn) {
             loggedIn = true;
@@ -88,35 +75,23 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
             fm.beginTransaction().add(R.id.fragContainer, mainMenuFragment).commit();
             setNavigationDrawer();
 
-            String lastname = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, "");
-            patient.setLastName(lastname);
-            String name = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, "");
-            patient.setName(name);
-            String middleName = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_MIDDLENAME, "");
-            patient.setMiddleName(middleName);
-            String fio = String.format("%s %s %s", lastname, name, middleName);
+            String fio = String.format("%s %s %s", patient.getLastName(), patient.getName(), patient.getMiddleName());
             TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
             tvPatientFIO.setText(fio);
 
             TextView tvPatientAddress = navigationView.getHeaderView(0).findViewById(R.id.tvPatientAddress);
-            tvPatientAddress.setText(hospitalName + ", " + districtName);
-
-            String hospitalId = mSettings.getString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, null);
-            hospital.setIdLPU(Integer.parseInt(hospitalId));
-            patientId = mSettings.getString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, null);
+            tvPatientAddress.setText(patient.getHospital().getLPUShortName() + ", " + patient.getDistrict().getName());
         }
         else if (guestMode) {
             MainMenuFragment mainMenuFragment = new MainMenuFragment();
             fm.beginTransaction().add(R.id.fragContainer, mainMenuFragment).commit();
             setNavigationDrawer();
 
-            patient.setName("Гость");
-
             TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
             tvPatientFIO.setText(patient.getName());
 
             TextView tvPatientAddress = navigationView.getHeaderView(0).findViewById(R.id.tvPatientAddress);
-            tvPatientAddress.setText(hospitalName + ", " + districtName);
+            tvPatientAddress.setText(patient.getHospital().getLPUShortName() + ", " + patient.getDistrict().getName());
         }
         else {
             DistrictFragment districtFragment = new DistrictFragment();
@@ -221,14 +196,14 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     private void showSpecialityFragment() {
-        String hospitalId = String.valueOf(hospital.getIdLPU());
-        SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patientId);
+        String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
+        SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patient.getId());
         fm.beginTransaction().replace(R.id.fragContainer, specialityFragment).commit();
     }
 
     @Override
     public void onDistrictFragmentDataListener(District district) {
-        this.district = district;
+        patient.setDistrict(district);
         HospitalFragment hospitalFragment = HospitalFragment.newInstance(district);
         fTrans = fm.beginTransaction().replace(R.id.fragContainer, hospitalFragment).addToBackStack("fragment_district");
         fTrans.commit();
@@ -241,23 +216,23 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public void onHospitalFragmentDataListener(Hospital hospital) {
-        this.hospital = hospital;
+        patient.setHospital(hospital);
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         MainMenuFragment mainMenuFragment = new MainMenuFragment();
         fm.beginTransaction().replace(R.id.fragContainer, mainMenuFragment).commit();
 
         if(!loggedIn) {
             editor = mSettings.edit();
-            editor.putBoolean(MainMenuActivity.APP_SETTINGS_GUEST_MODE, true);
-            editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, district.getName());
-            editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
+            editor.putBoolean(APP_SETTINGS_GUEST_MODE, true);
+            editor.putString(APP_SETTINGS_DISTRICT_NAME, patient.getDistrict().getName());
+            editor.putString(APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
             editor.apply();
         }
 
         TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
         tvPatientFIO.setText("Гость");
         TextView tvPatientAddress = navigationView.getHeaderView(0).findViewById(R.id.tvPatientAddress);
-        tvPatientAddress.setText(hospital.getLPUShortName() + ", " + district.getName());
+        tvPatientAddress.setText(hospital.getLPUShortName() + ", " + patient.getDistrict().getName());
     }
 
     @Override
@@ -268,10 +243,9 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     @Override
     public void onSpecialityFragmentDataListener(Speciality speciality) {
         this.speciality = speciality;
-        String hospitalId = String.valueOf(hospital.getIdLPU());
+        String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
         String specialityId = speciality.getIdSpeciality();
-        // TODO создать Patient для работы с пациентом, убрать поле patientID
-        DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patientId, specialityId);
+        DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patient.getId(), specialityId);
         fm.beginTransaction().replace(R.id.fragContainer, doctorFragment).addToBackStack("spec_fragment").commit();
     }
 
@@ -284,9 +258,8 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     public void onDoctorFragmentDataListener(Doctor doctor) {
         this.doctor = doctor;
         String doctorId = doctor.getIdDoc();
-        String hospitalId = String.valueOf(hospital.getIdLPU());
-        // TODO взять patientID из объекта Patient
-        AppointmentFragment appointmentFragment = AppointmentFragment.newInstance(doctorId, hospitalId, patientId);
+        String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
+        AppointmentFragment appointmentFragment = AppointmentFragment.newInstance(doctorId, hospitalId, patient.getId());
         fm.beginTransaction().replace(R.id.fragContainer, appointmentFragment).addToBackStack("doctor_fragment").commit();
     }
 

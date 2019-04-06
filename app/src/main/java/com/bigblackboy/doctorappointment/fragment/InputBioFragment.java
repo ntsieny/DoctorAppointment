@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.bigblackboy.doctorappointment.Controller;
 import com.bigblackboy.doctorappointment.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.activity.MainMenuActivity;
 import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
 import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Session;
@@ -31,6 +30,8 @@ import java.util.Calendar;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS;
 
 public class InputBioFragment extends Fragment implements View.OnClickListener {
 
@@ -77,7 +78,7 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mSettings = getActivity().getSharedPreferences(MainMenuActivity.APP_SETTINGS, Context.MODE_PRIVATE);
+        mSettings = getActivity().getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
         hospitalApi = Controller.getApi();
 
         View v = inflater.inflate(R.layout.fragment_input_bio, container, false);

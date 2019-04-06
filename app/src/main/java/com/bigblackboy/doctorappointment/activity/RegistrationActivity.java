@@ -23,14 +23,27 @@ import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.springserver.Response;
 import com.bigblackboy.doctorappointment.springserver.springmodel.User;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_DISTRICT_ID;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_DISTRICT_NAME;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_ID;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_NAME_FULL;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_NAME_SHORT;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_DAYBIRTH;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_ID;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_LASTNAME;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_MIDDLENAME;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_MONTHBIRTH;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_NAME;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_PATIENT_YEARBIRTH;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_USER_LOGGED_IN;
 
 public class RegistrationActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener,
         SignUpFragment.OnSignUpFragmentDataListener, InputBioFragment.OnInputBioFragmentDataListener {
@@ -51,7 +64,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        mSettings = getSharedPreferences(MainMenuActivity.APP_SETTINGS, Context.MODE_PRIVATE);
+        mSettings = getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
 
         fm = getSupportFragmentManager();
         DistrictFragment districtFragment = new DistrictFragment();
@@ -127,19 +140,19 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
 
     private void writeSharedPreferences() {
         editor = mSettings.edit();
-        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, patient.getId());
-        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, patient.getName());
-        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, patient.getLastName());
-        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_MIDDLENAME, patient.getMiddleName());
-        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_DAYBIRTH, patient.getDayBirth());
-        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_MONTHBIRTH, patient.getMonthBirth());
-        editor.putInt(MainMenuActivity.APP_SETTINGS_PATIENT_YEARBIRTH, patient.getYearBirth());
-        editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_ID, districtId);
-        editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_NAME, districtName);
-        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_ID, String.valueOf(hospital.getIdLPU()));
-        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
-        editor.putString(MainMenuActivity.APP_SETTINGS_HOSPITAL_NAME_FULL, hospital.getLpuName());
-        editor.putBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, true);
+        editor.putString(APP_SETTINGS_PATIENT_ID, patient.getId());
+        editor.putString(APP_SETTINGS_PATIENT_NAME, patient.getName());
+        editor.putString(APP_SETTINGS_PATIENT_LASTNAME, patient.getLastName());
+        editor.putString(APP_SETTINGS_PATIENT_MIDDLENAME, patient.getMiddleName());
+        editor.putInt(APP_SETTINGS_PATIENT_DAYBIRTH, patient.getDayBirth());
+        editor.putInt(APP_SETTINGS_PATIENT_MONTHBIRTH, patient.getMonthBirth());
+        editor.putInt(APP_SETTINGS_PATIENT_YEARBIRTH, patient.getYearBirth());
+        editor.putString(APP_SETTINGS_DISTRICT_ID, districtId);
+        editor.putString(APP_SETTINGS_DISTRICT_NAME, districtName);
+        editor.putInt(APP_SETTINGS_HOSPITAL_ID, hospital.getIdLPU());
+        editor.putString(APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
+        editor.putString(APP_SETTINGS_HOSPITAL_NAME_FULL, hospital.getLpuName());
+        editor.putBoolean(APP_SETTINGS_USER_LOGGED_IN, true);
         editor.apply();
     }
 

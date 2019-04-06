@@ -17,12 +17,14 @@ import android.view.ViewGroup;
 import com.bigblackboy.doctorappointment.HtmlParser;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.activity.MainMenuActivity;
 import com.bigblackboy.doctorappointment.model.District;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
+
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_DISTRICT_ID;
 
 public class DistrictFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
 
@@ -88,9 +90,9 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
 
         mListener.onDistrictFragmentDataListener((District) adapter.getItem(position));
 
-        mSettings = this.getActivity().getSharedPreferences(MainMenuActivity.APP_SETTINGS, Context.MODE_PRIVATE);
+        mSettings = this.getActivity().getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSettings.edit();
-        editor.putString(MainMenuActivity.APP_SETTINGS_DISTRICT_ID, districtId);
+        editor.putString(APP_SETTINGS_DISTRICT_ID, districtId);
         editor.apply();
     }
 
