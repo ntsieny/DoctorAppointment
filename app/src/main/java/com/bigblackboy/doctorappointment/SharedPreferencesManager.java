@@ -8,7 +8,6 @@ import com.bigblackboy.doctorappointment.model.Patient;
 
 public class SharedPreferencesManager {
 
-    private SharedPreferences mSettings;
     public static final String APP_SETTINGS = "app_settings";
     public static final String APP_SETTINGS_USER_LOGGED_IN = "user_logged_in";
     public static final String APP_SETTINGS_GUEST_MODE = "guest_mode";
@@ -24,9 +23,33 @@ public class SharedPreferencesManager {
     public static final String APP_SETTINGS_PATIENT_DAYBIRTH = "patient_daybirth";
     public static final String APP_SETTINGS_PATIENT_MONTHBIRTH = "patient_monthbirth";
     public static final String APP_SETTINGS_PATIENT_YEARBIRTH = "patient_yearbirth";
+    private SharedPreferences mSettings;
+    private SharedPreferences.Editor editor;
+    private boolean userLoggedIn;
+    private boolean guestMode;
 
     public SharedPreferencesManager(SharedPreferences mSettings) {
         this.mSettings = mSettings;
+    }
+
+    public boolean isUserLoggedIn() {
+        return mSettings.getBoolean(APP_SETTINGS_USER_LOGGED_IN, false);
+    }
+
+    public void setUserLoggedIn(boolean userLoggedIn) {
+        editor = mSettings.edit();
+        editor.putBoolean(APP_SETTINGS_USER_LOGGED_IN, userLoggedIn);
+        editor.apply();
+    }
+
+    public boolean isGuestMode() {
+        return mSettings.getBoolean(APP_SETTINGS_GUEST_MODE, false);
+    }
+
+    public void setGuestMode(boolean guestMode) {
+        editor = mSettings.edit();
+        editor.putBoolean(APP_SETTINGS_GUEST_MODE, guestMode);
+        editor.apply();
     }
 
     public Patient getCurrentPatient() {

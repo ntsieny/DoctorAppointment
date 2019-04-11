@@ -43,7 +43,11 @@ public class ProfileFragment extends Fragment {
         String name = getArguments().getString("name");
         String lastname = getArguments().getString("lastname");
         String middlename = getArguments().getString("middlename");
-        tvFioProfile.setText(String.format("%s %s %s", lastname, name, middlename));
+        if (name.equals("Гость")) {
+            tvFioProfile.setText(name);
+        } else {
+            tvFioProfile.setText(String.format("%s %s %s", lastname, name, middlename));
+        }
 
         int dayBirth = getArguments().getInt("dayBirth");
         int monthBirth = getArguments().getInt("monthBirth");

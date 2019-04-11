@@ -5,11 +5,11 @@
     <string name="choose_speciality">Выберите специальность</string>
     <string name="choose_doctor">Выберите врача</string>
     <string name="choose_appointment">Выберите дату и время</string>
-    <string name="logout_item">Выйти из аккаунта</string>
     <string name="make_appointment_menu_item">Записаться к врачу</string>
     <string name="login_as_user">Логин</string>
     <string name="login_as_guest">Гостевой режим</string>
 
+    <string name="logout_item">Выйти из аккаунта</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
