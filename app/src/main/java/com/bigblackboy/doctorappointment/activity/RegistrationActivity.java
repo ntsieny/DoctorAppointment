@@ -113,7 +113,6 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
 
     private User createUserObjectForRequest() {
         User user = new User();
-        user.setId(0);
         user.setLogin(login);
         user.setPassword(password);
         user.setPatientId(0);
@@ -126,15 +125,13 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         user.setLpuEmail(hospital.getEmail());
         user.setLpuType(hospital.getLpuType());
         user.setLpuWorkTime(hospital.getWorkTime());
-        com.bigblackboy.doctorappointment.springserver.springmodel.Patient p = new com.bigblackboy.doctorappointment.springserver.springmodel.Patient();
-        p.setName(patient.getName());
-        p.setLastname(patient.getLastName());
-        p.setMiddlename(patient.getMiddleName());
-        p.setDayBirth(patient.getDayBirth());
-        p.setMonthBirth(patient.getMonthBirth());
-        p.setYearBirth(patient.getYearBirth());
-        p.setServiceId(patient.getId());
-        user.setPatient(p);
+        user.setName(patient.getName());
+        user.setLastname(patient.getLastName());
+        user.setMiddlename(patient.getMiddleName());
+        user.setDayBirth(patient.getDayBirth());
+        user.setMonthBirth(patient.getMonthBirth());
+        user.setYearBirth(patient.getYearBirth());
+        user.setServiceId(patient.getId());
         return user;
     }
 
@@ -172,7 +169,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
                         Log.d(LOG_TAG, "Пользователь создан");
                         writeSharedPreferences();
                         openMainMenuAcvitity();
-                        Toast.makeText(RegistrationActivity.this, String.format("Добро пожаловать, %s!", user.getPatient().getName()), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistrationActivity.this, String.format("Добро пожаловать, %s!", user.getName()), Toast.LENGTH_SHORT).show();
                     }
                     else {
                         Log.d(LOG_TAG, "Пользователь не создан. " + resp.getMessage());

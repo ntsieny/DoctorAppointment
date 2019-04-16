@@ -2,8 +2,13 @@ package com.bigblackboy.doctorappointment.springserver.springmodel;
 
 public class User {
 
-    private Patient patient;
-    private int id;
+    private String name;
+    private String lastname;
+    private String middlename;
+    private int dayBirth;
+    private int monthBirth;
+    private int yearBirth;
+    private String serviceId;
     private String login;
     private String password;
     private int patientId;
@@ -16,14 +21,6 @@ public class User {
     private String lpuEmail;
     private String lpuType;
     private String lpuWorkTime;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getLogin() {
         return login;
@@ -121,11 +118,59 @@ public class User {
         this.lpuWorkTime = lpuWorkTime;
     }
 
-    public Patient getPatient() {
-        return patient;
+    public String getName() {
+        return name;
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getMiddlename() {
+        return middlename;
+    }
+
+    public void setMiddlename(String middlename) {
+        this.middlename = middlename;
+    }
+
+    public int getDayBirth() {
+        return dayBirth;
+    }
+
+    public void setDayBirth(int dayBirth) {
+        this.dayBirth = dayBirth;
+    }
+
+    public int getMonthBirth() {
+        return monthBirth;
+    }
+
+    public void setMonthBirth(int monthBirth) {
+        this.monthBirth = monthBirth;
+    }
+
+    public int getYearBirth() {
+        return yearBirth;
+    }
+
+    public void setYearBirth(int yearBirth) {
+        this.yearBirth = yearBirth;
+    }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 }

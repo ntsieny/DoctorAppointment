@@ -19,6 +19,7 @@ import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.SpringApi;
 import com.bigblackboy.doctorappointment.SpringController;
 import com.bigblackboy.doctorappointment.springserver.Response;
+import com.bigblackboy.doctorappointment.springserver.springmodel.User;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (v == etLoginReg && !hasFocus) {
-                    checkLoginUnique(etLoginReg.getText().toString());
+                    checkLoginUnique(etLoginReg.getText().toString(), "");
                     ivCheckLogin.setVisibility(View.VISIBLE);
                 }
             }
@@ -90,8 +91,11 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void checkLoginUnique(String login) {
-        springApi.checkLoginUnique(login).enqueue(new Callback<Response>() {
+    private void checkLoginUnique(String login, String serviceId) {
+        User user = new User();
+        user.setLogin(login);
+        user.setServiceId(serviceId);
+        springApi.checkLoginUnique(user).enqueue(new Callback<Response>() {
             @Override
             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
                 Response resp = response.body();

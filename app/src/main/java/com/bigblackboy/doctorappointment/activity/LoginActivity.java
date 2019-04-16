@@ -75,13 +75,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void writeSharedPreferences(User user) {
         editor = mSettings.edit();
-        editor.putString(APP_SETTINGS_PATIENT_ID, user.getPatient().getServiceId());
-        editor.putString(APP_SETTINGS_PATIENT_NAME, user.getPatient().getName());
-        editor.putString(APP_SETTINGS_PATIENT_LASTNAME, user.getPatient().getLastname());
-        editor.putString(APP_SETTINGS_PATIENT_MIDDLENAME, user.getPatient().getMiddlename());
-        editor.putInt(APP_SETTINGS_PATIENT_DAYBIRTH, user.getPatient().getDayBirth());
-        editor.putInt(APP_SETTINGS_PATIENT_MONTHBIRTH, user.getPatient().getMonthBirth());
-        editor.putInt(APP_SETTINGS_PATIENT_YEARBIRTH, user.getPatient().getYearBirth());
+        editor.putString(APP_SETTINGS_PATIENT_ID, user.getServiceId());
+        editor.putString(APP_SETTINGS_PATIENT_NAME, user.getName());
+        editor.putString(APP_SETTINGS_PATIENT_LASTNAME, user.getLastname());
+        editor.putString(APP_SETTINGS_PATIENT_MIDDLENAME, user.getMiddlename());
+        editor.putInt(APP_SETTINGS_PATIENT_DAYBIRTH, user.getDayBirth());
+        editor.putInt(APP_SETTINGS_PATIENT_MONTHBIRTH, user.getMonthBirth());
+        editor.putInt(APP_SETTINGS_PATIENT_YEARBIRTH, user.getYearBirth());
         editor.putString(APP_SETTINGS_DISTRICT_ID, String.valueOf(user.getDistrictId()));
         editor.putString(APP_SETTINGS_DISTRICT_NAME, user.getDistrictName());
         editor.putInt(APP_SETTINGS_HOSPITAL_ID, user.getHospitalId());
@@ -105,11 +105,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onResponse(Call<User> call, retrofit2.Response<User> response) {
                 User user = response.body();
-                if (response.isSuccessful() && user.getPatient() != null) {
+                if (response.isSuccessful() && user != null) {
                     Log.d(LOG_TAG, "Пользователь найден");
                     writeSharedPreferences(user);
                     openMainMenuActivity();
-                    Toast.makeText(LoginActivity.this, String.format("Добро пожаловать, %s %s!", user.getPatient().getName(), user.getPatient().getMiddlename()), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, String.format("Добро пожаловать, %s %s!", user.getName(), user.getMiddlename()), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(LoginActivity.this, "Пользователь не найден", Toast.LENGTH_SHORT).show();
                     Log.d(LOG_TAG, "Пользователь не найден");
