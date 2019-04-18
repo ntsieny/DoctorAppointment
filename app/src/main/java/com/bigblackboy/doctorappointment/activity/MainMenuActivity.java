@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.SharedPreferencesManager;
+import com.bigblackboy.doctorappointment.SpringApi;
+import com.bigblackboy.doctorappointment.SpringController;
 import com.bigblackboy.doctorappointment.fragment.AppointmentFragment;
 import com.bigblackboy.doctorappointment.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.fragment.DoctorFragment;
@@ -33,6 +36,13 @@ import com.bigblackboy.doctorappointment.model.Doctor;
 import com.bigblackboy.doctorappointment.model.Hospital;
 import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Speciality;
+import com.bigblackboy.doctorappointment.springserver.Response;
+import com.bigblackboy.doctorappointment.springserver.springmodel.Appointment;
+
+import org.json.JSONObject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_DISTRICT_NAME;
 import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_GUEST_MODE;
@@ -43,6 +53,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         AppointmentFragment.OnAppointmentFragmentDataListener, MainMenuFragment.OnMainMenuFragmentDataListener {
 
 
+    private static final String LOG_TAG = "myLog: MainMenuActivity";
     SharedPreferences mSettings;
     SharedPreferences.Editor editor;
     FragmentManager fm;
@@ -52,11 +63,14 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     private Speciality speciality;
     private Doctor doctor;
     private boolean loggedIn;
+    private SpringApi springApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        springApi = SpringController.getApi();
 
         mSettings = getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE);
         SharedPreferencesManager prefManager = new SharedPreferencesManager(mSettings);
@@ -271,8 +285,59 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     @Override
-    public void onAppointmentFragmentDataListener(AppointmentInfo appointmentInfo) {
-        Toast.makeText(this, appointmentInfo.getDateStart().getDateTime(), Toast.LENGTH_SHORT).show();
+    public void onAppointmentFragmentDataListener(AppointmentInfo appInfo) {
+        Appointment app = new Appointment();
+        app.setAppString(appInfo.getId());
+        app.setServiceId(patient.getServiceId());
+        app.setDistrictId(Integer.valueOf(patient.getDistrict().getId()));
+        app.setDistrictName(patient.getDistrict().getName());
+        app.setLpuId(patient.getHospital().getIdLPU());
+        app.setLpuNameShort(patient.getHospital().getLPUShortName());
+        app.setLpuNameFull(patient.getHospital().getLpuName());
+        app.setSpecId(Integer.valueOf(speciality.getIdSpeciality()));
+        app.setSpecName(speciality.getNameSpeciality());
+        app.setDocId(Integer.valueOf(doctor.getIdDoc()));
+        app.setDocName(doctor.getName());
+        app.setDateTime(appInfo.getDateStart().getDateTime());
+        createAppointment(app);
+        for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
+            fm.popBackStack();
+        }
+        replaceToMainMenuFragment();
+    }
+
+    private void createAppointment(Appointment app) {
+        springApi.createAppointment(app).enqueue(new Callback<Response>() {
+            @Override
+            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                Response resp = response.body();
+                if (response.isSuccessful()) {
+                    if (resp.isSuccess()) {
+                        Toast.makeText(MainMenuActivity.this, "Запись сделана", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, "Запись сделана");
+                    } else {
+                        Toast.makeText(MainMenuActivity.this, "Запись не сделана", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, "Запись не сделана");
+                    }
+                }
+                else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        Toast.makeText(MainMenuActivity.this, "Ошибка сервера", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, error.getString("message"));
+                    } catch (Exception e) {
+                        Toast.makeText(MainMenuActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.d(LOG_TAG, e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Response> call, Throwable t) {
+                Toast.makeText(MainMenuActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.d(LOG_TAG, t.getMessage());
+            }
+        });
     }
 
     @Override
