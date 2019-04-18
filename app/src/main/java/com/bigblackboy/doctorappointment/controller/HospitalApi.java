@@ -1,4 +1,4 @@
-package com.bigblackboy.doctorappointment;
+package com.bigblackboy.doctorappointment.controller;
 
 import com.bigblackboy.doctorappointment.api.AppointmentListApiResponse;
 import com.bigblackboy.doctorappointment.api.DoctorsApiResponse;

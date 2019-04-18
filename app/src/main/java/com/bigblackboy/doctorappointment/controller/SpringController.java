@@ -1,4 +1,4 @@
-package com.bigblackboy.doctorappointment;
+package com.bigblackboy.doctorappointment.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

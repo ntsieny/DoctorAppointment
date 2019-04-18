@@ -1,5 +1,6 @@
-package com.bigblackboy.doctorappointment;
+package com.bigblackboy.doctorappointment.controller;
 
+import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -12,7 +13,7 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Controller {
+public class HospitalController {
 
     static final String BASE_URL = "http://www.kuban-online.ru/";
 

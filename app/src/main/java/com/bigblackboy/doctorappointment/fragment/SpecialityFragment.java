@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bigblackboy.doctorappointment.Controller;
-import com.bigblackboy.doctorappointment.HospitalApi;
+import com.bigblackboy.doctorappointment.controller.HospitalController;
+import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
+import com.bigblackboy.doctorappointment.recyclerviewadapters.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.api.SpecialitiesApiResponse;
 import com.bigblackboy.doctorappointment.model.Speciality;
 
@@ -81,7 +81,7 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        hospitalApi = Controller.getApi();
+        hospitalApi = HospitalController.getApi();
         recyclerView = getView().findViewById(R.id.rvSpeciality);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);

@@ -1,4 +1,4 @@
-package com.bigblackboy.doctorappointment;
+package com.bigblackboy.doctorappointment.recyclerviewadapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,20 +7,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bigblackboy.doctorappointment.R;
+
 import java.util.List;
 
-public class AppointmentRecyclerViewAdapter<T> extends RecyclerView.Adapter<AppointmentRecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private List<T> mData;
     private LayoutInflater mInflater;
-    private AppointmentRecyclerViewAdapter.ItemClickListener mClickListener;
+    private RecyclerViewAdapter.ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    public AppointmentRecyclerViewAdapter(Context context, List<T> data) {
+    public RecyclerViewAdapter(Context context, List<T> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
-    public AppointmentRecyclerViewAdapter(Context context) {
+    public RecyclerViewAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
     }
 
@@ -30,14 +32,14 @@ public class AppointmentRecyclerViewAdapter<T> extends RecyclerView.Adapter<Appo
 
     // inflates the row layout from xml when needed
     @Override
-    public AppointmentRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.recyclerview_row, parent, false);
-        return new AppointmentRecyclerViewAdapter.ViewHolder(view);
+        return new RecyclerViewAdapter.ViewHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
-    public void onBindViewHolder(AppointmentRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerViewAdapter.ViewHolder holder, int position) {
         String itemText = mData.get(position).toString();
         holder.myTextView.setText(itemText);
     }
@@ -71,7 +73,7 @@ public class AppointmentRecyclerViewAdapter<T> extends RecyclerView.Adapter<Appo
     }
 
     // allows clicks events to be caught
-    public void setClickListener(AppointmentRecyclerViewAdapter.ItemClickListener itemClickListener) {
+    public void setClickListener(RecyclerViewAdapter.ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 

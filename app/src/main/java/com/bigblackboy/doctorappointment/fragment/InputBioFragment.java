@@ -18,8 +18,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bigblackboy.doctorappointment.Controller;
-import com.bigblackboy.doctorappointment.HospitalApi;
+import com.bigblackboy.doctorappointment.controller.HospitalController;
+import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
 import com.bigblackboy.doctorappointment.model.Patient;
@@ -79,7 +79,7 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mSettings = getActivity().getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
-        hospitalApi = Controller.getApi();
+        hospitalApi = HospitalController.getApi();
 
         View v = inflater.inflate(R.layout.fragment_input_bio, container, false);
         etNameReg = v.findViewById(R.id.etNameReg);

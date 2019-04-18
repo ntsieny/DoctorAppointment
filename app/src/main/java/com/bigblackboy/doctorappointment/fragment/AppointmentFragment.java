@@ -15,10 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bigblackboy.doctorappointment.Controller;
-import com.bigblackboy.doctorappointment.HospitalApi;
+import com.bigblackboy.doctorappointment.controller.HospitalController;
+import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.RecyclerViewAdapter;
+import com.bigblackboy.doctorappointment.recyclerviewadapters.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.api.AppointmentListApiResponse;
 import com.bigblackboy.doctorappointment.model.AppointmentInfo;
 
@@ -88,7 +88,7 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        hospitalApi = Controller.getApi();
+        hospitalApi = HospitalController.getApi();
         recyclerView = getView().findViewById(R.id.rvAppointment);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
@@ -120,7 +120,7 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
                             infoList = (List<AppointmentInfo>) entry.getValue();
                             for (AppointmentInfo info : infoList) {
                                 appoints.add(info);
-                                Log.d(LOG_TAG, info.toString() + "\n");
+                                //Log.d(LOG_TAG, info.toString() + "\n");
                             }
                         }
                         adapter.setData(appoints);

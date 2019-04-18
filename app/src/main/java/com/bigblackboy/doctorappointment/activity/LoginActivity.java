@@ -13,8 +13,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.SpringApi;
-import com.bigblackboy.doctorappointment.SpringController;
+import com.bigblackboy.doctorappointment.controller.SpringApi;
+import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.springserver.springmodel.User;
 

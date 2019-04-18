@@ -11,8 +11,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.SpringApi;
-import com.bigblackboy.doctorappointment.SpringController;
+import com.bigblackboy.doctorappointment.controller.SpringApi;
+import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.fragment.InputBioFragment;
