@@ -6,6 +6,7 @@ import com.bigblackboy.doctorappointment.api.DoctorsApiResponse;
 import com.bigblackboy.doctorappointment.api.HospitalApiResponse;
 import com.bigblackboy.doctorappointment.api.SpecialitiesApiResponse;
 import com.bigblackboy.doctorappointment.springserver.Response;
+import com.bigblackboy.doctorappointment.springserver.springmodel.Appointment;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Comment;
 import com.bigblackboy.doctorappointment.springserver.springmodel.CommentResponse;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Review;
@@ -45,6 +46,12 @@ public interface SpringApi {
     @POST("checklogin/")
     Call<Response> checkLoginUnique(@Body User user);
 
+    @GET("review/get/review_id/{reviewId}")
+    Call<ReviewResponse> getReview(@Path("reviewId") int reviewId);
+
+    @GET("review/get/doctor_id/{doctorId}")
+    Call<List<ReviewResponse>> getReviews(@Path("doctorId") int doctorId);
+
     @POST("review/create")
     Call<Response> createReview(@Body Review review);
 
@@ -60,17 +67,14 @@ public interface SpringApi {
     @POST("review/dislike/{serviceId}/{reviewId}")
     Call<Response> dislikeReview(@Path("serviceId") String serviceId, @Path("reviewId") int reviewId);
 
-    @GET("review/get/{doctorId}")
-    Call<List<ReviewResponse>> getReviews(@Path("doctorId") int doctorId);
-
-    @POST("comment/create")
-    Call<Response> createComment(@Body Comment comment);
-
     @GET("comment/get/comment_id/{commentId}")
     Call<CommentResponse> getComment(@Path("commentId") int commentId);
 
     @GET("comment/get/review_id/{reviewId}")
     Call<List<CommentResponse>> getComments(@Path("reviewId") int reviewId);
+
+    @POST("comment/create")
+    Call<Response> createComment(@Body Comment comment);
 
     @POST("comment/update")
     Call<Response> updateComment(@Body Comment comment);
@@ -83,4 +87,19 @@ public interface SpringApi {
 
     @POST("comment/dislike/{serviceId}/{commentId}")
     Call<Response> dislikeComment(@Path("serviceId") String serviceId, @Path("commentId") int commentId);
+
+    @GET("app/get/app_id/{appId}")
+    Call<Appointment> getAppointment(@Path("appId") int appId);
+
+    @GET("app/get/service_id/{serviceId}")
+    Call<List<Appointment>> getAppointments(@Path("serviceId") String serviceId);
+
+    @POST("app/create")
+    Call<Response> createAppointment(@Body Appointment app);
+
+    @POST("app/update")
+    Call<Response> updateAppointment(@Body Appointment app);
+
+    @DELETE("app/delete/{appId}")
+    Call<Response> deleteAppointment(@Path("appId") int appId);
 }
