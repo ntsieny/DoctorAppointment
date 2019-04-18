@@ -131,13 +131,13 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         user.setDayBirth(patient.getDayBirth());
         user.setMonthBirth(patient.getMonthBirth());
         user.setYearBirth(patient.getYearBirth());
-        user.setServiceId(patient.getId());
+        user.setServiceId(patient.getServiceId());
         return user;
     }
 
     private void writeSharedPreferences() {
         editor = mSettings.edit();
-        editor.putString(APP_SETTINGS_PATIENT_ID, patient.getId());
+        editor.putString(APP_SETTINGS_PATIENT_ID, patient.getServiceId());
         editor.putString(APP_SETTINGS_PATIENT_NAME, patient.getName());
         editor.putString(APP_SETTINGS_PATIENT_LASTNAME, patient.getLastName());
         editor.putString(APP_SETTINGS_PATIENT_MIDDLENAME, patient.getMiddleName());

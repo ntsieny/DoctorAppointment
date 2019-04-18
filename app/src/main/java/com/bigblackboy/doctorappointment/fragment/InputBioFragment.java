@@ -147,12 +147,12 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
                         Session session = new Session();
 
                         CheckPatientApiResponse respObj = response.body();
-                        patient.setId(respObj.getResponse().getPatientId());
+                        patient.setServiceId(respObj.getResponse().getPatientId());
                         //dataHashMap.put("patient_id", respObj.getResponse().getPatientId());
 
                         String cookie = response.headers().get("Set-Cookie");
                         if (cookie != null) session.setCookies(cookie);
-                        Log.d(LOG_TAG, "patientId: " + patient.getId() + ", cookie: " + cookie);
+                        Log.d(LOG_TAG, "patientId: " + patient.getServiceId() + ", cookie: " + cookie);
 
                         /*editor = mSettings.edit();
                         editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, patient.getId());

@@ -199,7 +199,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     private void replaceToSpecialityFragment() {
         String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
-        SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patient.getId());
+        SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patient.getServiceId());
         fm.beginTransaction().replace(R.id.fragContainer, specialityFragment).commit();
     }
 
@@ -247,7 +247,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         this.speciality = speciality;
         String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
         String specialityId = speciality.getIdSpeciality();
-        DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patient.getId(), specialityId);
+        DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patient.getServiceId(), specialityId);
         fm.beginTransaction().replace(R.id.fragContainer, doctorFragment).addToBackStack("spec_fragment").commit();
     }
 
@@ -261,7 +261,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         this.doctor = doctor;
         String doctorId = doctor.getIdDoc();
         String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
-        AppointmentFragment appointmentFragment = AppointmentFragment.newInstance(doctorId, hospitalId, patient.getId());
+        AppointmentFragment appointmentFragment = AppointmentFragment.newInstance(doctorId, hospitalId, patient.getServiceId());
         fm.beginTransaction().replace(R.id.fragContainer, appointmentFragment).addToBackStack("doctor_fragment").commit();
     }
 

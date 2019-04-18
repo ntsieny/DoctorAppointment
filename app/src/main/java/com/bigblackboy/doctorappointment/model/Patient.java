@@ -2,7 +2,7 @@ package com.bigblackboy.doctorappointment.model;
 
 public class Patient {
 
-    private String id;
+    private String serviceId;
     private String name;
     private String lastName;
     private String middleName;
@@ -82,12 +82,12 @@ public class Patient {
         return String.format("%d-%d-%dT00:00:00.000Z", yearBirth, monthBirth, dayBirth);
     }
 
-    public String getId() {
-        return id;
+    public String getServiceId() {
+        return serviceId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
     @Override

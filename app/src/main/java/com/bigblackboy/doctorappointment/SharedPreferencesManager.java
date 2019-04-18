@@ -61,7 +61,7 @@ public class SharedPreferencesManager {
         int monthBirth = mSettings.getInt(APP_SETTINGS_PATIENT_MONTHBIRTH, 0);
         int yearBirth = mSettings.getInt(APP_SETTINGS_PATIENT_YEARBIRTH, 0);
         Patient patient = new Patient();
-        patient.setId(patientId);
+        patient.setServiceId(patientId);
         patient.setName(name);
         patient.setLastName(lastname);
         patient.setMiddleName(middleName);
