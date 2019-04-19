@@ -9,21 +9,19 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bigblackboy.doctorappointment.controller.HospitalController;
-import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.recyclerviewadapters.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.api.HospitalApiResponse;
+import com.bigblackboy.doctorappointment.controller.HospitalApi;
+import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.model.District;
 import com.bigblackboy.doctorappointment.model.Hospital;
+import com.bigblackboy.doctorappointment.recyclerviewadapter.HospitalRecyclerViewAdapter;
 
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,16 +31,15 @@ import retrofit2.Response;
 import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS;
 import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_ID;
 
-public class HospitalFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
+public class HospitalFragment extends Fragment implements HospitalRecyclerViewAdapter.ItemClickListener {
 
     private String LOG_TAG = "myLog: HospitalFragment";
     private static HospitalApi hospitalApi;
 
-    RecyclerViewAdapter adapter;
+    HospitalRecyclerViewAdapter adapter;
     List<Hospital> hospitals;
     RecyclerView recyclerView;
     private String districtId;
-    private HashMap<String, String> dataHashMap;
     SharedPreferences mSettings;
     private OnHospitalFragmentDataListener mListener;
     private String barTitle = "Выбор медучреждения";
@@ -65,7 +62,6 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        //((MainMenuActivity)context).districtToFragment = this;
         if(context instanceof OnHospitalFragmentDataListener) {
             mListener = (OnHospitalFragmentDataListener)context;
         } else {
@@ -77,9 +73,6 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         districtId = getArguments().getString("district_id");
-        /*if(getActivity() instanceof MainMenuActivity) {
-            ((MainMenuActivity) getActivity()).setDistrictToFragmentListener(this);
-        }*/
     }
 
     @Nullable
@@ -98,7 +91,7 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
         recyclerView.addItemDecoration(dividerItemDecoration);
-        adapter = new RecyclerViewAdapter(getContext());
+        adapter = new HospitalRecyclerViewAdapter(getContext());
         adapter.setClickListener(this);
     }
 
@@ -133,10 +126,7 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
 
     @Override
     public void onItemClick(View view, int position) {
-        //Toast.makeText(getContext(), "You clicked " + ((Hospital)adapter.getItem(position)).getLpuName() + " on row number " + position, Toast.LENGTH_SHORT).show();
         int hospitalId = ((Hospital)adapter.getItem(position)).getIdLPU();
-        //dataHashMap.put("hospital_id", hospitalId);
-        //mDataPasser.onDataPass(2, dataHashMap);
 
         mListener.onHospitalFragmentDataListener((Hospital)adapter.getItem(position));
 
@@ -144,13 +134,5 @@ public class HospitalFragment extends Fragment implements RecyclerViewAdapter.It
         SharedPreferences.Editor editor = mSettings.edit();
         editor.putInt(APP_SETTINGS_HOSPITAL_ID, hospitalId);
         editor.apply();
-
-        Log.d(LOG_TAG, "HospitalID: " + hospitalId);
     }
-
-    /*@Override
-    public void districtToFragment(District district) {
-        //districtId = district.getId();
-        Toast.makeText(getContext(), districtId + " хаха", Toast.LENGTH_SHORT).show();
-    }*/
 }

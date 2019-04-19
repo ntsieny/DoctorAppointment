@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.recyclerviewadapters.RecyclerViewAdapter;
+import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.api.AppointmentListApiResponse;
 import com.bigblackboy.doctorappointment.model.AppointmentInfo;
 
@@ -31,9 +31,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AppointmentFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
+public class ChooseAppointmentFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
 
-    private String LOG_TAG = "myLog: AppointmentFragment";
+    private String LOG_TAG = "myLog: ChooseAppointmentFragment";
     private static HospitalApi hospitalApi;
     RecyclerViewAdapter adapter;
     List<AppointmentInfo> appointments;
@@ -49,14 +49,14 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
         void onAppointmentUpdateActionBarTitle(String barTitle);
     }
 
-    public static AppointmentFragment newInstance(String doctorId, String hospitalId, String patientId) {
-        AppointmentFragment appointmentFragment = new AppointmentFragment();
+    public static ChooseAppointmentFragment newInstance(String doctorId, String hospitalId, String patientId) {
+        ChooseAppointmentFragment chooseAppointmentFragment = new ChooseAppointmentFragment();
         Bundle args = new Bundle();
         args.putString("doctor_id", doctorId);
         args.putString("hospital_id", hospitalId);
         args.putString("patient_id", patientId);
-        appointmentFragment.setArguments(args);
-        return appointmentFragment;
+        chooseAppointmentFragment.setArguments(args);
+        return chooseAppointmentFragment;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mListener.onAppointmentUpdateActionBarTitle(barTitle);
-        return inflater.inflate(R.layout.fragment_appointment, null);
+        return inflater.inflate(R.layout.fragment_choose_appointment, null);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
         super.onViewCreated(view, savedInstanceState);
 
         hospitalApi = HospitalController.getApi();
-        recyclerView = getView().findViewById(R.id.rvAppointment);
+        recyclerView = getView().findViewById(R.id.rvChooseAppointment);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
         recyclerView.addItemDecoration(dividerItemDecoration);
@@ -100,16 +100,15 @@ public class AppointmentFragment extends Fragment implements RecyclerViewAdapter
     @Override
     public void onResume() {
         super.onResume();
-        getAppointments();
+        getAppointmentDates();
     }
 
 
-    private void getAppointments() {
+    private void getAppointmentDates() {
         hospitalApi.getAppointments(doctorId, hospitalId, patientId, "", "").enqueue(new Callback<AppointmentListApiResponse>() {
             @Override
             public void onResponse(Call<AppointmentListApiResponse> call, Response<AppointmentListApiResponse> response) {
                 if (response.isSuccessful()) {
-
                     AppointmentListApiResponse respObj = response.body();
                     List<AppointmentInfo> infoList;
                     List<AppointmentInfo> appoints = new ArrayList<>();

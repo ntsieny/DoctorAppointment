@@ -1,0 +1,109 @@
+package com.bigblackboy.doctorappointment.fragment;
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.controller.SpringApi;
+import com.bigblackboy.doctorappointment.controller.SpringController;
+import com.bigblackboy.doctorappointment.recyclerviewadapter.AppointmentHistoryRecyclerViewAdapter;
+import com.bigblackboy.doctorappointment.springserver.springmodel.Appointment;
+
+import org.json.JSONObject;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class AppointmentHistoryFragment extends Fragment implements AppointmentHistoryRecyclerViewAdapter.ItemClickListener {
+
+    private static final String LOG_TAG = "myLog: AppHistFragment";
+    private static SpringApi springApi;
+    private RecyclerView recyclerView;
+    private AppointmentHistoryRecyclerViewAdapter adapter;
+    private String serviceId;
+
+    public static AppointmentHistoryFragment newInstance(String serviceId) {
+        AppointmentHistoryFragment fragment = new AppointmentHistoryFragment();
+        Bundle args = new Bundle();
+        args.putString("service_id", serviceId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        serviceId = getArguments().getString("service_id");
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_appointment_history, null);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        springApi = SpringController.getApi();
+        recyclerView = getView().findViewById(R.id.rvAppointmentHistory);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        adapter = new AppointmentHistoryRecyclerViewAdapter(getContext());
+        adapter.setClickListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAppointments();
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+
+    }
+
+    private void getAppointments() {
+        springApi.getAppointments(serviceId).enqueue(new Callback<List<Appointment>>() {
+            @Override
+            public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
+                if (response.isSuccessful()) {
+                    if(response.body().size() > 0) {
+                        adapter.setData(response.body());
+                        recyclerView.setAdapter(adapter);
+                    }
+                    else Toast.makeText(getContext(), "Записей не обнаружено", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        Toast.makeText(getContext(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, error.getString("message"));
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.d(LOG_TAG, e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Appointment>> call, Throwable t) {
+                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, t.getMessage());
+            }
+        });
+    }
+}

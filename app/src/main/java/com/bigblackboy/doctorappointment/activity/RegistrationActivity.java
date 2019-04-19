@@ -121,7 +121,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         user.setHospitalId(hospital.getIdLPU());
         user.setLpuNameShort(hospital.getLPUShortName());
         user.setLpuNameFull(hospital.getLpuName());
-        user.setLpuAddress(hospital.getAddress());
+        user.setLpuAddress(hospital.getFullAddress());
         user.setLpuEmail(hospital.getEmail());
         user.setLpuType(hospital.getLpuType());
         user.setLpuWorkTime(hospital.getWorkTime());

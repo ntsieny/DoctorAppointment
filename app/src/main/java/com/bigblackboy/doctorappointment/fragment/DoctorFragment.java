@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.recyclerviewadapters.RecyclerViewAdapter;
+import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.api.DoctorsApiResponse;
 import com.bigblackboy.doctorappointment.model.Doctor;
 

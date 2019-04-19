@@ -1,4 +1,4 @@
-package com.bigblackboy.doctorappointment.recyclerviewadapters;
+package com.bigblackboy.doctorappointment.recyclerviewadapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

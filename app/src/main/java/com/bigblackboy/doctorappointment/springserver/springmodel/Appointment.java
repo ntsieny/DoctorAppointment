@@ -17,8 +17,8 @@ public class Appointment {
     private String specName;
     private int docId;
     private String docName;
-    private Date date;
-    private Date time;
+    private String date;
+    private String time;
     private String dateTime;
 
     public int getAppId() {
@@ -117,11 +117,11 @@ public class Appointment {
         this.docName = docName;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -133,11 +133,11 @@ public class Appointment {
         this.serviceId = serviceId;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

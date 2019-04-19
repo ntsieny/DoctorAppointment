@@ -5,6 +5,7 @@
     <string name="choose_speciality">Выберите специальность</string>
     <string name="choose_doctor">Выберите врача</string>
     <string name="choose_appointment">Выберите дату и время</string>
+    <string name="appointment_history">История заявок</string>
     <string name="make_appointment_menu_item">Записаться к врачу</string>
     <string name="login_as_user">Логин</string>
     <string name="login_as_guest">Гостевой режим</string>

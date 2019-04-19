@@ -1,4 +1,4 @@
-package com.bigblackboy.doctorappointment;
+package com.bigblackboy.doctorappointment.utils;
 
 import android.util.Log;
 

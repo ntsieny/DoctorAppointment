@@ -23,7 +23,8 @@ import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
-import com.bigblackboy.doctorappointment.fragment.AppointmentFragment;
+import com.bigblackboy.doctorappointment.fragment.AppointmentHistoryFragment;
+import com.bigblackboy.doctorappointment.fragment.ChooseAppointmentFragment;
 import com.bigblackboy.doctorappointment.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.fragment.DoctorFragment;
 import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
@@ -50,7 +51,7 @@ import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SET
 
 public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DistrictFragment.OnDistrictFragmentDataListener,
         HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
-        AppointmentFragment.OnAppointmentFragmentDataListener, MainMenuFragment.OnMainMenuFragmentDataListener {
+        ChooseAppointmentFragment.OnAppointmentFragmentDataListener, MainMenuFragment.OnMainMenuFragmentDataListener {
 
 
     private static final String LOG_TAG = "myLog: MainMenuActivity";
@@ -178,7 +179,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
                 break;
             case R.id.appointment_history:
                 if (loggedIn) {
-
+                    replaceToAppointmentHistoryFragment();
                 } else Toast.makeText(this, "Необходимо войти в аккаунт", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.area_number:
@@ -215,6 +216,11 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
         SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patient.getServiceId());
         fm.beginTransaction().replace(R.id.fragContainer, specialityFragment).commit();
+    }
+
+    private void replaceToAppointmentHistoryFragment() {
+        AppointmentHistoryFragment appHistoryFrag = AppointmentHistoryFragment.newInstance(patient.getServiceId());
+        fm.beginTransaction().replace(R.id.fragContainer, appHistoryFrag).commit();
     }
 
     @Override
@@ -275,8 +281,8 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         this.doctor = doctor;
         String doctorId = doctor.getIdDoc();
         String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
-        AppointmentFragment appointmentFragment = AppointmentFragment.newInstance(doctorId, hospitalId, patient.getServiceId());
-        fm.beginTransaction().replace(R.id.fragContainer, appointmentFragment).addToBackStack("doctor_fragment").commit();
+        ChooseAppointmentFragment chooseAppointmentFragment = ChooseAppointmentFragment.newInstance(doctorId, hospitalId, patient.getServiceId());
+        fm.beginTransaction().replace(R.id.fragContainer, chooseAppointmentFragment).addToBackStack("doctor_fragment").commit();
     }
 
     @Override

@@ -28,7 +28,6 @@ public class Hospital {
     @SerializedName("LPUFullName")
     @Expose
     private String LPUFullName;
-
     @SerializedName("LPUShortName")
     @Expose
     private String lPUShortName;
@@ -49,7 +48,7 @@ public class Hospital {
     private String workTime;
     @SerializedName("Address")
     @Expose
-    private String address;
+    private String fullAddress;
     @SerializedName("LpuType")
     @Expose
     private String lpuType;
@@ -158,12 +157,12 @@ public class Hospital {
         this.workTime = workTime;
     }
 
-    public String getAddress() {
-        return address;
+    public String getFullAddress() {
+        return fullAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setFullAddress(String fullAddress) {
+        this.fullAddress = fullAddress;
     }
 
     public String getLpuType() {
@@ -230,18 +229,13 @@ public class Hospital {
         this.comment = comment;
     }
 
-    /*@Override
+    @Override
     public String toString() {
         return "District: " + district + "\nIsEnableAppointment: " + isEnableAppointment + "\nInfoStand: " + infoStand +
                 "\nIsEnableInternet: " + isEnableInternet + "\nLPUShortName: " + lPUShortName + "\nEmail: " + email +
                 "\nPartOf: " + partOf + "\nLPUType: " + lPUType + "\nOid: " + oid + "\nWorkTime: " + workTime +
-                "\nAddress: " + address + "\nLpuType: " + lpuType + "\nLpuName: " + lpuName + "\nInternetReference: " +
+                "\nAddress: " + fullAddress + "\nLpuType: " + lpuType + "\nLpuName: " + lpuName + "\nInternetReference: " +
                 internetReference + "\nIdLPU: " + idLPU + "\nPhoneCallCentre: " + phoneCallCentre + "\nExternalHubId: " +
                 externalHubId + "\nDescription: " + description + "\nComment: " + comment;
-    }*/
-
-    @Override
-    public String toString() {
-        return lpuName;
     }
 }
