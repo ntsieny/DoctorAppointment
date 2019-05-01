@@ -2,32 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
-    <TextView
-        android:id="@+id/tvSpecName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Специальность"
-        android:textSize="18sp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvDoctorName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Врач" />
+        <TextView
+            android:id="@+id/tvSpecName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Специальность"
+            android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/tvAppDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Дата и время приема" />
+        <TextView
+            android:id="@+id/tvDoctorName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Врач" />
 
-    <TextView
-        android:id="@+id/tvHospitalName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Поликлиника" />
+        <TextView
+            android:id="@+id/tvAppDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Дата и время приема" />
+
+        <TextView
+            android:id="@+id/tvHospitalName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Поликлиника" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvAppHistItemBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/three_dots"
+            android:textSize="18sp"
+            android:paddingRight="10dp"/>
+
+    </LinearLayout>
+
 </LinearLayout>

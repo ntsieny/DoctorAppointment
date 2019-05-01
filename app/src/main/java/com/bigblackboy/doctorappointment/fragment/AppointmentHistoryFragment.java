@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
     private RecyclerView recyclerView;
     private AppointmentHistoryRecyclerViewAdapter adapter;
     private String serviceId;
+    private List<Appointment> appointments;
 
     public static AppointmentHistoryFragment newInstance(String serviceId) {
         AppointmentHistoryFragment fragment = new AppointmentHistoryFragment();
@@ -62,6 +64,7 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
         recyclerView.addItemDecoration(dividerItemDecoration);
+        registerForContextMenu(recyclerView);
         adapter = new AppointmentHistoryRecyclerViewAdapter(getContext());
         adapter.setClickListener(this);
     }
@@ -73,8 +76,13 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-
+    public void onItemClick(int viewId, int position) {
+        Appointment app = adapter.getItem(position);
+        switch (viewId) {
+            case R.id.removeAppHistItem:
+                deleteAppointment(app.getAppId());
+                break;
+        }
     }
 
     private void getAppointments() {
@@ -83,7 +91,8 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
             public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
                 if (response.isSuccessful()) {
                     if(response.body().size() > 0) {
-                        adapter.setData(response.body());
+                        appointments = response.body();
+                        adapter.setData(appointments);
                         recyclerView.setAdapter(adapter);
                     }
                     else Toast.makeText(getContext(), "Записей не обнаружено", Toast.LENGTH_SHORT).show();
@@ -101,6 +110,35 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
 
             @Override
             public void onFailure(Call<List<Appointment>> call, Throwable t) {
+                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, t.getMessage());
+            }
+        });
+    }
+
+    private void deleteAppointment(int appointmentId) {
+        springApi.deleteAppointment(appointmentId).enqueue(new Callback<com.bigblackboy.doctorappointment.springserver.Response>() {
+            @Override
+            public void onResponse(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Response<com.bigblackboy.doctorappointment.springserver.Response> response) {
+                if (response.isSuccessful()) {
+                    if(response.body().isSuccess()) {
+                        Toast.makeText(getContext(), "Запись отменена", Toast.LENGTH_SHORT).show();
+                    }
+                    else Toast.makeText(getContext(), "Запись не отменена", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        Toast.makeText(getContext(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, error.getString("message"));
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.d(LOG_TAG, e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
