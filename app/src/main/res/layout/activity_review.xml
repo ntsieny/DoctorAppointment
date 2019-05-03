@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragContainerMainMenu"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragContainerReview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    tools:context=".activity.ReviewActivity">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:visibility="invisible" />
 </LinearLayout>

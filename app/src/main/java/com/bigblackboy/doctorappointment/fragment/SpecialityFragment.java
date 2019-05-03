@@ -40,8 +40,6 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
 
     public interface OnSpecialityFragmentDataListener {
         void onSpecialityFragmentDataListener(Speciality speciality);
-
-        void onSpecialityUpdateActionBarTitle(String barTitle);
     }
 
     public static SpecialityFragment newInstance(String hospitalId, String patientId) {
@@ -73,7 +71,6 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mListener.onSpecialityUpdateActionBarTitle(barTitle);
         return inflater.inflate(R.layout.fragment_speciality, null);
     }
 

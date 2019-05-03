@@ -12,4 +12,11 @@ public class DateParser {
         DateTimeFormatter converter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm");
         return converter.print(dateTime);
     }
+
+    public static String convertISOwithMillistoDateTimeString(String dateIso) {
+        DateTimeFormatter parser = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        DateTime dateTime = parser.parseDateTime(dateIso);
+        DateTimeFormatter converter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm");
+        return converter.print(dateTime);
+    }
 }

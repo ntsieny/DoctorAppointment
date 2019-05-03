@@ -7,14 +7,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.activity.MainMenuActivity;
 import com.bigblackboy.doctorappointment.model.Patient;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     TextView tvFioProfile, tvBirthdayProfile, tvDistrictProfile, tvHospitalProfile;
+    Button btnMyAppointments, btnMyReviews, btnMyComments;
 
     public static ProfileFragment newInstance(Patient patient) {
         ProfileFragment profileFragment = new ProfileFragment();
@@ -39,6 +42,12 @@ public class ProfileFragment extends Fragment {
         tvBirthdayProfile = v.findViewById(R.id.tvBirthdayProfile);
         tvDistrictProfile = v.findViewById(R.id.tvDistrictProfile);
         tvHospitalProfile = v.findViewById(R.id.tvHospitalProfile);
+        btnMyAppointments = v.findViewById(R.id.btnMyAppointments);
+        btnMyAppointments.setOnClickListener(this);
+        btnMyReviews = v.findViewById(R.id.btnMyReviews);
+        btnMyReviews.setOnClickListener(this);
+        btnMyComments = v.findViewById(R.id.btnMyComments);
+        btnMyComments.setOnClickListener(this);
 
         String name = getArguments().getString("name");
         String lastname = getArguments().getString("lastname");
@@ -58,5 +67,20 @@ public class ProfileFragment extends Fragment {
         tvDistrictProfile.setText(getArguments().getString("districtName"));
         tvHospitalProfile.setText(getArguments().getString("hospitalNameShort"));
         return v;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnMyAppointments:
+                ((MainMenuActivity) getActivity()).replaceToAppointmentHistoryFragment();
+                break;
+            case R.id.btnMyReviews:
+
+                break;
+            case R.id.btnMyComments:
+
+                break;
+        }
     }
 }

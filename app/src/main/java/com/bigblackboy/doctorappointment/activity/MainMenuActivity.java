@@ -55,6 +55,13 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
 
     private static final String LOG_TAG = "myLog: MainMenuActivity";
+    private static final String TITLE_MY_PROFILE = "Мой профиль";
+    private static final String TITLE_CHOOSE_DISTRICT = "Выбор района";
+    private static final String TITLE_MAIN_MENU = "Главное меню";
+    private static final String TITLE_CHOOSE_APPOINTMENT = "Выбор даты и времени";
+    private static final String TITLE_DOCTOR_SCHEDULE = "Расписание врачей";
+    private static final String TITLE_APPOINTMENT_HISTORY = "История заявок";
+    private static final String TITLE_CHOOSE_SPECIALITY = "Выбор специальности";
     SharedPreferences mSettings;
     SharedPreferences.Editor editor;
     FragmentManager fm;
@@ -86,7 +93,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
         if (userLoggedIn) {
             loggedIn = true;
-            addFragmentToContainer(new MainMenuFragment(), R.id.fragContainer);
+            addFragmentToContainer(new MainMenuFragment(), R.id.fragContainerMainMenu);
             setNavigationDrawer();
 
             String fio = String.format("%s %s %s", patient.getLastName(), patient.getName(), patient.getMiddleName());
@@ -97,7 +104,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
             tvPatientAddress.setText(patient.getHospital().getLPUShortName() + ", " + patient.getDistrict().getName());
         }
         else if (guestMode) {
-            addFragmentToContainer(new MainMenuFragment(), R.id.fragContainer);
+            addFragmentToContainer(new MainMenuFragment(), R.id.fragContainerMainMenu);
             setNavigationDrawer();
 
             TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
@@ -108,9 +115,16 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         }
         else {
             DistrictFragment districtFragment = new DistrictFragment();
-            fm.beginTransaction().add(R.id.fragContainer, districtFragment).commit();
+            fm.beginTransaction().add(R.id.fragContainerMainMenu, districtFragment).commit();
             setNavigationDrawer();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // TODO сделать чтобы при возвращении на mainmenuactivity выделялся соответствующий прошлому пункт navigation drawer
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     private void addFragmentToContainer(Fragment fragment, int containerId) {
@@ -166,16 +180,15 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
                 replaceToMainMenuFragment();
                 break;
             case R.id.profile:
-                ProfileFragment profileFragment = ProfileFragment.newInstance(patient);
-                fm.beginTransaction().replace(R.id.fragContainer, profileFragment).commit();
+                replaceToProfileFragment();
                 break;
             case R.id.make_appointment:
-                if(loggedIn)
+                if(loggedIn) {
                     replaceToSpecialityFragment();
-                else Toast.makeText(this, "Необходимо войти в аккаунт", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(this, "Необходимо войти в аккаунт", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.doctor_schedule:
-
+                replaceToDoctorScheduleFragment();
                 break;
             case R.id.appointment_history:
                 if (loggedIn) {
@@ -186,7 +199,9 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
                 break;
             case R.id.reviews:
-
+                Intent intent = new Intent(this, ReviewActivity.class);
+                intent.putExtra("fragToLoad", ReviewActivity.FRAGMENT_MAIN_MENU);
+                startActivity(intent);
                 break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -209,31 +224,46 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     private void replaceToMainMenuFragment() {
         MainMenuFragment mainMenuFragment = new MainMenuFragment();
-        fm.beginTransaction().replace(R.id.fragContainer, mainMenuFragment).commit();
+        fm.beginTransaction().replace(R.id.fragContainerMainMenu, mainMenuFragment).commit();
+        getSupportActionBar().setTitle(TITLE_MAIN_MENU);
+    }
+
+    private void replaceToDoctorScheduleFragment() {
+        //
+        getSupportActionBar().setTitle(TITLE_DOCTOR_SCHEDULE);
+    }
+
+    private void replaceToProfileFragment() {
+        ProfileFragment profileFragment = ProfileFragment.newInstance(patient);
+        fm.beginTransaction().replace(R.id.fragContainerMainMenu, profileFragment).commit();
+        getSupportActionBar().setTitle(TITLE_MY_PROFILE);
     }
 
     private void replaceToSpecialityFragment() {
         String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
         SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patient.getServiceId());
-        fm.beginTransaction().replace(R.id.fragContainer, specialityFragment).commit();
+        fm.beginTransaction().replace(R.id.fragContainerMainMenu, specialityFragment).commit();
+        getSupportActionBar().setTitle(TITLE_CHOOSE_SPECIALITY);
     }
 
-    private void replaceToAppointmentHistoryFragment() {
+    public void replaceToAppointmentHistoryFragment() {
         AppointmentHistoryFragment appHistoryFrag = AppointmentHistoryFragment.newInstance(patient.getServiceId());
-        fm.beginTransaction().replace(R.id.fragContainer, appHistoryFrag).commit();
+        fm.beginTransaction().replace(R.id.fragContainerMainMenu, appHistoryFrag).commit();
+        getSupportActionBar().setTitle(TITLE_APPOINTMENT_HISTORY);
+    }
+
+    private void replaceToChooseAppointmentFragment(String doctorId, String hospitalId) {
+        ChooseAppointmentFragment chooseAppointmentFragment = ChooseAppointmentFragment.newInstance(doctorId, hospitalId, patient.getServiceId());
+        fm.beginTransaction().replace(R.id.fragContainerMainMenu, chooseAppointmentFragment).addToBackStack("doctor_fragment").commit();
+        getSupportActionBar().setTitle(TITLE_CHOOSE_APPOINTMENT);
     }
 
     @Override
     public void onDistrictFragmentDataListener(District district) {
         patient.setDistrict(district);
         HospitalFragment hospitalFragment = HospitalFragment.newInstance(district);
-        fTrans = fm.beginTransaction().replace(R.id.fragContainer, hospitalFragment).addToBackStack("fragment_district");
+        fTrans = fm.beginTransaction().replace(R.id.fragContainerMainMenu, hospitalFragment).addToBackStack("fragment_district");
         fTrans.commit();
-    }
-
-    @Override
-    public void onDistrictUpdateActionBarTitle(String barTitle) {
-        getSupportActionBar().setTitle(barTitle);
     }
 
     @Override
@@ -241,7 +271,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         patient.setHospital(hospital);
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         MainMenuFragment mainMenuFragment = new MainMenuFragment();
-        fm.beginTransaction().replace(R.id.fragContainer, mainMenuFragment).commit();
+        fm.beginTransaction().replace(R.id.fragContainerMainMenu, mainMenuFragment).commit();
 
         if(!loggedIn) {
             editor = mSettings.edit();
@@ -268,12 +298,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
         String specialityId = speciality.getIdSpeciality();
         DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patient.getServiceId(), specialityId);
-        fm.beginTransaction().replace(R.id.fragContainer, doctorFragment).addToBackStack("spec_fragment").commit();
-    }
-
-    @Override
-    public void onSpecialityUpdateActionBarTitle(String barTitle) {
-        getSupportActionBar().setTitle(barTitle);
+        fm.beginTransaction().replace(R.id.fragContainerMainMenu, doctorFragment).addToBackStack("spec_fragment").commit();
     }
 
     @Override
@@ -281,13 +306,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         this.doctor = doctor;
         String doctorId = doctor.getIdDoc();
         String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
-        ChooseAppointmentFragment chooseAppointmentFragment = ChooseAppointmentFragment.newInstance(doctorId, hospitalId, patient.getServiceId());
-        fm.beginTransaction().replace(R.id.fragContainer, chooseAppointmentFragment).addToBackStack("doctor_fragment").commit();
-    }
-
-    @Override
-    public void onDoctorUpdateActionBarTitle(String barTitle) {
-        getSupportActionBar().setTitle(barTitle);
+        replaceToChooseAppointmentFragment(doctorId, hospitalId);
     }
 
     @Override
@@ -344,11 +363,6 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
                 Log.d(LOG_TAG, t.getMessage());
             }
         });
-    }
-
-    @Override
-    public void onAppointmentUpdateActionBarTitle(String barTitle) {
-        getSupportActionBar().setTitle(barTitle);
     }
 
     @Override

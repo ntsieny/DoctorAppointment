@@ -7,7 +7,7 @@ public class ReviewResponse {
 
     private int reviewId;
     private Date date;
-    private Date time;
+    private String time;
     private String dateTime;
     private String text;
     private String name;
@@ -153,11 +153,11 @@ public class ReviewResponse {
         this.authorId = authorId;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

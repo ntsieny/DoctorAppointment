@@ -115,7 +115,9 @@ public class Doctor {
 
     @Override
     public String toString() {
-        return name;
+        if(ariaNumber != null)
+            return String.format("%s (Участок № %s)", name, ariaNumber);
+        else return name;
     }
 
     public class Date {

@@ -82,11 +82,6 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
     }
 
     @Override
-    public void onDistrictUpdateActionBarTitle(String barTitle) {
-
-    }
-
-    @Override
     public void onHospitalFragmentDataListener(Hospital hospital) {
         this.hospital = hospital;
         SignUpFragment signUpFragment = new SignUpFragment();

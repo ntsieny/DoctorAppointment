@@ -39,8 +39,6 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
 
     public interface OnDoctorFragmentDataListener {
         void onDoctorFragmentDataListener(Doctor doctor);
-
-        void onDoctorUpdateActionBarTitle(String barTitle);
     }
 
     public static DoctorFragment newInstance(String hospitalId, String patientId, String specialityId) {
@@ -74,7 +72,6 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mListener.onDoctorUpdateActionBarTitle(barTitle);
         return inflater.inflate(R.layout.fragment_doctor, null);
     }
 

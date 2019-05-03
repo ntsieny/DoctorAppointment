@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvHospitalReviewMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Поликлиника, город"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnMyDoctorReviewMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Врачи моей поликлиники" />
+
+    <Button
+        android:id="@+id/btnChangeHospitalReviewMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Другая поликлиника" />
+</LinearLayout>

@@ -87,4 +87,24 @@ public class SharedPreferencesManager {
 
         return patient;
     }
+
+    public District getCurrentDistrict() {
+        String districtId = mSettings.getString(APP_SETTINGS_DISTRICT_ID, null);
+        String districtName = mSettings.getString(APP_SETTINGS_DISTRICT_NAME, null);
+        District district = new District();
+        district.setId(districtId);
+        district.setName(districtName);
+        return district;
+    }
+
+    public Hospital getCurrentHospital() {
+        int hospitalId = mSettings.getInt(APP_SETTINGS_HOSPITAL_ID, -1);
+        String hospitalNameShort = mSettings.getString(APP_SETTINGS_HOSPITAL_NAME_SHORT, null);
+        String hospitalNameFull = mSettings.getString(APP_SETTINGS_HOSPITAL_NAME_FULL, null);
+        Hospital hospital = new Hospital();
+        hospital.setIdLPU(hospitalId);
+        hospital.setLPUShortName(hospitalNameShort);
+        hospital.setLpuName(hospitalNameFull);
+        return hospital;
+    }
 }

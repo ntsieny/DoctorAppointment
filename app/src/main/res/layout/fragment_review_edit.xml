@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvFioEditReview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ФИО врача"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvHospitalEditReview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Поликлиника"
+        android:textSize="18sp" />
+
+    <RatingBar
+        android:id="@+id/rBarEditReview"
+        style="@android:style/Widget.DeviceDefault.Light.RatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5" />
+
+    <EditText
+        android:id="@+id/etEditReview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Введите текст отзыва"
+        android:inputType="textMultiLine" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Отправить отзыв" />
+</LinearLayout>

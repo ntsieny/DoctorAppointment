@@ -33,12 +33,9 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
     ArrayList<District> districts;
     SharedPreferences mSettings;
     private OnDistrictFragmentDataListener mListener;
-    private String barTitle = "Выбор района";
 
     public interface OnDistrictFragmentDataListener {
         void onDistrictFragmentDataListener(District district);
-
-        void onDistrictUpdateActionBarTitle(String barTitle);
     }
 
     @Override
@@ -54,7 +51,6 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mListener.onDistrictUpdateActionBarTitle(barTitle);
         return inflater.inflate(R.layout.fragment_district, null);
     }
 

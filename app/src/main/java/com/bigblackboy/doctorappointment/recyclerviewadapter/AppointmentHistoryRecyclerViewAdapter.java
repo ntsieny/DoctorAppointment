@@ -68,7 +68,7 @@ public class AppointmentHistoryRecyclerViewAdapter extends RecyclerView.Adapter<
     public void onBindViewHolder(final AppointmentHistoryRecyclerViewAdapter.ViewHolder holder, final int position) {
         Appointment app = mData.get(position);
         holder.tvSpecName.setText(app.getSpecName());
-        holder.tvDoctorName.setText(app.getDocName());
+        holder.tvDoctorNameAppHist.setText(app.getDocName());
         holder.tvAppDate.setText(DateParser.convertISOtoDateTimeString(app.getDateTime()));
         holder.tvHospitalName.setText(app.getLpuNameShort());
         holder.tvAppHistItemBtn.setOnClickListener(new View.OnClickListener() {
@@ -104,12 +104,12 @@ public class AppointmentHistoryRecyclerViewAdapter extends RecyclerView.Adapter<
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvSpecName, tvDoctorName, tvAppDate, tvHospitalName, tvAppHistItemBtn;
+        TextView tvSpecName, tvDoctorNameAppHist, tvAppDate, tvHospitalName, tvAppHistItemBtn;
 
         ViewHolder(View itemView) {
             super(itemView);
             tvSpecName = itemView.findViewById(R.id.tvSpecName);
-            tvDoctorName = itemView.findViewById(R.id.tvDoctorName);
+            tvDoctorNameAppHist = itemView.findViewById(R.id.tvDoctorNameAppHist);
             tvAppDate = itemView.findViewById(R.id.tvAppDate);
             tvHospitalName = itemView.findViewById(R.id.tvHospitalName);
             tvAppHistItemBtn = itemView.findViewById(R.id.tvAppHistItemBtn);
