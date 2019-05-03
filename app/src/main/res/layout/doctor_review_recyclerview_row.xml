@@ -22,7 +22,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Имя автора"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvDateReview"

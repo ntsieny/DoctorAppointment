@@ -35,7 +35,6 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
     RecyclerView recyclerView;
     private String specialityId, hospitalId, patientId;
     private OnDoctorFragmentDataListener mListener;
-    private String barTitle = "Выбор врача";
 
     public interface OnDoctorFragmentDataListener {
         void onDoctorFragmentDataListener(Doctor doctor);

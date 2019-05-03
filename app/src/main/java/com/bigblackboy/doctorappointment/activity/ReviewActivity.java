@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
@@ -14,13 +15,14 @@ import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.fragment.DoctorFragment;
 import com.bigblackboy.doctorappointment.fragment.DoctorReviewsFragment;
+import com.bigblackboy.doctorappointment.fragment.EditReviewFragment;
 import com.bigblackboy.doctorappointment.fragment.ReviewMainFragment;
 import com.bigblackboy.doctorappointment.fragment.SpecialityFragment;
 import com.bigblackboy.doctorappointment.model.Doctor;
 import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Speciality;
 
-public class ReviewActivity extends AppCompatActivity implements SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener {
+public class ReviewActivity extends AppCompatActivity implements SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener, DoctorReviewsFragment.OnDoctorReviewsFragmentDataListener {
 
     public static final int FRAGMENT_DOCTOR_REVIEWS = 0;
     public static final int FRAGMENT_MY_REVIEWS = 1;
@@ -31,6 +33,7 @@ public class ReviewActivity extends AppCompatActivity implements SpecialityFragm
     private FragmentManager fm;
     private SpringApi springApi;
     SharedPreferences mSettings;
+    SharedPreferencesManager prefManager;
     private boolean loggedIn;
     private boolean guestMode;
     private Patient patient;
@@ -46,7 +49,7 @@ public class ReviewActivity extends AppCompatActivity implements SpecialityFragm
         springApi = SpringController.getApi();
 
         mSettings = getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE);
-        SharedPreferencesManager prefManager = new SharedPreferencesManager(mSettings);
+        prefManager = new SharedPreferencesManager(mSettings);
         patient = prefManager.getCurrentPatient();
 
         loggedIn = prefManager.isUserLoggedIn();
@@ -81,6 +84,11 @@ public class ReviewActivity extends AppCompatActivity implements SpecialityFragm
         fm.beginTransaction().replace(R.id.fragContainerReview, specialityFragment).addToBackStack("ReviewActivityMain").commit();
     }
 
+    public void replaceToEditReviewFragment() {
+        EditReviewFragment editReviewFragment = EditReviewFragment.newInstance(doctor, prefManager.getCurrentHospital().getLPUShortName(), prefManager.getCurrentPatient().getServiceId());
+        fm.beginTransaction().replace(R.id.fragContainerReview, editReviewFragment).addToBackStack("doctor_reviews_fragment").commit();
+    }
+
     private void replaceToDoctorReviewsFragment() {
         DoctorReviewsFragment fragment = DoctorReviewsFragment.newInstance(doctor.getIdDoc(), doctor.getName());
         fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("doctor_fragment").commit();
@@ -104,4 +112,12 @@ public class ReviewActivity extends AppCompatActivity implements SpecialityFragm
     }
 
 
+    @Override
+    public void onDoctorReviewsFragmentDataListener(int viewId) {
+        switch (viewId) {
+            case R.id.btnAddReview:
+                replaceToEditReviewFragment();
+                break;
+        }
+    }
 }

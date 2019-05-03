@@ -1,5 +1,6 @@
 package com.bigblackboy.doctorappointment.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.activity.ReviewActivity;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.model.Doctor;
@@ -43,6 +45,11 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
     TextView tvDoctorNameReview, tvAvgMark;
     RatingBar rBarAvgMark;
     Button btnAddReview;
+    private OnDoctorReviewsFragmentDataListener mListener;
+
+    public interface OnDoctorReviewsFragmentDataListener {
+        void onDoctorReviewsFragmentDataListener(int viewId);
+    }
 
 
     public static DoctorReviewsFragment newInstance(String doctorId, String doctorName) {
@@ -52,6 +59,16 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
         args.putString("doctor_name", doctorName);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnDoctorReviewsFragmentDataListener) {
+            mListener = (OnDoctorReviewsFragmentDataListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnDoctorReviewsFragmentDataListener");
+        }
     }
 
     @Override
@@ -75,7 +92,7 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
         btnAddReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Создание отзыва...", Toast.LENGTH_SHORT).show();
+                mListener.onDoctorReviewsFragmentDataListener(v.getId());
             }
         });
         return v;
@@ -115,7 +132,7 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
                 } else {
                     try {
                         JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getContext(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Отзывы не найдены", Toast.LENGTH_SHORT).show();
                         Log.d(LOG_TAG, error.getString("message"));
                     } catch (Exception e) {
                         Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -130,7 +147,6 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
                 Log.d(LOG_TAG, t.getMessage());
             }
         });
-
     }
 
     private float countAvgMark(List<ReviewResponse> list) {
