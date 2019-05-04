@@ -60,21 +60,22 @@
                 android:layout_marginBottom="5dp"
                 android:layout_weight="1">
 
-                <ImageButton
-                    android:id="@+id/imBtnLike"
+                <CheckBox
+                    android:id="@+id/chbLike"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"
-                    android:background="@android:color/transparent"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/like_empty" />
+                    android:background="@drawable/like_selector"
+                    android:button="@null"
+                    android:checked="false"
+                    android:scaleType="fitCenter" />
 
                 <TextView
                     android:id="@+id/tvLikeCounterReview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/imBtnLike"
-                    android:layout_toRightOf="@id/imBtnLike"
+                    android:layout_alignBottom="@id/chbLike"
+                    android:layout_toRightOf="@id/chbLike"
                     android:text="10" />
             </RelativeLayout>
 
@@ -85,21 +86,22 @@
                 android:layout_marginBottom="5dp"
                 android:layout_weight="1">
 
-                <ImageButton
-                    android:id="@+id/imBtnDislike"
+                <CheckBox
+                    android:id="@+id/chbDislike"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"
-                    android:background="@android:color/transparent"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/dislike_empty" />
+                    android:background="@drawable/dislike_selector"
+                    android:button="@null"
+                    android:checked="false"
+                    android:scaleType="fitCenter" />
 
                 <TextView
                     android:id="@+id/tvDislikeCounterReview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/imBtnDislike"
-                    android:layout_toRightOf="@id/imBtnDislike"
+                    android:layout_alignBottom="@id/chbDislike"
+                    android:layout_toRightOf="@id/chbDislike"
                     android:text="10" />
             </RelativeLayout>
 

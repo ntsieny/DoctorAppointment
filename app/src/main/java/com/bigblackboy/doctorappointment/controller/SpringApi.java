@@ -67,6 +67,9 @@ public interface SpringApi {
     @POST("review/dislike/{serviceId}/{reviewId}")
     Call<Response> dislikeReview(@Path("serviceId") String serviceId, @Path("reviewId") int reviewId);
 
+    @POST("review/deletelike/{serviceId}/{reviewId}")
+    Call<Response> deletelikeReview(@Path("serviceId") String serviceId, @Path("reviewId") int reviewId);
+
     @GET("comment/get/comment_id/{commentId}")
     Call<CommentResponse> getComment(@Path("commentId") int commentId);
 
@@ -87,6 +90,9 @@ public interface SpringApi {
 
     @POST("comment/dislike/{serviceId}/{commentId}")
     Call<Response> dislikeComment(@Path("serviceId") String serviceId, @Path("commentId") int commentId);
+
+    @POST("comment/deletelike/{serviceId}/{commentId}")
+    Call<Response> deletelikeComment(@Path("serviceId") String serviceId, @Path("commentId") int commentId);
 
     @GET("app/get/app_id/{appId}")
     Call<Appointment> getAppointment(@Path("appId") int appId);

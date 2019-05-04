@@ -90,7 +90,7 @@ public class ReviewActivity extends AppCompatActivity implements SpecialityFragm
     }
 
     private void replaceToDoctorReviewsFragment() {
-        DoctorReviewsFragment fragment = DoctorReviewsFragment.newInstance(doctor.getIdDoc(), doctor.getName());
+        DoctorReviewsFragment fragment = DoctorReviewsFragment.newInstance(doctor.getIdDoc(), doctor.getName(), prefManager.getCurrentPatient().getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("doctor_fragment").commit();
     }
 

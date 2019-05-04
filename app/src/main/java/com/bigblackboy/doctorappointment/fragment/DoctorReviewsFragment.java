@@ -1,11 +1,11 @@
 package com.bigblackboy.doctorappointment.fragment;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,15 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.activity.ReviewActivity;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
-import com.bigblackboy.doctorappointment.model.Doctor;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.DoctorReviewRecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
 
@@ -37,26 +37,27 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
 
     private static final String LOG_TAG = "myLog: DocReviewsFrag";
     private static SpringApi springApi;
-    private RecyclerView recyclerView;
     private DoctorReviewRecyclerViewAdapter adapter;
     private List<ReviewResponse> reviews;
     private String doctorId;
     private String doctorName;
+    private String serviceId;
     TextView tvDoctorNameReview, tvAvgMark;
     RatingBar rBarAvgMark;
     Button btnAddReview;
+    private RecyclerView recyclerView;
     private OnDoctorReviewsFragmentDataListener mListener;
 
     public interface OnDoctorReviewsFragmentDataListener {
         void onDoctorReviewsFragmentDataListener(int viewId);
     }
 
-
-    public static DoctorReviewsFragment newInstance(String doctorId, String doctorName) {
+    public static DoctorReviewsFragment newInstance(String doctorId, String doctorName, String serviceId) {
         DoctorReviewsFragment fragment = new DoctorReviewsFragment();
         Bundle args = new Bundle();
         args.putString("doctor_id", doctorId);
         args.putString("doctor_name", doctorName);
+        args.putString("service_id", serviceId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,8 +77,9 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
         super.onCreate(savedInstanceState);
         doctorId = getArguments().getString("doctor_id");
         doctorName = getArguments().getString("doctor_name");
+        serviceId = getArguments().getString("service_id");
         springApi = SpringController.getApi();
-        adapter = new DoctorReviewRecyclerViewAdapter(getContext());
+        adapter = new DoctorReviewRecyclerViewAdapter(getContext(), serviceId);
         adapter.setClickListener(this);
     }
 
@@ -88,25 +90,16 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
         tvDoctorNameReview = v.findViewById(R.id.tvDoctorNameReview);
         tvAvgMark = v.findViewById(R.id.tvAvgMark);
         rBarAvgMark = v.findViewById(R.id.rBarAvgMark);
+        recyclerView = v.findViewById(R.id.rvDoctorReviews);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         btnAddReview = v.findViewById(R.id.btnAddReview);
         btnAddReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onDoctorReviewsFragmentDataListener(v.getId());
+            mListener.onDoctorReviewsFragmentDataListener(v.getId());
             }
         });
         return v;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        recyclerView = getView().findViewById(R.id.rvDoctorReviews);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        /*adapter = new DoctorReviewRecyclerViewAdapter(getContext());
-        adapter.setClickListener(this);*/
     }
 
     @Override
@@ -158,7 +151,115 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
     }
 
     @Override
-    public void onItemClick(int viewId, int position) {
+    public void onItemClick(View v, int position) {
+        switch (v.getId()) {
+            case R.id.chbLike:
+                //Toast.makeText(getContext(), "Нажат лайк на " + adapter.getItem(position).getText(), Toast.LENGTH_SHORT).show();
+                if (((CheckBox) v).isChecked()) {
+                    Toast.makeText(getContext(), "Отправка лайка в бд", Toast.LENGTH_SHORT).show();
+                    sendLike(serviceId, adapter.getItem(position).getReviewId());
+                } else {
+                    Toast.makeText(getContext(), "Удаление лайка из бд", Toast.LENGTH_SHORT).show();
+                    deleteLike(serviceId, adapter.getItem(position).getReviewId());
+                }
+                break;
+            case R.id.chbDislike:
+                //Toast.makeText(getContext(), "Нажат дизлайк на " + adapter.getItem(position).getText(), Toast.LENGTH_SHORT).show();
+                if (((CheckBox) v).isChecked()) {
+                    Toast.makeText(getContext(), "Отправка дизлайка в бд", Toast.LENGTH_SHORT).show();
+                    sendDislike(serviceId, adapter.getItem(position).getReviewId());
+                } else {
+                    Toast.makeText(getContext(), "Удаление дизлайка из бд", Toast.LENGTH_SHORT).show();
+                    deleteLike(serviceId, adapter.getItem(position).getReviewId());
+                }
+                break;
+            case R.id.imBtnComments:
+                //Toast.makeText(getContext(), "Нажат комментарии на " + adapter.getItem(position).getText(), Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
 
+    private void sendLike(String serviceId, int reviewId) {
+        springApi.likeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.springserver.Response>() {
+            @Override
+            public void onResponse(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Response<com.bigblackboy.doctorappointment.springserver.Response> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().isSuccess()) {
+                        Toast.makeText(getContext(), "Лайк отправлен", Toast.LENGTH_SHORT).show();
+                    } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        Toast.makeText(getContext(), "Лайк не отправлен", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, error.getString("message"));
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.d(LOG_TAG, e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Throwable t) {
+                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, t.getMessage());
+            }
+        });
+    }
+
+    private void sendDislike(String serviceId, int reviewId) {
+        springApi.dislikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.springserver.Response>() {
+            @Override
+            public void onResponse(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Response<com.bigblackboy.doctorappointment.springserver.Response> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().isSuccess()) {
+                        Toast.makeText(getContext(), "Дизлайк отправлен", Toast.LENGTH_SHORT).show();
+                    } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        Toast.makeText(getContext(), "Дизлайк не отправлен", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, error.getString("message"));
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.d(LOG_TAG, e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Throwable t) {
+                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, t.getMessage());
+            }
+        });
+    }
+
+    private void deleteLike(String serviceId, int reviewId) {
+        springApi.deletelikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.springserver.Response>() {
+            @Override
+            public void onResponse(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Response<com.bigblackboy.doctorappointment.springserver.Response> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().isSuccess()) {
+                        Toast.makeText(getContext(), "Лайк/дизлайк удален", Toast.LENGTH_SHORT).show();
+                    } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        Toast.makeText(getContext(), "Лайк/дизлайк не удален", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, error.getString("message"));
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.d(LOG_TAG, e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Throwable t) {
+                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, t.getMessage());
+            }
+        });
     }
 }
