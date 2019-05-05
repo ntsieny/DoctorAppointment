@@ -25,17 +25,27 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/tvDateReview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Дата"
-                android:textSize="18sp" />
+                android:textSize="16sp" />-->
+
         </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tvDateReview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Дата"
+            android:textSize="14sp" />
 
         <RatingBar
             android:id="@+id/rBarReview"
-            style="@style/Widget.AppCompat.RatingBar.Indicator"
+            style="@style/Widget.AppCompat.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:isIndicator="true"
@@ -62,8 +72,8 @@
 
                 <CheckBox
                     android:id="@+id/chbLike"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/like_selector"
                     android:button="@null"
@@ -88,8 +98,8 @@
 
                 <CheckBox
                     android:id="@+id/chbDislike"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/dislike_selector"
                     android:button="@null"
@@ -114,8 +124,8 @@
 
                 <ImageButton
                     android:id="@+id/imBtnComments"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_centerHorizontal="true"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"

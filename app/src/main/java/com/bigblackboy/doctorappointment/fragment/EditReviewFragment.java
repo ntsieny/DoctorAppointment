@@ -99,6 +99,7 @@ public class EditReviewFragment extends Fragment {
                 if (response.isSuccessful()) {
                     if(response.body().isSuccess()) {
                         Toast.makeText(getContext(), "Отзыв отправлен", Toast.LENGTH_SHORT).show();
+                        getActivity().getSupportFragmentManager().popBackStack();
                     } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
                 } else {
                     try {

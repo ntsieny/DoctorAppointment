@@ -1,14 +1,17 @@
 package com.bigblackboy.doctorappointment.recyclerviewadapter;
 
 import android.content.Context;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
@@ -60,6 +63,13 @@ public class DoctorReviewRecyclerViewAdapter extends RecyclerView.Adapter<Doctor
         holder.tvCommentCounterReview.setText(String.valueOf(rev.getCommentCount()));
         holder.rBarReview.setRating(rev.getMark());
         holder.tvReviewText.setText(rev.getText());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO открываем fragment подробного просмотра отзыва
+                Toast.makeText(mContext, "нажат itemview " + rev.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.chbLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

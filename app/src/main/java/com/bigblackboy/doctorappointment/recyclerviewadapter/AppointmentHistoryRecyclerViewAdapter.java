@@ -1,35 +1,18 @@
 package com.bigblackboy.doctorappointment.recyclerviewadapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Appointment;
 import com.bigblackboy.doctorappointment.utils.DateParser;
-import com.google.gson.internal.bind.util.ISO8601Utils;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 public class AppointmentHistoryRecyclerViewAdapter extends RecyclerView.Adapter<AppointmentHistoryRecyclerViewAdapter.ViewHolder> {
@@ -75,7 +58,7 @@ public class AppointmentHistoryRecyclerViewAdapter extends RecyclerView.Adapter<
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(mContext, holder.tvAppHistItemBtn);
-                popupMenu.inflate(R.menu.app_hist_context_menu);
+                popupMenu.inflate(R.menu.app_hist_popup_menu);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
