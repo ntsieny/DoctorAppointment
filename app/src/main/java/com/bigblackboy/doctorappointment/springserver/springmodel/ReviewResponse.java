@@ -1,9 +1,10 @@
 package com.bigblackboy.doctorappointment.springserver.springmodel;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class ReviewResponse {
+public class ReviewResponse implements Serializable {
 
     private int reviewId;
     private Date date;

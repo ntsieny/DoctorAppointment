@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="6dp"
     android:orientation="vertical"
@@ -20,18 +26,19 @@
             <TextView
                 android:id="@+id/tvAuthorNameReview"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Имя автора"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <!--<TextView
-                android:id="@+id/tvDateReview"
+            <ImageButton
+                android:id="@+id/imBtnEditReview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Дата"
-                android:textSize="16sp" />-->
+                android:background="@android:color/transparent"
+                android:visibility="invisible"
+                app:srcCompat="@android:drawable/ic_menu_edit" />
 
         </LinearLayout>
 
@@ -95,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/chbLike"
                     android:layout_toRightOf="@id/chbLike"
-                    android:text="10" />
+                    android:text="0" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -121,7 +128,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/chbDislike"
                     android:layout_toRightOf="@id/chbDislike"
-                    android:text="10" />
+                    android:text="0" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -146,8 +153,20 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/imBtnComments"
                     android:layout_toRightOf="@id/imBtnComments"
-                    android:text="10" />
+                    android:text="0" />
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
-</android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Комментарии"
+        android:textSize="16dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

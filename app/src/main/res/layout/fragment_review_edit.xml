@@ -39,4 +39,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Отправить отзыв" />
+
+    <Button
+        android:id="@+id/btnDeleteReview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Удалить отзыв"
+        android:visibility="invisible" />
 </LinearLayout>

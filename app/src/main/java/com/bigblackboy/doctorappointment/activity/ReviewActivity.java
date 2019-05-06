@@ -14,6 +14,7 @@ import com.bigblackboy.doctorappointment.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.fragment.DoctorFragment;
+import com.bigblackboy.doctorappointment.fragment.DoctorReviewDetailedFragment;
 import com.bigblackboy.doctorappointment.fragment.DoctorReviewsFragment;
 import com.bigblackboy.doctorappointment.fragment.EditReviewFragment;
 import com.bigblackboy.doctorappointment.fragment.ReviewMainFragment;
@@ -21,8 +22,10 @@ import com.bigblackboy.doctorappointment.fragment.SpecialityFragment;
 import com.bigblackboy.doctorappointment.model.Doctor;
 import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Speciality;
+import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
 
-public class ReviewActivity extends AppCompatActivity implements SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener, DoctorReviewsFragment.OnDoctorReviewsFragmentDataListener {
+public class ReviewActivity extends AppCompatActivity implements SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
+        DoctorReviewsFragment.OnDoctorReviewsFragmentDataListener, DoctorReviewDetailedFragment.OnDoctorReviewDetailedFragmentDataListener {
 
     public static final int FRAGMENT_DOCTOR_REVIEWS = 0;
     public static final int FRAGMENT_MY_REVIEWS = 1;
@@ -84,14 +87,24 @@ public class ReviewActivity extends AppCompatActivity implements SpecialityFragm
         fm.beginTransaction().replace(R.id.fragContainerReview, specialityFragment).addToBackStack("ReviewActivityMain").commit();
     }
 
-    public void replaceToEditReviewFragment() {
+    private void replaceToEditReviewFragment() {
         EditReviewFragment editReviewFragment = EditReviewFragment.newInstance(doctor, prefManager.getCurrentHospital().getLPUShortName(), prefManager.getCurrentPatient().getServiceId());
+        fm.beginTransaction().replace(R.id.fragContainerReview, editReviewFragment).addToBackStack("doctor_reviews_fragment").commit();
+    }
+
+    private void replaceToEditReviewFragment(ReviewResponse review) {
+        EditReviewFragment editReviewFragment = EditReviewFragment.newInstance(doctor, prefManager.getCurrentHospital().getLPUShortName(), prefManager.getCurrentPatient().getServiceId(), review);
         fm.beginTransaction().replace(R.id.fragContainerReview, editReviewFragment).addToBackStack("doctor_reviews_fragment").commit();
     }
 
     private void replaceToDoctorReviewsFragment() {
         DoctorReviewsFragment fragment = DoctorReviewsFragment.newInstance(doctor.getIdDoc(), doctor.getName(), prefManager.getCurrentPatient().getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("doctor_fragment").commit();
+    }
+
+    private void replaceToDoctorReviewDetailedFragment(ReviewResponse review) {
+        DoctorReviewDetailedFragment fragment = DoctorReviewDetailedFragment.newInstance(review.getReviewId(), prefManager.getCurrentPatient().getServiceId());
+        fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("review_full_fragment").commit();
     }
 
     @Override
@@ -113,10 +126,27 @@ public class ReviewActivity extends AppCompatActivity implements SpecialityFragm
 
 
     @Override
-    public void onDoctorReviewsFragmentDataListener(int viewId) {
-        switch (viewId) {
+    public void onDoctorReviewsFragmentBtnClickListener(View v, ReviewResponse review) {
+        switch (v.getId()) {
             case R.id.btnAddReview:
                 replaceToEditReviewFragment();
+                break;
+            case R.id.imBtnComments:
+                replaceToDoctorReviewDetailedFragment(review);
+                break;
+        }
+    }
+
+    @Override
+    public void onDoctorReviewsFragmentDataListener(ReviewResponse review) {
+        replaceToDoctorReviewDetailedFragment(review);
+    }
+
+    @Override
+    public void onDoctorReviewDetailedFragmentBtnClick(View v, ReviewResponse rev) {
+        switch (v.getId()) {
+            case R.id.imBtnEditReview:
+                replaceToEditReviewFragment(rev);
                 break;
         }
     }

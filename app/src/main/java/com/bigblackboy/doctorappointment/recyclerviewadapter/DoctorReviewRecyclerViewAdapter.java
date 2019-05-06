@@ -1,10 +1,8 @@
 package com.bigblackboy.doctorappointment.recyclerviewadapter;
 
 import android.content.Context;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -66,14 +64,13 @@ public class DoctorReviewRecyclerViewAdapter extends RecyclerView.Adapter<Doctor
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO открываем fragment подробного просмотра отзыва
-                Toast.makeText(mContext, "нажат itemview " + rev.getName(), Toast.LENGTH_SHORT).show();
+                mClickListener.onItemClick(v, holder.getAdapterPosition());
             }
         });
         holder.chbLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mClickListener.onItemClick(v, holder.getAdapterPosition());
+                mClickListener.onButtonClick(v, holder.getAdapterPosition());
                 if (holder.chbDislike.isChecked()) {
                     holder.chbDislike.setChecked(false);
                     holder.tvDislikeCounterReview.setText(decrementStringVal(holder.tvDislikeCounterReview.getText().toString()));
@@ -88,7 +85,7 @@ public class DoctorReviewRecyclerViewAdapter extends RecyclerView.Adapter<Doctor
         holder.chbDislike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mClickListener.onItemClick(v, holder.getAdapterPosition());
+                mClickListener.onButtonClick(v, holder.getAdapterPosition());
                 if (holder.chbLike.isChecked()) {
                     holder.chbLike.setChecked(false);
                     holder.tvLikeCounterReview.setText(decrementStringVal(holder.tvLikeCounterReview.getText().toString()));
@@ -103,7 +100,7 @@ public class DoctorReviewRecyclerViewAdapter extends RecyclerView.Adapter<Doctor
         holder.imBtnComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mClickListener.onItemClick(v, holder.getAdapterPosition());
+                mClickListener.onButtonClick(v, holder.getAdapterPosition());
             }
         });
 
@@ -134,12 +131,9 @@ public class DoctorReviewRecyclerViewAdapter extends RecyclerView.Adapter<Doctor
         this.mClickListener = itemClickListener;
     }
 
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
+        void onButtonClick(View v, int position);
         void onItemClick(View v, int position);
     }
 

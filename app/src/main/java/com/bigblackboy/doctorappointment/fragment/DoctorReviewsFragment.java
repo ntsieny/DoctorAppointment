@@ -1,7 +1,6 @@
 package com.bigblackboy.doctorappointment.fragment;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,12 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.activity.ReviewActivity;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.DoctorReviewRecyclerViewAdapter;
@@ -39,6 +38,7 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
     private static SpringApi springApi;
     private DoctorReviewRecyclerViewAdapter adapter;
     private List<ReviewResponse> reviews;
+    private ReviewResponse review;
     private String doctorId;
     private String doctorName;
     private String serviceId;
@@ -49,7 +49,8 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
     private OnDoctorReviewsFragmentDataListener mListener;
 
     public interface OnDoctorReviewsFragmentDataListener {
-        void onDoctorReviewsFragmentDataListener(int viewId);
+        void onDoctorReviewsFragmentBtnClickListener(View v, ReviewResponse review);
+        void onDoctorReviewsFragmentDataListener(ReviewResponse review);
     }
 
     public static DoctorReviewsFragment newInstance(String doctorId, String doctorName, String serviceId) {
@@ -96,7 +97,7 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
         btnAddReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            mListener.onDoctorReviewsFragmentDataListener(v.getId());
+                mListener.onDoctorReviewsFragmentBtnClickListener(v, null);
             }
         });
         return v;
@@ -151,32 +152,32 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
     }
 
     @Override
-    public void onItemClick(View v, int position) {
+    public void onButtonClick(View v, int position) {
         switch (v.getId()) {
             case R.id.chbLike:
-                //Toast.makeText(getContext(), "Нажат лайк на " + adapter.getItem(position).getText(), Toast.LENGTH_SHORT).show();
                 if (((CheckBox) v).isChecked()) {
-                    Toast.makeText(getContext(), "Отправка лайка в бд", Toast.LENGTH_SHORT).show();
                     sendLike(serviceId, adapter.getItem(position).getReviewId());
                 } else {
-                    Toast.makeText(getContext(), "Удаление лайка из бд", Toast.LENGTH_SHORT).show();
                     deleteLike(serviceId, adapter.getItem(position).getReviewId());
                 }
                 break;
             case R.id.chbDislike:
-                //Toast.makeText(getContext(), "Нажат дизлайк на " + adapter.getItem(position).getText(), Toast.LENGTH_SHORT).show();
                 if (((CheckBox) v).isChecked()) {
-                    Toast.makeText(getContext(), "Отправка дизлайка в бд", Toast.LENGTH_SHORT).show();
                     sendDislike(serviceId, adapter.getItem(position).getReviewId());
                 } else {
-                    Toast.makeText(getContext(), "Удаление дизлайка из бд", Toast.LENGTH_SHORT).show();
                     deleteLike(serviceId, adapter.getItem(position).getReviewId());
                 }
                 break;
             case R.id.imBtnComments:
-                //Toast.makeText(getContext(), "Нажат комментарии на " + adapter.getItem(position).getText(), Toast.LENGTH_SHORT).show();
+                review = adapter.getItem(position);
+                mListener.onDoctorReviewsFragmentBtnClickListener(v, review);
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(View v, int position) {
+        mListener.onDoctorReviewsFragmentDataListener(review);
     }
 
     private void sendLike(String serviceId, int reviewId) {
@@ -185,7 +186,7 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
             public void onResponse(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Response<com.bigblackboy.doctorappointment.springserver.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
-                        Toast.makeText(getContext(), "Лайк отправлен", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), "Лайк отправлен", Toast.LENGTH_SHORT).show();
                     } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
@@ -213,7 +214,7 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
             public void onResponse(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Response<com.bigblackboy.doctorappointment.springserver.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
-                        Toast.makeText(getContext(), "Дизлайк отправлен", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), "Дизлайк отправлен", Toast.LENGTH_SHORT).show();
                     } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
@@ -241,7 +242,7 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
             public void onResponse(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Response<com.bigblackboy.doctorappointment.springserver.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
-                        Toast.makeText(getContext(), "Лайк/дизлайк удален", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), "Лайк/дизлайк удален", Toast.LENGTH_SHORT).show();
                     } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
