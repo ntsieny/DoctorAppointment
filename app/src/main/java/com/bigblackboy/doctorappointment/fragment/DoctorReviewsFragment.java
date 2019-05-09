@@ -177,7 +177,7 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
 
     @Override
     public void onItemClick(View v, int position) {
-        mListener.onDoctorReviewsFragmentDataListener(review);
+        mListener.onDoctorReviewsFragmentDataListener(adapter.getItem(position));
     }
 
     private void sendLike(String serviceId, int reviewId) {
