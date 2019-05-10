@@ -9,7 +9,6 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
@@ -17,21 +16,21 @@ import com.bigblackboy.doctorappointment.utils.DateParser;
 
 import java.util.List;
 
-public class DoctorReviewRecyclerViewAdapter extends RecyclerView.Adapter<DoctorReviewRecyclerViewAdapter.ViewHolder> {
+public class ReviewRecyclerViewAdapter extends RecyclerView.Adapter<ReviewRecyclerViewAdapter.ViewHolder> {
 
     private static final String LOG_TAG = "myLog: DocReviewAdapter";
     private List<ReviewResponse> mData;
     private LayoutInflater mInflater;
-    private DoctorReviewRecyclerViewAdapter.ItemClickListener mClickListener;
+    private ReviewRecyclerViewAdapter.ItemClickListener mClickListener;
     private Context mContext;
     private String serviceId;
 
     // data is passed into the constructor
-    public DoctorReviewRecyclerViewAdapter(Context context, List<ReviewResponse> data) {
+    public ReviewRecyclerViewAdapter(Context context, List<ReviewResponse> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
-    public DoctorReviewRecyclerViewAdapter(Context context, String serviceId) {
+    public ReviewRecyclerViewAdapter(Context context, String serviceId) {
         this.mInflater = LayoutInflater.from(context);
         this.mContext = context;
         this.serviceId = serviceId;
@@ -43,16 +42,16 @@ public class DoctorReviewRecyclerViewAdapter extends RecyclerView.Adapter<Doctor
 
     // inflates the row layout from xml when needed
     @Override
-    public DoctorReviewRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ReviewRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // в чем разница?
         //View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.appointment_history_recyclerview_row, parent, false);
-        View view = mInflater.inflate(R.layout.doctor_review_recyclerview_row, parent, false);
-        return new DoctorReviewRecyclerViewAdapter.ViewHolder(view);
+        View view = mInflater.inflate(R.layout.review_recyclerview_row, parent, false);
+        return new ReviewRecyclerViewAdapter.ViewHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
-    public void onBindViewHolder(final DoctorReviewRecyclerViewAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ReviewRecyclerViewAdapter.ViewHolder holder, final int position) {
         final ReviewResponse rev = mData.get(position);
         holder.tvAuthorNameReview.setText(String.format("%s %s.", rev.getLastname(), rev.getName().substring(0,1)));
         holder.tvDateReview.setText(DateParser.convertISOwithMillistoDateTimeString(rev.getDateTime()));
@@ -127,7 +126,7 @@ public class DoctorReviewRecyclerViewAdapter extends RecyclerView.Adapter<Doctor
     }
 
     // allows clicks events to be caught
-    public void setClickListener(DoctorReviewRecyclerViewAdapter.ItemClickListener itemClickListener) {
+    public void setClickListener(ReviewRecyclerViewAdapter.ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 

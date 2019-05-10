@@ -7,8 +7,8 @@ public class CommentResponse {
 
     private int commentId;
     private int reviewId;
-    private Date date;
-    private Date time;
+    private String date;
+    private String time;
     private String dateTime;
     private String text;
     private int authorId;
@@ -40,11 +40,11 @@ public class CommentResponse {
         this.reviewId = reviewId;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -152,11 +152,11 @@ public class CommentResponse {
         this.dislikers = dislikers;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

@@ -25,14 +25,6 @@
                 android:text="Имя автора"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
-            <!--<TextView
-                android:id="@+id/tvDateReview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Дата"
-                android:textSize="16sp" />-->
-
         </LinearLayout>
 
 
@@ -95,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/chbLike"
                     android:layout_toRightOf="@id/chbLike"
-                    android:text="10" />
+                    android:text="0" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -121,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/chbDislike"
                     android:layout_toRightOf="@id/chbDislike"
-                    android:text="10" />
+                    android:text="0" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -146,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/imBtnComments"
                     android:layout_toRightOf="@id/imBtnComments"
-                    android:text="10" />
+                    android:text="0" />
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

@@ -18,10 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.activity.ReviewActivity;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
-import com.bigblackboy.doctorappointment.recyclerviewadapter.DoctorReviewRecyclerViewAdapter;
+import com.bigblackboy.doctorappointment.recyclerviewadapter.ReviewRecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
 
 import org.json.JSONObject;
@@ -32,11 +31,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyclerViewAdapter.ItemClickListener {
+public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerViewAdapter.ItemClickListener {
 
     private static final String LOG_TAG = "myLog: DocReviewsFrag";
     private static SpringApi springApi;
-    private DoctorReviewRecyclerViewAdapter adapter;
+    private ReviewRecyclerViewAdapter adapter;
     private List<ReviewResponse> reviews;
     private ReviewResponse review;
     private String doctorId;
@@ -80,7 +79,7 @@ public class DoctorReviewsFragment extends Fragment implements DoctorReviewRecyc
         doctorName = getArguments().getString("doctor_name");
         serviceId = getArguments().getString("service_id");
         springApi = SpringController.getApi();
-        adapter = new DoctorReviewRecyclerViewAdapter(getContext(), serviceId);
+        adapter = new ReviewRecyclerViewAdapter(getContext(), serviceId);
         adapter.setClickListener(this);
     }
 
