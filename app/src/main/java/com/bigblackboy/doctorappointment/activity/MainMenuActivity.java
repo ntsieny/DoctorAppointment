@@ -45,8 +45,11 @@ import org.json.JSONObject;
 import retrofit2.Call;
 import retrofit2.Callback;
 
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_DISTRICT_ID;
 import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_DISTRICT_NAME;
 import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_GUEST_MODE;
+import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_ID;
 import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_NAME_SHORT;
 
 public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DistrictFragment.OnDistrictFragmentDataListener,
@@ -264,6 +267,10 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         HospitalFragment hospitalFragment = HospitalFragment.newInstance(district);
         fTrans = fm.beginTransaction().replace(R.id.fragContainerMainMenu, hospitalFragment).addToBackStack("fragment_district");
         fTrans.commit();
+
+        editor = mSettings.edit();
+        editor.putString(APP_SETTINGS_DISTRICT_ID, district.getId());
+        editor.apply();
     }
 
     @Override
@@ -277,6 +284,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
             editor = mSettings.edit();
             editor.putBoolean(APP_SETTINGS_GUEST_MODE, true);
             editor.putString(APP_SETTINGS_DISTRICT_NAME, patient.getDistrict().getName());
+            editor.putInt(APP_SETTINGS_HOSPITAL_ID, hospital.getIdLPU());
             editor.putString(APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
             editor.apply();
         }
@@ -285,11 +293,6 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         tvPatientFIO.setText("Гость");
         TextView tvPatientAddress = navigationView.getHeaderView(0).findViewById(R.id.tvPatientAddress);
         tvPatientAddress.setText(hospital.getLPUShortName() + ", " + patient.getDistrict().getName());
-    }
-
-    @Override
-    public void onHospitalUpdateActionBarTitle(String barTitle) {
-        getSupportActionBar().setTitle(barTitle);
     }
 
     @Override

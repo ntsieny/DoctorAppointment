@@ -13,19 +13,23 @@ import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
+import com.bigblackboy.doctorappointment.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.fragment.DoctorFragment;
 import com.bigblackboy.doctorappointment.fragment.DoctorReviewDetailedFragment;
 import com.bigblackboy.doctorappointment.fragment.DoctorReviewsFragment;
 import com.bigblackboy.doctorappointment.fragment.EditReviewFragment;
+import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.fragment.ReviewMainFragment;
 import com.bigblackboy.doctorappointment.fragment.SpecialityFragment;
+import com.bigblackboy.doctorappointment.model.District;
 import com.bigblackboy.doctorappointment.model.Doctor;
+import com.bigblackboy.doctorappointment.model.Hospital;
 import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Speciality;
 import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
 
-public class ReviewActivity extends AppCompatActivity implements SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
-        DoctorReviewsFragment.OnDoctorReviewsFragmentDataListener, DoctorReviewDetailedFragment.OnDoctorReviewDetailedFragmentDataListener {
+public class ReviewActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
+        DoctorReviewsFragment.OnDoctorReviewsFragmentDataListener, DoctorReviewDetailedFragment.OnDoctorReviewDetailedFragmentDataListener, ReviewMainFragment.OnReviewMainFragmentDataListener {
 
     public static final int FRAGMENT_DOCTOR_REVIEWS = 0;
     public static final int FRAGMENT_MY_REVIEWS = 1;
@@ -42,6 +46,9 @@ public class ReviewActivity extends AppCompatActivity implements SpecialityFragm
     private Patient patient;
     private Speciality speciality;
     private Doctor doctor;
+    private District district;
+    private Hospital hospital;
+    private boolean useSharedPrefsPatientInfo = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +88,21 @@ public class ReviewActivity extends AppCompatActivity implements SpecialityFragm
         fm.beginTransaction().add(containerId, fragment).commit();
     }
 
+    public void replaceToDistrictFragment() {
+        DistrictFragment districtFragment = new DistrictFragment();
+        fm.beginTransaction().replace(R.id.fragContainerReview, districtFragment).addToBackStack("review_main_menu").commit();
+    }
+
+    private void replaceToHospitalFragment(District district) {
+        HospitalFragment hospitalFragment = HospitalFragment.newInstance(district);
+        fm.beginTransaction().replace(R.id.fragContainerReview, hospitalFragment).addToBackStack("district_fragment").commit();
+    }
+
     public void replaceToSpecialityFragment() {
-        String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
+        String hospitalId;
+        if (useSharedPrefsPatientInfo) {
+            hospitalId = String.valueOf(patient.getHospital().getIdLPU());
+        } else hospitalId = String.valueOf(hospital.getIdLPU());
         SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patient.getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerReview, specialityFragment).addToBackStack("ReviewActivityMain").commit();
     }
@@ -110,7 +130,10 @@ public class ReviewActivity extends AppCompatActivity implements SpecialityFragm
     @Override
     public void onSpecialityFragmentDataListener(Speciality speciality) {
         this.speciality = speciality;
-        String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
+        String hospitalId;
+        if (useSharedPrefsPatientInfo) {
+            hospitalId = String.valueOf(patient.getHospital().getIdLPU());
+        } else hospitalId = String.valueOf(hospital.getIdLPU());
         String specialityId = speciality.getIdSpeciality();
         DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patient.getServiceId(), specialityId);
         fm.beginTransaction().replace(R.id.fragContainerReview, doctorFragment).addToBackStack("spec_fragment").commit();
@@ -147,6 +170,31 @@ public class ReviewActivity extends AppCompatActivity implements SpecialityFragm
         switch (v.getId()) {
             case R.id.imBtnEditReview:
                 replaceToEditReviewFragment(rev);
+                break;
+        }
+    }
+
+    @Override
+    public void onDistrictFragmentDataListener(District district) {
+        this.district = district;
+        replaceToHospitalFragment(district);
+    }
+
+    @Override
+    public void onHospitalFragmentDataListener(Hospital hospital) {
+        this.hospital = hospital;
+        replaceToSpecialityFragment();
+    }
+
+    @Override
+    public void onReviewMainFragmentBtnClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnMyDoctorReviewMain:
+                replaceToSpecialityFragment();
+                break;
+            case R.id.btnChangeHospitalReviewMain:
+                useSharedPrefsPatientInfo = false;
+                replaceToDistrictFragment();
                 break;
         }
     }

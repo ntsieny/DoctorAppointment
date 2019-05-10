@@ -31,7 +31,6 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
     private String LOG_TAG = "myLog: DistrictFragment";
     RecyclerViewAdapter adapter;
     ArrayList<District> districts;
-    SharedPreferences mSettings;
     private OnDistrictFragmentDataListener mListener;
 
     public interface OnDistrictFragmentDataListener {
@@ -43,9 +42,7 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
         super.onAttach(context);
         if(context instanceof OnDistrictFragmentDataListener) {
             mListener = (OnDistrictFragmentDataListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnDistrictFragmentDataListener");
-        }
+        } else throw new RuntimeException(context.toString() + " must implement OnDistrictFragmentDataListener");
     }
 
     @Nullable
@@ -79,17 +76,10 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
 
     @Override
     public void onItemClick(View view, int position) {
-        //Toast.makeText(getContext(), "You clicked " + ((District)adapter.getItem(position)).getName() + " on row number " + position, Toast.LENGTH_SHORT).show();
         String districtId = ((District)adapter.getItem(position)).getId();
         HashMap<String, String> hashMap = new HashMap();
         hashMap.put("district_id", districtId);
-
         mListener.onDistrictFragmentDataListener((District) adapter.getItem(position));
-
-        mSettings = this.getActivity().getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = mSettings.edit();
-        editor.putString(APP_SETTINGS_DISTRICT_ID, districtId);
-        editor.apply();
     }
 
     class AsyncRequest extends AsyncTask<Void, Void, ArrayList<District>> {

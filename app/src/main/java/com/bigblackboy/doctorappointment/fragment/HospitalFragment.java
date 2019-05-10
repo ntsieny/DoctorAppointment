@@ -1,7 +1,6 @@
 package com.bigblackboy.doctorappointment.fragment;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,9 +27,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS;
-import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_ID;
-
 public class HospitalFragment extends Fragment implements HospitalRecyclerViewAdapter.ItemClickListener {
 
     private String LOG_TAG = "myLog: HospitalFragment";
@@ -40,15 +36,11 @@ public class HospitalFragment extends Fragment implements HospitalRecyclerViewAd
     List<Hospital> hospitals;
     RecyclerView recyclerView;
     private String districtId;
-    SharedPreferences mSettings;
     private OnHospitalFragmentDataListener mListener;
-    private String barTitle = "Выбор медучреждения";
 
 
     public interface OnHospitalFragmentDataListener {
         void onHospitalFragmentDataListener(Hospital hospital);
-
-        void onHospitalUpdateActionBarTitle(String barTitle);
     }
 
     public static HospitalFragment newInstance(District district) {
@@ -64,9 +56,7 @@ public class HospitalFragment extends Fragment implements HospitalRecyclerViewAd
         super.onAttach(context);
         if(context instanceof OnHospitalFragmentDataListener) {
             mListener = (OnHospitalFragmentDataListener)context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnHospitalFragmentDataListener");
-        }
+        } else throw new RuntimeException(context.toString() + " must implement OnHospitalFragmentDataListener");
     }
 
     @Override
@@ -78,7 +68,6 @@ public class HospitalFragment extends Fragment implements HospitalRecyclerViewAd
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mListener.onHospitalUpdateActionBarTitle(barTitle);
         return inflater.inflate(R.layout.fragment_hospital, null);
     }
 
@@ -112,13 +101,10 @@ public class HospitalFragment extends Fragment implements HospitalRecyclerViewAd
                         adapter.setData(hospitals);
                         recyclerView.setAdapter(adapter);
                     }
-                } else {
-                    Toast.makeText(getContext(), "Body is null. Code: " + response.code(), Toast.LENGTH_SHORT).show();
-                }
+                } else Toast.makeText(getContext(), "Body is null. Code: " + response.code(), Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onFailure(Call<HospitalApiResponse> call, Throwable t) {
-                //Log.d(LOG_TAG, t.getMessage());
                 Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -126,13 +112,6 @@ public class HospitalFragment extends Fragment implements HospitalRecyclerViewAd
 
     @Override
     public void onItemClick(View view, int position) {
-        int hospitalId = ((Hospital)adapter.getItem(position)).getIdLPU();
-
         mListener.onHospitalFragmentDataListener((Hospital)adapter.getItem(position));
-
-        mSettings = this.getActivity().getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = mSettings.edit();
-        editor.putInt(APP_SETTINGS_HOSPITAL_ID, hospitalId);
-        editor.apply();
     }
 }

@@ -89,10 +89,6 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
     }
 
     @Override
-    public void onHospitalUpdateActionBarTitle(String barTitle) {
-    }
-
-    @Override
     public void onSignUpFragmentDataListener(Map<String, String> loginAndPassword) {
         login = loginAndPassword.get("login");
         password = loginAndPassword.get("password");

@@ -39,7 +39,6 @@ public class ChooseAppointmentFragment extends Fragment implements RecyclerViewA
     List<AppointmentInfo> appointments;
     RecyclerView recyclerView;
     private String doctorId, patientId, hospitalId;
-    private HashMap<String, String> dataHashMap;
     private OnAppointmentFragmentDataListener mListener;
 
     public interface OnAppointmentFragmentDataListener {
@@ -61,9 +60,7 @@ public class ChooseAppointmentFragment extends Fragment implements RecyclerViewA
         super.onAttach(context);
         if (context instanceof OnAppointmentFragmentDataListener) {
             mListener = (OnAppointmentFragmentDataListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnAppointmentFragmentDataListener");
-        }
+        } else throw new RuntimeException(context.toString() + " must implement OnAppointmentFragmentDataListener");
     }
 
     @Override
@@ -180,7 +177,6 @@ public class ChooseAppointmentFragment extends Fragment implements RecyclerViewA
 
             @Override
             public void onFailure(Call<AppointmentListApiResponse> call, Throwable t) {
-                //Log.d(LOG_TAG, t.getMessage());
                 Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

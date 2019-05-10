@@ -23,6 +23,19 @@ public class ReviewMainFragment extends Fragment implements View.OnClickListener
     Button btnMyDoctorReviewMain, btnChangeHospitalReviewMain;
     SharedPreferences mSettings;
     SharedPreferencesManager prefManager;
+    OnReviewMainFragmentDataListener mListener;
+
+    public interface OnReviewMainFragmentDataListener {
+        void onReviewMainFragmentBtnClick(View v);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnReviewMainFragmentDataListener) {
+            mListener = (OnReviewMainFragmentDataListener) context;
+        } else throw new RuntimeException(context.toString() + " must implement OnReviewMainFragmentDataListener");
+    }
 
     @Nullable
     @Override
@@ -45,10 +58,10 @@ public class ReviewMainFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnMyDoctorReviewMain:
-                ((ReviewActivity) getActivity()).replaceToSpecialityFragment();
+                mListener.onReviewMainFragmentBtnClick(v);
                 break;
             case R.id.btnChangeHospitalReviewMain:
-
+                mListener.onReviewMainFragmentBtnClick(v);
                 break;
         }
     }

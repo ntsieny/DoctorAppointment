@@ -55,9 +55,7 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
         super.onAttach(context);
         if (context instanceof OnDoctorFragmentDataListener) {
             mListener = (OnDoctorFragmentDataListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnDoctorFragmentDataListener");
-        }
+        } else throw new RuntimeException(context.toString() + " must implement OnDoctorFragmentDataListener");
     }
 
     @Override

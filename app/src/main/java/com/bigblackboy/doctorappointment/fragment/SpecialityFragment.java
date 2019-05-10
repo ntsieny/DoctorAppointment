@@ -36,7 +36,6 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
     private String patientId;
     private String hospitalId;
     OnSpecialityFragmentDataListener mListener;
-    private String barTitle = "Выбор специальности";
 
     public interface OnSpecialityFragmentDataListener {
         void onSpecialityFragmentDataListener(Speciality speciality);
@@ -56,9 +55,7 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
         super.onAttach(context);
         if (context instanceof OnSpecialityFragmentDataListener) {
             mListener = (OnSpecialityFragmentDataListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnSpecialityFragmentDataListener");
-        }
+        } else throw new RuntimeException(context.toString() + " must implement OnSpecialityFragmentDataListener");
     }
 
     @Override
@@ -110,8 +107,7 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
                                     speciality.getCountFreeTickets() + "\n" + // доступно номерков
                                     speciality.getIdSpeciality() + "\n"); // передается в form-data при выборе доктора
                         }*/
-                    }
-                    else Toast.makeText(getContext(), "Ошибка: " + response.body().getError().getErrorDescription(), Toast.LENGTH_LONG).show();
+                    } else Toast.makeText(getContext(), "Ошибка: " + response.body().getError().getErrorDescription(), Toast.LENGTH_LONG).show();
                 } else Toast.makeText(getContext(), "Запрос не прошел (" + response.code() + ")", Toast.LENGTH_LONG).show();
             }
 
