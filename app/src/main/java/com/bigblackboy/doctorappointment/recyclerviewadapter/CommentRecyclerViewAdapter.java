@@ -1,6 +1,8 @@
 package com.bigblackboy.doctorappointment.recyclerviewadapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.springserver.springmodel.CommentResponse;
@@ -89,11 +92,37 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
             }
         });
 
+        holder.imBtnDeleteComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
+                        .setTitle("Удалить комментарий?")
+                        .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(mClickListener != null) mClickListener.onButtonClick(v, holder.getAdapterPosition());
+                                removeAt(holder.getAdapterPosition());
+                            }
+                        });
+                builder.show();
+            }
+        });
+
         if (com.getLikers() != null && com.getLikers().contains(serviceId)) {
             holder.chbLikeComment.setChecked(true);
         } else if (com.getDislikers() != null && com.getDislikers().contains(serviceId)) {
             holder.chbDislikeComment.setChecked(true);
         }
+
+        if (com.getServiceId().equals(serviceId)) {
+            holder.imBtnDeleteComment.setVisibility(View.VISIBLE);
+        } else holder.imBtnDeleteComment.setVisibility(View.GONE);
     }
 
     private String decrementStringVal(String str) {
@@ -131,6 +160,7 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvAuthorNameComment, tvDateComment, tvLikeCounterComment, tvDislikeCounterComment, tvCommentText;
         CheckBox chbLikeComment, chbDislikeComment;
+        ImageButton imBtnDeleteComment;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -141,6 +171,7 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
             tvCommentText = itemView.findViewById(R.id.tvCommentText);
             chbLikeComment = itemView.findViewById(R.id.chbLikeComment);
             chbDislikeComment = itemView.findViewById(R.id.chbDislikeComment);
+            imBtnDeleteComment = itemView.findViewById(R.id.imBtnDeleteComment);
         }
     }
 }

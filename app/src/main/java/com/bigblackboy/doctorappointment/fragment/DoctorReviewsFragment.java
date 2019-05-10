@@ -156,16 +156,12 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
             case R.id.chbLike:
                 if (((CheckBox) v).isChecked()) {
                     sendLike(serviceId, adapter.getItem(position).getReviewId());
-                } else {
-                    deleteLike(serviceId, adapter.getItem(position).getReviewId());
-                }
+                } else deleteLike(serviceId, adapter.getItem(position).getReviewId());
                 break;
             case R.id.chbDislike:
                 if (((CheckBox) v).isChecked()) {
                     sendDislike(serviceId, adapter.getItem(position).getReviewId());
-                } else {
-                    deleteLike(serviceId, adapter.getItem(position).getReviewId());
-                }
+                } else deleteLike(serviceId, adapter.getItem(position).getReviewId());
                 break;
             case R.id.imBtnComments:
                 review = adapter.getItem(position);

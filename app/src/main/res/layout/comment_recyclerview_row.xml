@@ -26,6 +26,14 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
+            <ImageButton
+                android:id="@+id/imBtnDeleteComment"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:visibility="gone"
+                app:srcCompat="@android:drawable/ic_menu_delete" />
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,9 +54,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/chbLikeComment"
+                    android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@id/chbLikeComment"
-                    android:text="0"
-                    android:layout_marginLeft="15dp"/>
+                    android:text="0" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -71,13 +79,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/chbDislikeComment"
-                    android:layout_toRightOf="@id/chbDislikeComment"
                     android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@id/chbDislikeComment"
                     android:text="0" />
             </RelativeLayout>
 
         </LinearLayout>
-
 
         <TextView
             android:id="@+id/tvDateComment"

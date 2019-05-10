@@ -1,10 +1,12 @@
 package com.bigblackboy.doctorappointment.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -66,8 +68,10 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
                     sendCommentDislike(serviceId, adapter.getItem(position).getCommentId());
                 } else deleteCommentLike(serviceId, adapter.getItem(position).getCommentId());
                 break;
+            case R.id.imBtnDeleteComment:
+                deleteComment(adapter.getItem(position).getCommentId());
+                break;
         }
-
     }
 
     public interface OnDoctorReviewDetailedFragmentDataListener {
@@ -373,6 +377,34 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
                     try {
                         JSONObject error = new JSONObject(response.errorBody().string());
                         Toast.makeText(getContext(), "Лайк/дизлайк не удален", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, error.getString("message"));
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.d(LOG_TAG, e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Throwable t) {
+                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, t.getMessage());
+            }
+        });
+    }
+
+    private void deleteComment(int commentId) {
+        springApi.deleteComment(commentId).enqueue(new Callback<com.bigblackboy.doctorappointment.springserver.Response>() {
+            @Override
+            public void onResponse(Call<com.bigblackboy.doctorappointment.springserver.Response> call, Response<com.bigblackboy.doctorappointment.springserver.Response> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().isSuccess()) {
+                        //Toast.makeText(getContext(), "Комментарий удален", Toast.LENGTH_SHORT).show();
+                    } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        Toast.makeText(getContext(), "Комментарий не удален", Toast.LENGTH_SHORT).show();
                         Log.d(LOG_TAG, error.getString("message"));
                     } catch (Exception e) {
                         Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
