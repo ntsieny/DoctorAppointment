@@ -20,18 +20,20 @@ import com.bigblackboy.doctorappointment.fragment.EditReviewFragment;
 import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.fragment.ReviewMainFragment;
 import com.bigblackboy.doctorappointment.fragment.SpecialityFragment;
+import com.bigblackboy.doctorappointment.fragment.UserCommentsFragment;
 import com.bigblackboy.doctorappointment.fragment.UserReviewsFragment;
 import com.bigblackboy.doctorappointment.model.District;
 import com.bigblackboy.doctorappointment.model.Doctor;
 import com.bigblackboy.doctorappointment.model.Hospital;
 import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Speciality;
+import com.bigblackboy.doctorappointment.springserver.springmodel.MyCommentsResponse;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Review;
 import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewsResponse;
 
 public class ReviewActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
         DoctorReviewsFragment.OnDoctorReviewsFragmentDataListener, DoctorReviewDetailedFragment.OnDoctorReviewDetailedFragmentDataListener, ReviewMainFragment.OnReviewMainFragmentDataListener,
-        UserReviewsFragment.OnUserReviewsFragmentDataListener {
+        UserReviewsFragment.OnUserReviewsFragmentDataListener, UserCommentsFragment.OnUserCommentsFragmentDataListener {
 
     public static final int FRAGMENT_DOCTOR_REVIEWS = 0;
     public static final int FRAGMENT_MY_REVIEWS = 1;
@@ -77,7 +79,7 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
                     replaceToUserReviewsFragment(patient.getServiceId());
                     break;
                 case FRAGMENT_MY_COMMENTS:
-
+                    replaceToUserCommentsFragment(patient.getServiceId());
                     break;
                 case FRAGMENT_DOCTOR_REVIEWS:
 
@@ -89,6 +91,11 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
     private void replaceToUserReviewsFragment(String serviceId) {
         UserReviewsFragment userReviewsFragment = UserReviewsFragment.newInstance(serviceId);
         fm.beginTransaction().replace(R.id.fragContainerReview, userReviewsFragment).commit();
+    }
+
+    private void replaceToUserCommentsFragment(String serviceId) {
+        UserCommentsFragment userCommentsFragment = UserCommentsFragment.newInstance(serviceId);
+        fm.beginTransaction().replace(R.id.fragContainerReview, userCommentsFragment).commit();
     }
 
     private void addFragmentToContainer(Fragment fragment, int containerId) {
@@ -132,8 +139,8 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
         fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("doctor_fragment").commit();
     }
 
-    private void replaceToDoctorReviewDetailedFragment(ReviewsResponse review) {
-        DoctorReviewDetailedFragment fragment = DoctorReviewDetailedFragment.newInstance(review.getReviewId(), prefManager.getCurrentPatient().getServiceId());
+    private void replaceToDoctorReviewDetailedFragment(int reviewId) {
+        DoctorReviewDetailedFragment fragment = DoctorReviewDetailedFragment.newInstance(reviewId, prefManager.getCurrentPatient().getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("review_full_fragment").commit();
     }
 
@@ -165,14 +172,14 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
                 replaceToEditReviewFragment();
                 break;
             case R.id.imBtnComments:
-                replaceToDoctorReviewDetailedFragment(review);
+                replaceToDoctorReviewDetailedFragment(review.getReviewId());
                 break;
         }
     }
 
     @Override
     public void onDoctorReviewsFragmentDataListener(ReviewsResponse review) {
-        replaceToDoctorReviewDetailedFragment(review);
+        replaceToDoctorReviewDetailedFragment(review.getReviewId());
     }
 
     @Override
@@ -224,5 +231,10 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
     @Override
     public void onUserReviewsFragmentDataListener(Review review) {
 
+    }
+
+    @Override
+    public void onUserCommentsFragmentDataListener(int reviewId) {
+        replaceToDoctorReviewDetailedFragment(reviewId);
     }
 }

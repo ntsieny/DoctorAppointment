@@ -79,12 +79,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 ((MainMenuActivity) getActivity()).replaceToAppointmentHistoryFragment();
                 break;
             case R.id.btnMyReviews:
-                Intent intent = new Intent(getContext(), ReviewActivity.class);
-                intent.putExtra("fragToLoad", ReviewActivity.FRAGMENT_MY_REVIEWS);
-                startActivity(intent);
+                Intent myReviewsIntent = new Intent(getContext(), ReviewActivity.class);
+                myReviewsIntent.putExtra("fragToLoad", ReviewActivity.FRAGMENT_MY_REVIEWS);
+                startActivity(myReviewsIntent);
                 break;
             case R.id.btnMyComments:
-
+                Intent myCommentsIntent = new Intent(getContext(), ReviewActivity.class);
+                myCommentsIntent.putExtra("fragToLoad", ReviewActivity.FRAGMENT_MY_COMMENTS);
+                startActivity(myCommentsIntent);
                 break;
         }
     }

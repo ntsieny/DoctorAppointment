@@ -68,7 +68,7 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
         if (context instanceof OnDoctorReviewsFragmentDataListener) {
             mListener = (OnDoctorReviewsFragmentDataListener) context;
         } else {
-            throw new RuntimeException(context.toString() + " must implement OnUserReviewsFragmentDataListener");
+            throw new RuntimeException(context.toString() + " must implement OnUserCommentsFragmentDataListener");
         }
     }
 

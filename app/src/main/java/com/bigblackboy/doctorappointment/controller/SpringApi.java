@@ -4,6 +4,7 @@ import com.bigblackboy.doctorappointment.springserver.Response;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Appointment;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Comment;
 import com.bigblackboy.doctorappointment.springserver.springmodel.CommentResponse;
+import com.bigblackboy.doctorappointment.springserver.springmodel.MyCommentsResponse;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Review;
 import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewsResponse;
 import com.bigblackboy.doctorappointment.springserver.springmodel.User;
@@ -70,6 +71,9 @@ public interface SpringApi {
 
     @GET("comment/get/review_id/{reviewId}")
     Call<List<CommentResponse>> getComments(@Path("reviewId") int reviewId);
+
+    @GET("comment/get/service_id/{serviceId}")
+    Call<List<MyCommentsResponse>> getComments(@Path("serviceId") String serviceId);
 
     @POST("comment/create")
     Call<Response> createComment(@Body Comment comment);
