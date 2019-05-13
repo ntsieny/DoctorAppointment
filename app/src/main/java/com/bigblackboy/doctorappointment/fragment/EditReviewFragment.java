@@ -17,10 +17,12 @@ import android.widget.Toast;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
+import com.bigblackboy.doctorappointment.model.District;
 import com.bigblackboy.doctorappointment.model.Doctor;
+import com.bigblackboy.doctorappointment.model.Hospital;
+import com.bigblackboy.doctorappointment.model.Speciality;
 import com.bigblackboy.doctorappointment.springserver.Response;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Review;
-import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
 
 import org.json.JSONObject;
 
@@ -35,29 +37,50 @@ public class EditReviewFragment extends Fragment {
     private RatingBar rBarEditReview;
     private EditText etEditReview;
     private Button btnSendReview, btnDeleteReview;
-    private int doctorId;
-    private String doctorName;
-    private String lpuName;
+    private District district;
+    private Hospital hospital;
+    private Speciality speciality;
+    private Doctor doctor;
     private String serviceId;
-    private ReviewResponse review;
+    private Review review;
 
-    public static EditReviewFragment newInstance(Doctor doctor, String hospitalName, String serviceId) {
+    public static EditReviewFragment newInstance(District district, Speciality speciality, Doctor doctor, Hospital hospital, String serviceId) {
         EditReviewFragment frag = new EditReviewFragment();
         Bundle args = new Bundle();
-        args.putInt("doctor_id", Integer.valueOf(doctor.getIdDoc()));
-        args.putString("doctor_name", doctor.getName());
-        args.putString("lpu_name", hospitalName);
+        args.putSerializable("district", district);
+        args.putSerializable("speciality", speciality);
+        args.putSerializable("doctor", doctor);
+        args.putSerializable("hospital", hospital);
         args.putString("service_id", serviceId);
         frag.setArguments(args);
         return frag;
     }
 
-    public static EditReviewFragment newInstance(Doctor doctor, String hospitalName, String serviceId, ReviewResponse review) {
+    /*public static EditReviewFragment newInstance(District district, Speciality speciality, Doctor doctor, Hospital hospital, String serviceId, Review review) {
         EditReviewFragment frag = new EditReviewFragment();
         Bundle args = new Bundle();
-        args.putInt("doctor_id", Integer.valueOf(doctor.getIdDoc()));
-        args.putString("doctor_name", doctor.getName());
-        args.putString("lpu_name", hospitalName);
+        args.putSerializable("district", district);
+        args.putSerializable("speciality", speciality);
+        args.putSerializable("doctor", doctor);
+        args.putSerializable("hospital", hospital);
+        args.putString("service_id", serviceId);
+        args.putSerializable("review", review);
+        frag.setArguments(args);
+        return frag;
+    }*/
+
+    public static EditReviewFragment newInstance(String serviceId, Review review) {
+        District district = new District(String.valueOf(review.getDistrictId()), review.getDistrictName(), null);
+        Speciality speciality = new Speciality(String.valueOf(review.getSpecialityId()), review.getSpecialityName());
+        Doctor doctor = new Doctor(String.valueOf(review.getDoctorId()), review.getDoctorName());
+        Hospital hospital = new Hospital(review.getLpuId(), review.getLpuName());
+
+        EditReviewFragment frag = new EditReviewFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("district", district);
+        args.putSerializable("speciality", speciality);
+        args.putSerializable("doctor", doctor);
+        args.putSerializable("hospital", hospital);
         args.putString("service_id", serviceId);
         args.putSerializable("review", review);
         frag.setArguments(args);
@@ -69,16 +92,18 @@ public class EditReviewFragment extends Fragment {
         super.onCreate(savedInstanceState);
         springApi = SpringController.getApi();
         if(getArguments() != null) {
-            if(getArguments().containsKey("doctor_id"))
-                doctorId = getArguments().getInt("doctor_id");
-            if(getArguments().containsKey("doctor_name"))
-                doctorName = getArguments().getString("doctor_name");
-            if(getArguments().containsKey("lpu_name"))
-                lpuName = getArguments().getString("lpu_name");
+            if(getArguments().containsKey("district"))
+                district = (District) getArguments().getSerializable("district");
+            if(getArguments().containsKey("speciality"))
+                speciality = (Speciality) getArguments().getSerializable("speciality");
+            if(getArguments().containsKey("doctor"))
+                doctor = (Doctor) getArguments().getSerializable("doctor");
+            if(getArguments().containsKey("hospital"))
+                hospital = (Hospital) getArguments().getSerializable("hospital");
             if(getArguments().containsKey("service_id"))
                 serviceId = getArguments().getString("service_id");
             if(getArguments().containsKey("review"))
-                review = (ReviewResponse) getArguments().getSerializable("review");
+                review = (Review) getArguments().getSerializable("review");
         }
     }
 
@@ -113,8 +138,8 @@ public class EditReviewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tvFioEditReview.setText(doctorName);
-        tvHospitalEditReview.setText(lpuName);
+        tvFioEditReview.setText(doctor.getName());
+        tvHospitalEditReview.setText(hospital.getLPUShortName());
         if (review != null) {
             setFilledData(review);
             btnDeleteReview.setVisibility(View.VISIBLE);
@@ -214,16 +239,23 @@ public class EditReviewFragment extends Fragment {
         if (review != null) {
             rev.setReviewId(review.getReviewId());
         }
-        rev.setDoctorId(doctorId);
+        rev.setDoctorId(Integer.valueOf(doctor.getIdDoc()));
+        rev.setDoctorName(doctor.getName());
         rev.setText(etEditReview.getText().toString());
         rev.setMark((int)rBarEditReview.getRating());
         rev.setServiceId(serviceId);
+        rev.setSpecialityId(Integer.valueOf(speciality.getIdSpeciality()));
+        rev.setSpecialityName(speciality.getNameSpeciality());
+        rev.setLpuId(hospital.getIdLPU());
+        rev.setLpuName(hospital.getLPUShortName());
+        rev.setDistrictId(Integer.valueOf(district.getId()));
+        rev.setDistrictName(district.getName());
         return rev;
     }
 
-    private void setFilledData(ReviewResponse rev) {
-        tvFioEditReview.setText(doctorName);
-        tvHospitalEditReview.setText(lpuName);
+    private void setFilledData(Review rev) {
+        tvFioEditReview.setText(doctor.getName());
+        tvHospitalEditReview.setText(hospital.getLPUShortName());
         rBarEditReview.setRating(rev.getMark());
         etEditReview.setText(rev.getText());
     }

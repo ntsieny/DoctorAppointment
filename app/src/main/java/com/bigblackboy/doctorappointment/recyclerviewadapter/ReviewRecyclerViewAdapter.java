@@ -11,7 +11,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
+import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewsResponse;
 import com.bigblackboy.doctorappointment.utils.DateParser;
 
 import java.util.List;
@@ -19,14 +19,14 @@ import java.util.List;
 public class ReviewRecyclerViewAdapter extends RecyclerView.Adapter<ReviewRecyclerViewAdapter.ViewHolder> {
 
     private static final String LOG_TAG = "myLog: DocReviewAdapter";
-    private List<ReviewResponse> mData;
+    private List<ReviewsResponse> mData;
     private LayoutInflater mInflater;
     private ReviewRecyclerViewAdapter.ItemClickListener mClickListener;
     private Context mContext;
     private String serviceId;
 
     // data is passed into the constructor
-    public ReviewRecyclerViewAdapter(Context context, List<ReviewResponse> data) {
+    public ReviewRecyclerViewAdapter(Context context, List<ReviewsResponse> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -36,7 +36,7 @@ public class ReviewRecyclerViewAdapter extends RecyclerView.Adapter<ReviewRecycl
         this.serviceId = serviceId;
     }
 
-    public void setData(List<ReviewResponse> data) {
+    public void setData(List<ReviewsResponse> data) {
         this.mData = data;
     }
 
@@ -52,7 +52,7 @@ public class ReviewRecyclerViewAdapter extends RecyclerView.Adapter<ReviewRecycl
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(final ReviewRecyclerViewAdapter.ViewHolder holder, final int position) {
-        final ReviewResponse rev = mData.get(position);
+        final ReviewsResponse rev = mData.get(position);
         holder.tvAuthorNameReview.setText(String.format("%s %s.", rev.getLastname(), rev.getName().substring(0,1)));
         holder.tvDateReview.setText(DateParser.convertISOwithMillistoDateTimeString(rev.getDateTime()));
         holder.tvLikeCounterReview.setText(String.valueOf(rev.getLikes()));
@@ -121,7 +121,7 @@ public class ReviewRecyclerViewAdapter extends RecyclerView.Adapter<ReviewRecycl
     }
 
     // convenience method for getting data at click position
-    public ReviewResponse getItem(int id) {
+    public ReviewsResponse getItem(int id) {
         return mData.get(id);
     }
 

@@ -9,13 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.springserver.springmodel.CommentResponse;
-import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
 import com.bigblackboy.doctorappointment.utils.DateParser;
 
 import java.util.List;

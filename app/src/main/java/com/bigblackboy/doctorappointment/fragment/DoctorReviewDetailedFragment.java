@@ -1,12 +1,10 @@
 package com.bigblackboy.doctorappointment.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -27,7 +25,7 @@ import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.CommentRecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Comment;
 import com.bigblackboy.doctorappointment.springserver.springmodel.CommentResponse;
-import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
+import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewsResponse;
 import com.bigblackboy.doctorappointment.utils.DateParser;
 import com.bigblackboy.doctorappointment.utils.ErrorTranslator;
 
@@ -45,7 +43,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     private static SpringApi springApi;
     private String serviceId;
     private int reviewId;
-    private ReviewResponse review;
+    private ReviewsResponse review;
     private TextView tvAuthorNameReview, tvDateReview, tvLikeCounterReview, tvDislikeCounterReview, tvCommentCounterReview, tvReviewText;
     private EditText etCommentText;
     private RatingBar rBarReview;
@@ -75,7 +73,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     }
 
     public interface OnDoctorReviewDetailedFragmentDataListener {
-        void onDoctorReviewDetailedFragmentBtnClick(View v, ReviewResponse rev);
+        void onDoctorReviewDetailedFragmentBtnClick(View v, ReviewsResponse rev);
     }
 
 
@@ -283,9 +281,9 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     }
 
     private void getReviewById(int reviewId) {
-        springApi.getReview(reviewId).enqueue(new Callback<ReviewResponse>() {
+        springApi.getReview(reviewId).enqueue(new Callback<ReviewsResponse>() {
             @Override
-            public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
+            public void onResponse(Call<ReviewsResponse> call, Response<ReviewsResponse> response) {
                 if (response.isSuccessful()) {
                     review = response.body();
                     showReview(review);
@@ -302,7 +300,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<ReviewResponse> call, Throwable t) {
+            public void onFailure(Call<ReviewsResponse> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
@@ -474,7 +472,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
         }
     }
 
-    private void showReview(ReviewResponse review) {
+    private void showReview(ReviewsResponse review) {
         tvAuthorNameReview.setText(String.format("%s %s.", review.getLastname(), review.getName().substring(0,1)));
         tvDateReview.setText(DateParser.convertISOwithMillistoDateTimeString(review.getDateTime()));
         tvLikeCounterReview.setText(String.valueOf(review.getLikes()));

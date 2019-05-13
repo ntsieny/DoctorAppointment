@@ -1,16 +1,11 @@
 package com.bigblackboy.doctorappointment.controller;
 
-import com.bigblackboy.doctorappointment.api.AppointmentListApiResponse;
-import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
-import com.bigblackboy.doctorappointment.api.DoctorsApiResponse;
-import com.bigblackboy.doctorappointment.api.HospitalApiResponse;
-import com.bigblackboy.doctorappointment.api.SpecialitiesApiResponse;
 import com.bigblackboy.doctorappointment.springserver.Response;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Appointment;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Comment;
 import com.bigblackboy.doctorappointment.springserver.springmodel.CommentResponse;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Review;
-import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
+import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewsResponse;
 import com.bigblackboy.doctorappointment.springserver.springmodel.User;
 
 import java.util.List;
@@ -18,10 +13,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -47,10 +39,13 @@ public interface SpringApi {
     Call<Response> checkLoginUnique(@Body User user);
 
     @GET("review/get/review_id/{reviewId}")
-    Call<ReviewResponse> getReview(@Path("reviewId") int reviewId);
+    Call<ReviewsResponse> getReview(@Path("reviewId") int reviewId);
 
     @GET("review/get/doctor_id/{doctorId}")
-    Call<List<ReviewResponse>> getReviews(@Path("doctorId") int doctorId);
+    Call<List<ReviewsResponse>> getReviews(@Path("doctorId") int doctorId);
+
+    @GET("review/get/service_id/{serviceId}")
+    Call<List<Review>> getReviews(@Path("serviceId") String serviceId);
 
     @POST("review/create")
     Call<Response> createReview(@Body Review review);

@@ -4,51 +4,20 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class ReviewResponse implements Serializable {
+public class ReviewsResponse extends Review implements Serializable {
 
-    private int reviewId;
-    private Date date;
-    private String time;
-    private String dateTime;
-    private String text;
+    //reviewId, date, time, dateTime, text, mark, doctorId, docName, serviceId, authorId, specId, specName, lpuId, lpuName, districtId, districtName унаследовано
     private String name;
     private String lastname;
     private String middlename;
     private int daybirth;
     private int monthbirth;
     private int yearbirth;
-    private String serviceId;
-    private int authorId;
-    private int mark;
     private int likes;
     private int dislikes;
     private List likers;
     private List dislikers;
     private int commentCount;
-
-    public int getReviewId() {
-        return reviewId;
-    }
-
-    public void setReviewId(int reviewId) {
-        this.reviewId = reviewId;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 
     public String getName() {
         return name;
@@ -98,14 +67,6 @@ public class ReviewResponse implements Serializable {
         this.yearbirth = yearbirth;
     }
 
-    public int getMark() {
-        return mark;
-    }
-
-    public void setMark(int mark) {
-        this.mark = mark;
-    }
-
     public int getLikes() {
         return likes;
     }
@@ -136,38 +97,6 @@ public class ReviewResponse implements Serializable {
 
     public void setDislikers(List dislikers) {
         this.dislikers = dislikers;
-    }
-
-    public String getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
     }
 
     public int getCommentCount() {

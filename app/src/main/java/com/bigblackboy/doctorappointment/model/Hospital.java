@@ -3,7 +3,19 @@ package com.bigblackboy.doctorappointment.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Hospital {
+import java.io.Serializable;
+
+public class Hospital implements Serializable {
+
+    public Hospital() {
+
+    }
+
+    public Hospital(int lpuId, String lpuName) {
+        this.idLPU = lpuId;
+        this.lPUShortName = lpuName;
+    }
+
     @SerializedName("District")
     @Expose
     private Integer district;

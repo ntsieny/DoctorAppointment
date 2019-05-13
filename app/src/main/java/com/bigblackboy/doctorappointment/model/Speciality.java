@@ -3,7 +3,18 @@ package com.bigblackboy.doctorappointment.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Speciality {
+import java.io.Serializable;
+
+public class Speciality implements Serializable {
+
+    public Speciality() {
+
+    }
+
+    public Speciality(String specialityId, String specialityName) {
+        this.idSpeciality = specialityId;
+        this.nameSpeciality = specialityName;
+    }
 
     @SerializedName("CountFreeParticipantIE")
     @Expose

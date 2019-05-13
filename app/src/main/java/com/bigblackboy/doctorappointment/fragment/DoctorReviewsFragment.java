@@ -21,7 +21,7 @@ import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.ReviewRecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewResponse;
+import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewsResponse;
 
 import org.json.JSONObject;
 
@@ -36,8 +36,8 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     private static final String LOG_TAG = "myLog: DocReviewsFrag";
     private static SpringApi springApi;
     private ReviewRecyclerViewAdapter adapter;
-    private List<ReviewResponse> reviews;
-    private ReviewResponse review;
+    private List<ReviewsResponse> reviews;
+    private ReviewsResponse review;
     private String doctorId;
     private String doctorName;
     private String serviceId;
@@ -48,8 +48,8 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     private OnDoctorReviewsFragmentDataListener mListener;
 
     public interface OnDoctorReviewsFragmentDataListener {
-        void onDoctorReviewsFragmentBtnClickListener(View v, ReviewResponse review);
-        void onDoctorReviewsFragmentDataListener(ReviewResponse review);
+        void onDoctorReviewsFragmentBtnClickListener(View v, ReviewsResponse review);
+        void onDoctorReviewsFragmentDataListener(ReviewsResponse review);
     }
 
     public static DoctorReviewsFragment newInstance(String doctorId, String doctorName, String serviceId) {
@@ -68,7 +68,7 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
         if (context instanceof OnDoctorReviewsFragmentDataListener) {
             mListener = (OnDoctorReviewsFragmentDataListener) context;
         } else {
-            throw new RuntimeException(context.toString() + " must implement OnDoctorReviewsFragmentDataListener");
+            throw new RuntimeException(context.toString() + " must implement OnUserReviewsFragmentDataListener");
         }
     }
 
@@ -110,9 +110,9 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     }
 
     private void getDoctorReviews() {
-        springApi.getReviews(Integer.valueOf(doctorId)).enqueue(new Callback<List<ReviewResponse>>() {
+        springApi.getReviews(Integer.valueOf(doctorId)).enqueue(new Callback<List<ReviewsResponse>>() {
             @Override
-            public void onResponse(Call<List<ReviewResponse>> call, Response<List<ReviewResponse>> response) {
+            public void onResponse(Call<List<ReviewsResponse>> call, Response<List<ReviewsResponse>> response) {
                 if (response.isSuccessful()) {
                     if(response.body().size() > 0) {
                         reviews = response.body();
@@ -135,16 +135,16 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
             }
 
             @Override
-            public void onFailure(Call<List<ReviewResponse>> call, Throwable t) {
+            public void onFailure(Call<List<ReviewsResponse>> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
         });
     }
 
-    private float countAvgMark(List<ReviewResponse> list) {
+    private float countAvgMark(List<ReviewsResponse> list) {
         float sum = 0;
-        for (ReviewResponse rev : list) {
+        for (ReviewsResponse rev : list) {
             sum += rev.getMark();
         }
         return sum / list.size();

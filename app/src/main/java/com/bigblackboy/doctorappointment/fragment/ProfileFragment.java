@@ -1,5 +1,6 @@
 package com.bigblackboy.doctorappointment.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,12 +13,14 @@ import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.activity.MainMenuActivity;
+import com.bigblackboy.doctorappointment.activity.ReviewActivity;
 import com.bigblackboy.doctorappointment.model.Patient;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     TextView tvFioProfile, tvBirthdayProfile, tvDistrictProfile, tvHospitalProfile;
     Button btnMyAppointments, btnMyReviews, btnMyComments;
+
 
     public static ProfileFragment newInstance(Patient patient) {
         ProfileFragment profileFragment = new ProfileFragment();
@@ -76,7 +79,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 ((MainMenuActivity) getActivity()).replaceToAppointmentHistoryFragment();
                 break;
             case R.id.btnMyReviews:
-
+                Intent intent = new Intent(getContext(), ReviewActivity.class);
+                intent.putExtra("fragToLoad", ReviewActivity.FRAGMENT_MY_REVIEWS);
+                startActivity(intent);
                 break;
             case R.id.btnMyComments:
 

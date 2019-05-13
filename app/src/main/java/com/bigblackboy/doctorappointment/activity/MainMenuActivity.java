@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.bigblackboy.doctorappointment.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.fragment.MainMenuFragment;
 import com.bigblackboy.doctorappointment.fragment.ProfileFragment;
 import com.bigblackboy.doctorappointment.fragment.SpecialityFragment;
+import com.bigblackboy.doctorappointment.fragment.UserReviewsFragment;
 import com.bigblackboy.doctorappointment.model.AppointmentInfo;
 import com.bigblackboy.doctorappointment.model.District;
 import com.bigblackboy.doctorappointment.model.Doctor;
@@ -65,6 +67,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     private static final String TITLE_DOCTOR_SCHEDULE = "Расписание врачей";
     private static final String TITLE_APPOINTMENT_HISTORY = "История заявок";
     private static final String TITLE_CHOOSE_SPECIALITY = "Выбор специальности";
+    private static final String TITLE_MY_REVIEWS = "Мои отзывы";
     SharedPreferences mSettings;
     SharedPreferences.Editor editor;
     FragmentManager fm;
