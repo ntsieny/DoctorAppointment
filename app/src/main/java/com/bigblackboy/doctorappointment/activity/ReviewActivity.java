@@ -227,9 +227,6 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
             case R.id.imBtnEditReview:
                 replaceToEditReviewFragment(review);
                 break;
-            case R.id.imBtnDeleteReview:
-
-                break;
         }
     }
 

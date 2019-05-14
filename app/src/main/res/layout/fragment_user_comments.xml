@@ -16,9 +16,9 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvUserComments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Мои комментарии"
                 android:textSize="18sp" />
 
         </LinearLayout>

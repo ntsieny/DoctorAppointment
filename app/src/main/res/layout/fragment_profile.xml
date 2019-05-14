@@ -6,128 +6,55 @@
     android:layout_marginRight="10dp"
     android:orientation="vertical">
 
-    <TableLayout
+    <TextView
+        android:id="@+id/tvFioProfile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="ФИО"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="ФИО:"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/tvFioProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="18sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Дата рождения"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/tvBirthdayProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="18sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Район:"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/tvDistrictProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="18sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Медучреждение:"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/tvHospitalProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="18sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </TableLayout>
-
-    <TableLayout
+    <TextView
+        android:id="@+id/tvBirthdayProfile"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="15dp">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Дата рождения"
+        android:textSize="18sp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/tvDistrictProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Район"
+        android:textSize="18sp" />
 
-            <Button
-                android:id="@+id/btnMyAppointments"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Мои заявки" />
+    <TextView
+        android:id="@+id/tvHospitalProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Поликлиника"
+        android:textSize="18sp" />
 
-            <Button
-                android:id="@+id/btnMyReviews"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Мои отзывы" />
-        </TableRow>
+    <Button
+        android:id="@+id/btnMyAppointments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Мои заявки" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+    <Button
+        android:id="@+id/btnMyReviews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Мои отзывы" />
 
-            <Button
-                android:id="@+id/btnMyComments"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Мои комментарии" />
-        </TableRow>
-
-    </TableLayout>
+    <Button
+        android:id="@+id/btnMyComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Мои комментарии" />
 
 </LinearLayout>

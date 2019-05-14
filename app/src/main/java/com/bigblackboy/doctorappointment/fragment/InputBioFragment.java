@@ -24,8 +24,10 @@ import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
 import com.bigblackboy.doctorappointment.model.Patient;
 import com.bigblackboy.doctorappointment.model.Session;
+import com.bigblackboy.doctorappointment.utils.DateParser;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,7 +35,7 @@ import retrofit2.Response;
 
 import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SETTINGS;
 
-public class InputBioFragment extends Fragment implements View.OnClickListener {
+public class InputBioFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener{
 
     private static final String LOG_TAG = "myLog: InputBioFragment";
     EditText etNameReg, etLastnameReg, etMiddlanameReg;
@@ -64,9 +66,7 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
         super.onAttach(context);
         if(context instanceof OnInputBioFragmentDataListener) {
             mListener = (OnInputBioFragmentDataListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnInputBioFragmentDataListener");
-        }
+        } else throw new RuntimeException(context.toString() + " must implement OnInputBioFragmentDataListener");
     }
 
     @Override
@@ -112,30 +112,17 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
 
     private void showDatePicker() {
         DatePickerFragment date = new DatePickerFragment();
-        /**
-         * Set Up Current Date Into dialog
-         */
-        Calendar calender = Calendar.getInstance();
-        Bundle args = new Bundle();
-        args.putInt("year", calender.get(Calendar.YEAR));
-        args.putInt("month", calender.get(Calendar.MONTH));
-        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
-        date.setArguments(args);
-        /**
-         * Set Call back to capture selected date
-         */
-        date.setCallBack(ondate);
+        date.setDatePickerFragmentListener(this);
         date.show(getFragmentManager(), "Date Picker");
     }
 
-    DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            patient.setDayBirth(dayOfMonth);
-            patient.setMonthBirth(monthOfYear + 1);
-            patient.setYearBirth(year);
-            tvBirthdayReg.setText(String.valueOf(dayOfMonth) + "-" + String.valueOf(monthOfYear + 1) + "-" + String.valueOf(year));
-        }
-    };
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        patient.setDayBirth(dayOfMonth);
+        patient.setMonthBirth(month + 1);
+        patient.setYearBirth(year);
+        tvBirthdayReg.setText(String.format("%d.%d.%d", dayOfMonth, month + 1, year));
+    }
 
     private void checkPatient(String name, String lastname, String middlename) {
         hospitalApi.getMetadata(name, lastname, middlename, patient.getInsuranceSeries(), patient.getInsuranceNumber(),
@@ -155,21 +142,21 @@ public class InputBioFragment extends Fragment implements View.OnClickListener {
                         Log.d(LOG_TAG, "patientId: " + patient.getServiceId() + ", cookie: " + cookie);
 
                         /*editor = mSettings.edit();
-                        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_ID, patient.getId());
-                        editor.putBoolean(MainMenuActivity.APP_SETTINGS_USER_LOGGED_IN, true);
+                        editor.putString(MainActivity.APP_SETTINGS_PATIENT_ID, patient.getId());
+                        editor.putBoolean(MainActivity.APP_SETTINGS_USER_LOGGED_IN, true);
                         editor.apply();*/
 
                         /*String welcomePhr = "Добро пожаловать, " + patient.getName().substring(0,1).toUpperCase() + patient.getName().substring(1) + "!";
                         Toast.makeText(getContext(), welcomePhr, Toast.LENGTH_LONG).show();*/
 
-                        /*Intent intent = new Intent(getContext(), MainMenuActivity.class);
+                        /*Intent intent = new Intent(getContext(), MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);*/
 
                         /*editor = mSettings.edit();
-                        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_NAME, patient.getName());
-                        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_LASTNAME, patient.getLastName());
-                        editor.putString(MainMenuActivity.APP_SETTINGS_PATIENT_BIRTHDAY, patient.getBirthdayFormatted());
+                        editor.putString(MainActivity.APP_SETTINGS_PATIENT_NAME, patient.getName());
+                        editor.putString(MainActivity.APP_SETTINGS_PATIENT_LASTNAME, patient.getLastName());
+                        editor.putString(MainActivity.APP_SETTINGS_PATIENT_BIRTHDAY, patient.getBirthdayFormatted());
                         editor.apply();*/
                         mListener.onInputBioFragmentDataListener(patient);
                         Log.d(LOG_TAG, "Пациент найден");

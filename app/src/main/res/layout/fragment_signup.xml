@@ -5,48 +5,76 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
     tools:context=".activity.RegistrationActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Регистрация"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/etLoginReg"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/loginTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="Введите логин"
-            android:inputType="textPersonName" />
+            app:errorEnabled="true">
 
-        <ImageView
-            android:id="@+id/ivCheckLogin"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="8"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/not_checked" />
+            <EditText
+                android:id="@+id/etLoginReg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Придумайте логин"
+                android:inputType="textPersonName" />
+        </android.support.design.widget.TextInputLayout>
+
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/etPasswordReg"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Введите пароль" />
+        android:paddingTop="1dp"
+        android:paddingBottom="4dp">
 
-    <EditText
-        android:id="@+id/etPasswordRepeat"
+        <EditText
+            android:id="@+id/etPasswordReg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Придумайте пароль" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Повторите пароль" />
+        android:paddingTop="6dp"
+        android:paddingBottom="4dp">
+
+        <EditText
+            android:id="@+id/etPasswordRepeat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Повторите пароль" />
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/btnSignup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/btn_register" />
 </LinearLayout>

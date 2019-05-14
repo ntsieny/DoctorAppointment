@@ -27,7 +27,7 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
         boolean loggedId = mSettings.getBoolean(APP_SETTINGS_USER_LOGGED_IN, false);
         boolean guestMode = mSettings.getBoolean(APP_SETTINGS_GUEST_MODE, false);
         if (loggedId | guestMode) {
-            Intent intent = new Intent(this, MainMenuActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
@@ -59,7 +59,7 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
                 editor.putBoolean(APP_SETTINGS_USER_LOGGED_IN, false);
                 editor.apply();
                 finish();
-                intent = new Intent(this, MainMenuActivity.class);
+                intent = new Intent(this, MainActivity.class);
                 break;
         }
         startActivity(intent);

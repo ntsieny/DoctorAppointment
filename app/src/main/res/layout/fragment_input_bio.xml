@@ -4,8 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:gravity="center_vertical"
     android:orientation="vertical"
     tools:context=".activity.RegistrationActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Регистрация"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/etLastnameReg"
@@ -34,7 +46,7 @@
     <TextView
         android:id="@+id/tvBirthdayReg"
         android:layout_width="match_parent"
-        android:layout_height="34dp"
+        android:layout_height="wrap_content"
         android:text="Выбрать дату рождения"
         android:textSize="18sp" />
 
@@ -42,5 +54,6 @@
         android:id="@+id/btnBioReg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/btn_register" />
 </LinearLayout>

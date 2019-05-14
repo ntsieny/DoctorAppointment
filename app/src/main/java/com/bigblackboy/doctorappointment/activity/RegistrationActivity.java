@@ -146,7 +146,7 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
 
     private void openMainMenuAcvitity() {
         finish();
-        Intent intent = new Intent(this, MainMenuActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 

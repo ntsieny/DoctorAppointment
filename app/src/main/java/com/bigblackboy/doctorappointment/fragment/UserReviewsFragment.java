@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
@@ -35,6 +36,7 @@ public class UserReviewsFragment extends Fragment implements UserReviewsRecycler
     private List<Review> reviews;
     private String serviceId;
     private RecyclerView recyclerView;
+    private TextView tvUserReviews;
     private OnUserReviewsFragmentDataListener mListener;
 
     public interface OnUserReviewsFragmentDataListener {
@@ -73,6 +75,7 @@ public class UserReviewsFragment extends Fragment implements UserReviewsRecycler
         View v = inflater.inflate(R.layout.fragment_user_reviews, container, false);
         recyclerView = v.findViewById(R.id.rvUserReviews);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        tvUserReviews = v.findViewById(R.id.tvUserReviews);
         return v;
     }
 
@@ -88,14 +91,16 @@ public class UserReviewsFragment extends Fragment implements UserReviewsRecycler
             public void onResponse(Call<List<Review>> call, Response<List<Review>> response) {
                 if (response.isSuccessful()) {
                     if (response.body().size() > 0) {
+                        tvUserReviews.setText("Мои отзывы");
                         List<Review> reviews = response.body();
                         adapter.setData(reviews);
                         recyclerView.setAdapter(adapter);
                     }
                 } else {
                     try {
+                        tvUserReviews.setText("Отзывов нет");
                         JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getContext(), "Отзывы не получены", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), error.getString("message"), Toast.LENGTH_SHORT).show();
                         Log.d(LOG_TAG, error.getString("message"));
                     } catch (Exception e) {
                         Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
@@ -36,6 +37,7 @@ public class UserCommentsFragment extends Fragment implements UserCommentsRecycl
     private List<MyCommentsResponse> comments;
     private String serviceId;
     private RecyclerView recyclerView;
+    private TextView tvUserComments;
     private OnUserCommentsFragmentDataListener mListener;
 
     @Override
@@ -87,6 +89,7 @@ public class UserCommentsFragment extends Fragment implements UserCommentsRecycl
         View v = inflater.inflate(R.layout.fragment_user_comments, container, false);
         recyclerView = v.findViewById(R.id.rvUserComments);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        tvUserComments = v.findViewById(R.id.tvUserComments);
         return v;
     }
 
@@ -102,13 +105,15 @@ public class UserCommentsFragment extends Fragment implements UserCommentsRecycl
             public void onResponse(Call<List<MyCommentsResponse>> call, Response<List<MyCommentsResponse>> response) {
                 if (response.isSuccessful()) {
                     if (response.body().size() > 0) {
+                        tvUserComments.setText("Мои комментарии");
                         adapter.setData(response.body());
                         recyclerView.setAdapter(adapter);
                     }
                 } else {
                     try {
+                        tvUserComments.setText("Комментариев нет");
                         JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getContext(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), error.getString("message"), Toast.LENGTH_SHORT).show();
                         Log.d(LOG_TAG, error.getString("message"));
                     } catch (Exception e) {
                         Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();

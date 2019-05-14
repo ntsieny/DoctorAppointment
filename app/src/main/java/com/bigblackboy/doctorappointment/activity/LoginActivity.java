@@ -91,9 +91,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editor.apply();
     }
 
-    private void openMainMenuActivity() {
+    private void openMainActivity() {
         finish();
-        Intent intent = new Intent(this, MainMenuActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (response.isSuccessful() && user != null) {
                     Log.d(LOG_TAG, "Пользователь найден");
                     writeSharedPreferences(user);
-                    openMainMenuActivity();
+                    openMainActivity();
                     Toast.makeText(LoginActivity.this, String.format("Добро пожаловать, %s %s!", user.getName(), user.getMiddlename()), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(LoginActivity.this, "Пользователь не найден", Toast.LENGTH_SHORT).show();
