@@ -126,7 +126,7 @@ public class UserReviewsFragment extends Fragment implements UserReviewsRecycler
 
     @Override
     public void onUserReviewsItemClick(View v, int position) {
-
+        mListener.onUserReviewsFragmentDataListener(adapter.getItem(position));
     }
 
     private void deleteReview(int reviewId) {

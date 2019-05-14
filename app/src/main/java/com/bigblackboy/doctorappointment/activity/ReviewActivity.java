@@ -139,6 +139,11 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
         fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("doctor_fragment").commit();
     }
 
+    private void replaceToDoctorReviewsFragment(Review rev) {
+        DoctorReviewsFragment fragment = DoctorReviewsFragment.newInstance(String.valueOf(rev.getDoctorId()), rev.getDoctorName(), prefManager.getCurrentPatient().getServiceId());
+        fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("my_reviews_fragment").commit();
+    }
+
     private void replaceToDoctorReviewDetailedFragment(int reviewId) {
         DoctorReviewDetailedFragment fragment = DoctorReviewDetailedFragment.newInstance(reviewId, prefManager.getCurrentPatient().getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("review_full_fragment").commit();
@@ -230,7 +235,7 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
 
     @Override
     public void onUserReviewsFragmentDataListener(Review review) {
-
+        replaceToDoctorReviewsFragment(review);
     }
 
     @Override
