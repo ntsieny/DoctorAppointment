@@ -1,30 +1,42 @@
 package com.bigblackboy.doctorappointment.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.widget.DatePicker;
-import android.widget.Toast;
 
 import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment {
 
     private DatePickerDialog.OnDateSetListener mListener;
+    private int year, month, day;
 
-    public DatePickerFragment() {}
+    public static DatePickerFragment newInstance(int year, int month, int day) {
+        DatePickerFragment frag = new DatePickerFragment();
+        Bundle args = new Bundle();
+        args.putInt("year", year);
+        args.putInt("month", month);
+        args.putInt("day", day);
+        frag.setArguments(args);
+        return frag;
+    }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog dialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Dialog, mListener, year, month, day);
-        dialog.getDatePicker().setCalendarViewShown(false);
-        return dialog;
+    public Dialog onCreateDialog(Bundle bundle) {
+        if (getArguments() != null) {
+            if (getArguments().containsKey("year") && getArguments().containsKey("month") && getArguments().containsKey("day")) {
+                year = getArguments().getInt("year");
+                month = getArguments().getInt("month");
+                day = getArguments().getInt("day");
+            }
+        } else {
+            Calendar c = Calendar.getInstance();
+            year = c.get(Calendar.YEAR);
+            month = c.get(Calendar.MONTH);
+            day = c.get(Calendar.DAY_OF_MONTH);
+        }
+        return new DatePickerDialog(getActivity(), mListener, year, month, day);
     }
 
     public void setDatePickerFragmentListener(DatePickerDialog.OnDateSetListener listener) {

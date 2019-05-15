@@ -111,9 +111,12 @@ public class InputBioFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void showDatePicker() {
-        DatePickerFragment date = new DatePickerFragment();
-        date.setDatePickerFragmentListener(this);
-        date.show(getFragmentManager(), "Date Picker");
+        DatePickerFragment datePickerFrag;
+        if (patient.getDayBirth() != 0 && patient.getMonthBirth() != 0 && patient.getYearBirth() != 0) {
+            datePickerFrag = DatePickerFragment.newInstance(patient.getYearBirth(), patient.getMonthBirth() - 1, patient.getDayBirth());
+        } else datePickerFrag = new DatePickerFragment();
+        datePickerFrag.setDatePickerFragmentListener(this);
+        datePickerFrag.show(getFragmentManager(), "Date Picker");
     }
 
     @Override

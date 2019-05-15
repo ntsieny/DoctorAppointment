@@ -4,9 +4,10 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-public class DateParser {
+import java.util.HashMap;
+import java.util.Map;
 
-    private static String[] months = {"января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+public class DateParser {
 
     public static String convertISOtoDateTimeString(String dateIso) {
         DateTimeFormatter parser = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
@@ -20,9 +21,5 @@ public class DateParser {
         DateTime dateTime = parser.parseDateTime(dateIso);
         DateTimeFormatter converter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm");
         return converter.print(dateTime);
-    }
-
-    public static String getMonthVerbal(int month) {
-        return months[month];
     }
 }
