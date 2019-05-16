@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tvDoctorNameItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="ФИО доктора"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvDoctorItemBtn"
+        android:layout_width="15dp"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:text="@string/three_dots"
+        android:textSize="18sp" />
+
+</LinearLayout>

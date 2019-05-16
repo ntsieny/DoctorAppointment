@@ -1,6 +1,8 @@
 package com.bigblackboy.doctorappointment.recyclerviewadapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -61,13 +63,25 @@ public class AppointmentHistoryRecyclerViewAdapter extends RecyclerView.Adapter<
                 popupMenu.inflate(R.menu.app_hist_popup_menu);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
+                    public boolean onMenuItemClick(final MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.removeAppHistItem:
-                                //mData.remove(position);
-                                //notifyDataSetChanged();
-                                if (mClickListener != null) mClickListener.onItemClick(menuItem.getItemId(), holder.getAdapterPosition());
-                                removeAt(holder.getAdapterPosition());
+                                AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
+                                    .setTitle("Вы уверены?")
+                                    .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    })
+                                    .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (mClickListener != null) mClickListener.onItemClick(menuItem.getItemId(), holder.getAdapterPosition());
+                                            removeAt(holder.getAdapterPosition());
+                                        }
+                                    });
+                                builder.show();
                                 break;
                         }
                         return false;

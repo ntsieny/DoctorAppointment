@@ -1,6 +1,7 @@
 package com.bigblackboy.doctorappointment.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,14 +10,17 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.activity.ReviewActivity;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.recyclerviewadapter.DoctorRecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.api.DoctorsApiResponse;
 import com.bigblackboy.doctorappointment.model.Doctor;
@@ -27,16 +31,36 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DoctorFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
+public class DoctorFragment extends Fragment implements DoctorRecyclerViewAdapter.OnDoctorItemClickListener {
 
     private String LOG_TAG = "myLog: DoctorFragment";
     private static HospitalApi hospitalApi;
-    RecyclerViewAdapter adapter;
-    List<Doctor> doctors;
-    RecyclerView recyclerView;
+    private DoctorRecyclerViewAdapter adapter;
+    private List<Doctor> doctors;
+    private RecyclerView recyclerView;
     private String specialityId, hospitalId, patientId;
     private OnDoctorFragmentDataListener mListener;
     private ProgressBar progBarDoctor;
+
+    @Override
+    public void onDoctorPopupMenuItemClick(MenuItem item, int position) {
+        switch (item.getItemId()) {
+            case R.id.doctorReviewsPopupItem:
+                Intent reviewsIntent = new Intent(getContext(), ReviewActivity.class);
+                Bundle args = new Bundle();
+                args.putInt("fragToLoad", ReviewActivity.FRAGMENT_DOCTOR_REVIEWS);
+                args.putString("doctorId", adapter.getItem(position).getIdDoc());
+                args.putString("doctorName", adapter.getItem(position).getName());
+                reviewsIntent.putExtras(args);
+                startActivity(reviewsIntent);
+                break;
+        }
+    }
+
+    @Override
+    public void onDoctorItemClick(int position) {
+        mListener.onDoctorFragmentDataListener((Doctor)adapter.getItem(position));
+    }
 
     public interface OnDoctorFragmentDataListener {
         void onDoctorFragmentDataListener(Doctor doctor);
@@ -85,7 +109,7 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
         recyclerView.addItemDecoration(dividerItemDecoration);
-        adapter = new RecyclerViewAdapter(getContext());
+        adapter = new DoctorRecyclerViewAdapter(getContext());
         adapter.setClickListener(this);
     }
 
@@ -123,10 +147,5 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
                 Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    @Override
-    public void onItemClick(View view, int position) {
-        mListener.onDoctorFragmentDataListener((Doctor)adapter.getItem(position));
     }
 }
