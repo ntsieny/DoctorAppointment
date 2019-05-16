@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.controller.HospitalController;
@@ -40,6 +41,7 @@ public class ChooseAppointmentFragment extends Fragment implements RecyclerViewA
     RecyclerView recyclerView;
     private String doctorId, patientId, hospitalId;
     private OnAppointmentFragmentDataListener mListener;
+    private ProgressBar progBarChooseAppointment;
 
     public interface OnAppointmentFragmentDataListener {
         void onAppointmentFragmentDataListener(AppointmentInfo appointmentInfo);
@@ -74,7 +76,9 @@ public class ChooseAppointmentFragment extends Fragment implements RecyclerViewA
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_choose_appointment, null);
+        View v = inflater.inflate(R.layout.fragment_choose_appointment, null);
+        progBarChooseAppointment = v.findViewById(R.id.progBarChooseAppointment);
+        return v;
     }
 
     @Override
@@ -117,6 +121,7 @@ public class ChooseAppointmentFragment extends Fragment implements RecyclerViewA
                         }
                         adapter.setData(appoints);
                         recyclerView.setAdapter(adapter);
+                        progBarChooseAppointment.setVisibility(View.INVISIBLE);
                     } else {
                         Log.d(LOG_TAG, "Ошибка " + respObj.getError().getIdError() + ". " + respObj.getError().getErrorDescription());
                         Toast.makeText(getContext(), respObj.getError().getErrorDescription(), Toast.LENGTH_SHORT).show();

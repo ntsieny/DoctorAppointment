@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.bigblackboy.doctorappointment.utils.HtmlParser;
 import com.bigblackboy.doctorappointment.R;
@@ -32,6 +33,7 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
     RecyclerViewAdapter adapter;
     ArrayList<District> districts;
     private OnDistrictFragmentDataListener mListener;
+    private ProgressBar progBarDistrict;
 
     public interface OnDistrictFragmentDataListener {
         void onDistrictFragmentDataListener(District district);
@@ -48,7 +50,9 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_district, null);
+        View v = inflater.inflate(R.layout.fragment_district, null);
+        progBarDistrict = v.findViewById(R.id.progBarDistrict);
+        return v;
     }
 
     @Override
@@ -72,6 +76,7 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
         adapter = new RecyclerViewAdapter(getContext(), districts);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
+        progBarDistrict.setVisibility(View.INVISIBLE);
     }
 
     @Override

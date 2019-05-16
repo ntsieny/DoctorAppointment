@@ -1,5 +1,6 @@
 package com.bigblackboy.doctorappointment.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,9 +22,13 @@ import org.joda.time.LocalDate;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
-    TextView tvFioProfile, tvBirthdayProfile, tvDistrictProfile, tvHospitalProfile;
-    Button btnMyAppointments, btnMyReviews, btnMyComments;
+    private TextView tvFioProfile, tvBirthdayProfile, tvDistrictProfile, tvHospitalProfile;
+    private Button btnMyAppointments, btnMyReviews, btnMyComments;
+    private OnProfileFragmentDataListener mListener;
 
+    public interface OnProfileFragmentDataListener {
+        void onProfileFragmentBtnClick(View v);
+    }
 
     public static ProfileFragment newInstance(Patient patient) {
         ProfileFragment profileFragment = new ProfileFragment();
@@ -46,6 +51,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             args.putString("hospitalNameShort", patient.getHospital().getLPUShortName());
         profileFragment.setArguments(args);
         return profileFragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnProfileFragmentDataListener) {
+            mListener = (OnProfileFragmentDataListener) context;
+        } else throw new RuntimeException(context.toString() + " must implement OnProfileFragmentDataListener");
     }
 
     @Nullable
@@ -91,17 +104,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnMyAppointments:
-                ((MainActivity) getActivity()).replaceToAppointmentHistoryFragment();
+                mListener.onProfileFragmentBtnClick(v);
                 break;
             case R.id.btnMyReviews:
-                Intent myReviewsIntent = new Intent(getContext(), ReviewActivity.class);
-                myReviewsIntent.putExtra("fragToLoad", ReviewActivity.FRAGMENT_MY_REVIEWS);
-                startActivity(myReviewsIntent);
+                mListener.onProfileFragmentBtnClick(v);
                 break;
             case R.id.btnMyComments:
-                Intent myCommentsIntent = new Intent(getContext(), ReviewActivity.class);
-                myCommentsIntent.putExtra("fragToLoad", ReviewActivity.FRAGMENT_MY_COMMENTS);
-                startActivity(myCommentsIntent);
+                mListener.onProfileFragmentBtnClick(v);
                 break;
         }
     }

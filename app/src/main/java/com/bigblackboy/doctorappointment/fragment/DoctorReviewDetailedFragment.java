@@ -15,11 +15,14 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.CommentRecyclerViewAdapter;
@@ -44,7 +47,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     private String serviceId;
     private int reviewId;
     private ReviewsResponse review;
-    private TextView tvAuthorNameReview, tvDateReview, tvLikeCounterReview, tvDislikeCounterReview, tvCommentCounterReview, tvReviewText;
+    private TextView tvAuthorNameReview, tvDateReview, tvLikeCounterReview, tvDislikeCounterReview, tvCommentCounterReview, tvReviewText, tvDoctorName;
     private EditText etCommentText;
     private RatingBar rBarReview;
     private CheckBox chbLike, chbDislike;
@@ -52,19 +55,27 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     private OnDoctorReviewDetailedFragmentDataListener mListener;
     private CommentRecyclerViewAdapter adapter;
     private RecyclerView rvComments;
+    private ProgressBar progBarReviewDetailed;
+    private RelativeLayout innerLayoutDetailedReview;
+    private SharedPreferencesManager prefManager;
+    private boolean guestMode;
 
     @Override
     public void onButtonClick(View v, int position) {
         switch (v.getId()) {
             case R.id.chbLikeComment:
-                if (((CheckBox)v).isChecked()) {
-                    sendCommentLike(serviceId, adapter.getItem(position).getCommentId());
-                } else deleteCommentLike(serviceId, adapter.getItem(position).getCommentId());
+                if (!guestMode) {
+                    if (((CheckBox)v).isChecked()) {
+                        sendCommentLike(serviceId, adapter.getItem(position).getCommentId());
+                    } else deleteCommentLike(serviceId, adapter.getItem(position).getCommentId());
+                }
                 break;
             case R.id.chbDislikeComment:
-                if(((CheckBox)v).isChecked()) {
-                    sendCommentDislike(serviceId, adapter.getItem(position).getCommentId());
-                } else deleteCommentLike(serviceId, adapter.getItem(position).getCommentId());
+                if(!guestMode) {
+                    if(((CheckBox)v).isChecked()) {
+                        sendCommentDislike(serviceId, adapter.getItem(position).getCommentId());
+                    } else deleteCommentLike(serviceId, adapter.getItem(position).getCommentId());
+                }
                 break;
             case R.id.imBtnDeleteComment:
                 deleteComment(adapter.getItem(position).getCommentId());
@@ -80,7 +91,8 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     public static DoctorReviewDetailedFragment newInstance(int reviewId, String serviceId) {
         DoctorReviewDetailedFragment fragment = new DoctorReviewDetailedFragment();
         Bundle args = new Bundle();
-        args.putString("service_id", serviceId);
+        if(serviceId != null)
+            args.putString("service_id", serviceId);
         args.putInt("review_id", reviewId);
         fragment.setArguments(args);
         return fragment;
@@ -102,12 +114,15 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
         springApi = SpringController.getApi();
         adapter = new CommentRecyclerViewAdapter(getContext(), serviceId);
         adapter.setClickListener(this);
+        prefManager = new SharedPreferencesManager(getActivity().getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE));
+        guestMode = prefManager.isGuestMode();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_doctor_review_detailed, container, false);
+        tvDoctorName = v.findViewById(R.id.tvDoctorName);
         tvAuthorNameReview = v.findViewById(R.id.tvAuthorNameReview);
         tvDateReview = v.findViewById(R.id.tvDateReview);
         tvLikeCounterReview = v.findViewById(R.id.tvLikeCounterReview);
@@ -126,6 +141,8 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
         etCommentText = v.findViewById(R.id.etCommentText);
         imBtnSendComment = v.findViewById(R.id.imBtnSendComment);
         imBtnSendComment.setOnClickListener(this);
+        progBarReviewDetailed = v.findViewById(R.id.progBarReviewDetailed);
+        innerLayoutDetailedReview = v.findViewById(R.id.innerLayoutDetailedReview);
         return v;
     }
 
@@ -147,11 +164,14 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
                         List<CommentResponse> comments = response.body();
                         adapter.setData(comments);
                         rvComments.setAdapter(adapter);
-                    } else
-                        Toast.makeText(getContext(), ErrorTranslator.getDescription(ErrorTranslator.COMMENTS_NOT_FOUND), Toast.LENGTH_SHORT).show();
+                        progBarReviewDetailed.setVisibility(View.INVISIBLE);
+                        innerLayoutDetailedReview.setVisibility(View.VISIBLE);
+                    } else Toast.makeText(getContext(), ErrorTranslator.getDescription(ErrorTranslator.COMMENTS_NOT_FOUND), Toast.LENGTH_SHORT).show();
                 } else {
                     try {
                         JSONObject error = new JSONObject(response.errorBody().string());
+                        progBarReviewDetailed.setVisibility(View.INVISIBLE);
+                        innerLayoutDetailedReview.setVisibility(View.VISIBLE);
                         Toast.makeText(getContext(), error.getString("message"), Toast.LENGTH_SHORT).show();
                         Log.d(LOG_TAG, error.getString("message"));
                     } catch (Exception e) {
@@ -287,6 +307,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
                 if (response.isSuccessful()) {
                     review = response.body();
                     showReview(review);
+                    tvDoctorName.setText(review.getDoctorName());
                 } else {
                     try {
                         JSONObject error = new JSONObject(response.errorBody().string());
@@ -430,9 +451,11 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
                 mListener.onDoctorReviewDetailedFragmentBtnClick(v, review);
                 break;
             case R.id.chbLike:
-                if (chbLike.isChecked()) {
-                sendReviewLike(serviceId, reviewId);
-            } else deleteReviewLike(serviceId, reviewId);
+                if (!guestMode) {
+                    if (chbLike.isChecked()) {
+                        sendReviewLike(serviceId, reviewId);
+                    } else deleteReviewLike(serviceId, reviewId);
+                }
 
                 if (chbDislike.isChecked()) {
                     chbDislike.setChecked(false);
@@ -445,9 +468,11 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
                 } else tvLikeCounterReview.setText(String.valueOf(--likes));
                 break;
             case R.id.chbDislike:
-                if (chbDislike.isChecked()) {
-                    sendReviewDislike(serviceId, reviewId);
-                } else deleteReviewLike(serviceId, reviewId);
+                if (!guestMode) {
+                    if (chbDislike.isChecked()) {
+                        sendReviewDislike(serviceId, reviewId);
+                    } else deleteReviewLike(serviceId, reviewId);
+                }
 
                 if (chbLike.isChecked()) {
                     chbLike.setChecked(false);
@@ -460,14 +485,15 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
                 } else tvDislikeCounterReview.setText(String.valueOf(--dislikes));
                 break;
             case R.id.imBtnSendComment:
-                if (!TextUtils.isEmpty(etCommentText.getText().toString())) {
-                    Comment com = new Comment();
-                    com.setServiceId(serviceId);
-                    com.setReviewId(reviewId);
-                    com.setText(etCommentText.getText().toString());
-                    sendComment(com);
-
-                } else Toast.makeText(getContext(), "Введите текст комментария", Toast.LENGTH_SHORT).show();
+                if (!guestMode) {
+                    if (!TextUtils.isEmpty(etCommentText.getText().toString())) {
+                        Comment com = new Comment();
+                        com.setServiceId(serviceId);
+                        com.setReviewId(reviewId);
+                        com.setText(etCommentText.getText().toString());
+                        sendComment(com);
+                    } else Toast.makeText(getContext(), "Введите текст комментария", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(getContext(), R.string.toast_you_have_to_login_for_action, Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -480,13 +506,15 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
         tvCommentCounterReview.setText(String.valueOf(review.getCommentCount()));
         rBarReview.setRating(review.getMark());
         tvReviewText.setText(review.getText());
-        if (review.getLikers() != null && review.getLikers().contains(serviceId)) {
-            chbLike.setChecked(true);
-        } else if (review.getDislikers() != null && review.getDislikers().contains(serviceId)) {
-            chbDislike.setChecked(true);
-        }
-        if (serviceId.equals(review.getServiceId())) {
-            imBtnEditReview.setVisibility(View.VISIBLE);
+        if (serviceId != null) {
+            if (review.getLikers() != null && review.getLikers().contains(serviceId)) {
+                chbLike.setChecked(true);
+            } else if (review.getDislikers() != null && review.getDislikers().contains(serviceId)) {
+                chbDislike.setChecked(true);
+            }
+            if (serviceId.equals(review.getServiceId())) {
+                imBtnEditReview.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

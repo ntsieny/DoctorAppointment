@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.controller.HospitalController;
@@ -36,6 +37,7 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
     private String patientId;
     private String hospitalId;
     OnSpecialityFragmentDataListener mListener;
+    ProgressBar progBarSpeciality;
 
     public interface OnSpecialityFragmentDataListener {
         void onSpecialityFragmentDataListener(Speciality speciality);
@@ -68,7 +70,9 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_speciality, null);
+        View v = inflater.inflate(R.layout.fragment_speciality, null);
+        progBarSpeciality = v.findViewById(R.id.progBarSpeciality);
+        return v;
     }
 
     @Override
@@ -100,13 +104,7 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
                         specialities = respObj.getSpecialities();
                         adapter.setData(specialities);
                         recyclerView.setAdapter(adapter);
-
-                        /*for(Speciality speciality : respObj.getSpecialities()) {
-                            Log.d(LOG_TAG, speciality.getNameSpeciality() + "\n" +
-                                    speciality.getCountFreeParticipants() + "\n" + // доступно номерков
-                                    speciality.getCountFreeTickets() + "\n" + // доступно номерков
-                                    speciality.getIdSpeciality() + "\n"); // передается в form-data при выборе доктора
-                        }*/
+                        progBarSpeciality.setVisibility(View.INVISIBLE);
                     } else Toast.makeText(getContext(), "Ошибка: " + response.body().getError().getErrorDescription(), Toast.LENGTH_LONG).show();
                 } else Toast.makeText(getContext(), "Запрос не прошел (" + response.code() + ")", Toast.LENGTH_LONG).show();
             }

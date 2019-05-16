@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
@@ -32,9 +33,10 @@ public class HospitalFragment extends Fragment implements HospitalRecyclerViewAd
     private String LOG_TAG = "myLog: HospitalFragment";
     private static HospitalApi hospitalApi;
 
-    HospitalRecyclerViewAdapter adapter;
-    List<Hospital> hospitals;
-    RecyclerView recyclerView;
+    private HospitalRecyclerViewAdapter adapter;
+    private List<Hospital> hospitals;
+    private RecyclerView recyclerView;
+    private ProgressBar progBarHospital;
     private String districtId;
     private OnHospitalFragmentDataListener mListener;
 
@@ -68,7 +70,9 @@ public class HospitalFragment extends Fragment implements HospitalRecyclerViewAd
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_hospital, null);
+        View v = inflater.inflate(R.layout.fragment_hospital, null);
+        progBarHospital = v.findViewById(R.id.progBarHospital);
+        return v;
     }
 
     @Override
@@ -100,6 +104,7 @@ public class HospitalFragment extends Fragment implements HospitalRecyclerViewAd
                         hospitals = res.getHospitals();
                         adapter.setData(hospitals);
                         recyclerView.setAdapter(adapter);
+                        progBarHospital.setVisibility(View.INVISIBLE);
                     }
                 } else Toast.makeText(getContext(), "Body is null. Code: " + response.code(), Toast.LENGTH_SHORT).show();
             }

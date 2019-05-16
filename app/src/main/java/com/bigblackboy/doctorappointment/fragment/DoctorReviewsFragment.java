@@ -13,11 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.ReviewRecyclerViewAdapter;
@@ -41,11 +44,15 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     private String doctorId;
     private String doctorName;
     private String serviceId;
-    TextView tvDoctorNameReview, tvAvgMark;
-    RatingBar rBarAvgMark;
-    Button btnAddReview;
+    private TextView tvDoctorNameReview, tvAvgMark;
+    private RatingBar rBarAvgMark;
+    private Button btnAddReview;
     private RecyclerView recyclerView;
+    private ProgressBar progBarReviews;
+    private RelativeLayout innerLayoutReviews;
     private OnDoctorReviewsFragmentDataListener mListener;
+    private boolean guestMode;
+    private SharedPreferencesManager prefManager;
 
     public interface OnDoctorReviewsFragmentDataListener {
         void onDoctorReviewsFragmentBtnClickListener(View v, ReviewsResponse review);
@@ -67,9 +74,7 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
         super.onAttach(context);
         if (context instanceof OnDoctorReviewsFragmentDataListener) {
             mListener = (OnDoctorReviewsFragmentDataListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement OnUserCommentsFragmentDataListener");
-        }
+        } else throw new RuntimeException(context.toString() + " must implement OnUserCommentsFragmentDataListener");
     }
 
     @Override
@@ -81,6 +86,8 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
         springApi = SpringController.getApi();
         adapter = new ReviewRecyclerViewAdapter(getContext(), serviceId);
         adapter.setClickListener(this);
+        prefManager = new SharedPreferencesManager(getActivity().getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE));
+        guestMode = prefManager.isGuestMode();
     }
 
     @Nullable
@@ -99,6 +106,8 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
                 mListener.onDoctorReviewsFragmentBtnClickListener(v, null);
             }
         });
+        progBarReviews = v.findViewById(R.id.progBarReviews);
+        innerLayoutReviews = v.findViewById(R.id.innerLayoutReviews);
         return v;
     }
 
@@ -121,10 +130,14 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
                         float avgMark = countAvgMark(reviews);
                         rBarAvgMark.setRating(avgMark);
                         tvAvgMark.append(String.valueOf(Math.round(avgMark * 10.0) / 10.0));
+                        progBarReviews.setVisibility(View.INVISIBLE);
+                        innerLayoutReviews.setVisibility(View.VISIBLE);
                     } else Toast.makeText(getContext(), "Отзывов не обнаружено", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
                         JSONObject error = new JSONObject(response.errorBody().string());
+                        progBarReviews.setVisibility(View.INVISIBLE);
+                        innerLayoutReviews.setVisibility(View.VISIBLE);
                         Toast.makeText(getContext(), "Отзывы не найдены", Toast.LENGTH_SHORT).show();
                         Log.d(LOG_TAG, error.getString("message"));
                     } catch (Exception e) {
@@ -154,14 +167,18 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     public void onButtonClick(View v, int position) {
         switch (v.getId()) {
             case R.id.chbLike:
-                if (((CheckBox) v).isChecked()) {
-                    sendLike(serviceId, adapter.getItem(position).getReviewId());
-                } else deleteLike(serviceId, adapter.getItem(position).getReviewId());
+                if (!guestMode) {
+                    if (((CheckBox) v).isChecked()) {
+                        sendLike(serviceId, adapter.getItem(position).getReviewId());
+                    } else deleteLike(serviceId, adapter.getItem(position).getReviewId());
+                }
                 break;
             case R.id.chbDislike:
-                if (((CheckBox) v).isChecked()) {
-                    sendDislike(serviceId, adapter.getItem(position).getReviewId());
-                } else deleteLike(serviceId, adapter.getItem(position).getReviewId());
+                if (!guestMode) {
+                    if (((CheckBox) v).isChecked()) {
+                        sendDislike(serviceId, adapter.getItem(position).getReviewId());
+                    } else deleteLike(serviceId, adapter.getItem(position).getReviewId());
+                }
                 break;
             case R.id.imBtnComments:
                 review = adapter.getItem(position);

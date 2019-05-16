@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.SharedPreferencesManager;
@@ -174,7 +175,9 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
     public void onDoctorReviewsFragmentBtnClickListener(View v, ReviewsResponse review) {
         switch (v.getId()) {
             case R.id.btnAddReview:
-                replaceToEditReviewFragment();
+                if (!guestMode) {
+                    replaceToEditReviewFragment();
+                } else Toast.makeText(this, R.string.toast_you_have_to_login_for_action, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.imBtnComments:
                 replaceToDoctorReviewDetailedFragment(review.getReviewId());

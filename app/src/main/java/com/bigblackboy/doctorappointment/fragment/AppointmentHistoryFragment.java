@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
@@ -36,6 +37,7 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
     private AppointmentHistoryRecyclerViewAdapter adapter;
     private String serviceId;
     private List<Appointment> appointments;
+    private ProgressBar progBarAppointmentHistory;
 
     public static AppointmentHistoryFragment newInstance(String serviceId) {
         AppointmentHistoryFragment fragment = new AppointmentHistoryFragment();
@@ -54,7 +56,9 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_appointment_history, null);
+        View v = inflater.inflate(R.layout.fragment_appointment_history, null);
+        progBarAppointmentHistory = v.findViewById(R.id.progBarAppointmentHistory);
+        return v;
     }
 
     @Override
@@ -94,6 +98,7 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
                         appointments = response.body();
                         adapter.setData(appointments);
                         recyclerView.setAdapter(adapter);
+                        progBarAppointmentHistory.setVisibility(View.INVISIBLE);
                     }
                     else Toast.makeText(getContext(), "Записей не обнаружено", Toast.LENGTH_SHORT).show();
                 } else {

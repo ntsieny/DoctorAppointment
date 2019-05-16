@@ -6,199 +6,223 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/reviewCardView"
+    <ProgressBar
+        android:id="@+id/progBarReviewDetailed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+    <RelativeLayout
+        android:id="@+id/innerLayoutDetailedReview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:orientation="vertical"
-        app:contentPadding="3dp">
+        android:visibility="invisible">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvDoctorName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="ФИО врача"
+            android:textSize="18sp" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/reviewCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDoctorName"
+            android:layout_marginBottom="6dp"
+            android:orientation="vertical"
+            app:contentPadding="3dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvAuthorNameReview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="Имя автора"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/imBtnEditReview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:visibility="invisible"
+                        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+                </LinearLayout>
+
 
                 <TextView
-                    android:id="@+id/tvAuthorNameReview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Имя автора"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <ImageButton
-                    android:id="@+id/imBtnEditReview"
+                    android:id="@+id/tvDateReview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:visibility="invisible"
-                    app:srcCompat="@android:drawable/ic_menu_edit" />
+                    android:layout_weight="1"
+                    android:text="Дата"
+                    android:textSize="14sp" />
 
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:background="?android:attr/listDivider" />
+
+                <RatingBar
+                    android:id="@+id/rBarReview"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="true"
+                    android:numStars="5" />
+
+                <TextView
+                    android:id="@+id/tvReviewText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Отзыв"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1">
+
+                        <CheckBox
+                            android:id="@+id/chbLike"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/like_selector"
+                            android:button="@null"
+                            android:checked="false"
+                            android:scaleType="fitCenter" />
+
+                        <TextView
+                            android:id="@+id/tvLikeCounterReview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/chbLike"
+                            android:layout_toRightOf="@id/chbLike"
+                            android:text="0" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1">
+
+                        <CheckBox
+                            android:id="@+id/chbDislike"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/dislike_selector"
+                            android:button="@null"
+                            android:checked="false"
+                            android:scaleType="fitCenter" />
+
+                        <TextView
+                            android:id="@+id/tvDislikeCounterReview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/chbDislike"
+                            android:layout_toRightOf="@id/chbDislike"
+                            android:text="0" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1">
+
+                        <ImageButton
+                            android:id="@+id/imBtnComments"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@android:color/transparent"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/comments" />
+
+                        <TextView
+                            android:id="@+id/tvCommentCounterReview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/imBtnComments"
+                            android:layout_toRightOf="@id/imBtnComments"
+                            android:text="0" />
+                    </RelativeLayout>
+                </LinearLayout>
             </LinearLayout>
+        </android.support.v7.widget.CardView>
 
+        <TextView
+            android:id="@+id/tvComments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reviewCardView"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:text="Комментарии"
+            android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/tvDateReview"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvComments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/linLayoutComment"
+            android:layout_below="@id/tvComments"
+            android:layout_marginTop="6dp" />
+
+        <LinearLayout
+            android:id="@+id/linLayoutComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/etCommentText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Дата"
-                android:textSize="14sp" />
+                android:ems="10"
+                android:hint="Введите комментарий"
+                android:inputType="textMultiLine" />
 
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:background="?android:attr/listDivider" />
-
-            <RatingBar
-                android:id="@+id/rBarReview"
-                style="@style/Widget.AppCompat.RatingBar.Small"
+            <ImageButton
+                android:id="@+id/imBtnSendComment"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:isIndicator="true"
-                android:numStars="5" />
-
-            <TextView
-                android:id="@+id/tvReviewText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Отзыв"
-                android:textSize="18sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_weight="1">
-
-                    <CheckBox
-                        android:id="@+id/chbLike"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerHorizontal="true"
-                        android:background="@drawable/like_selector"
-                        android:button="@null"
-                        android:checked="false"
-                        android:scaleType="fitCenter" />
-
-                    <TextView
-                        android:id="@+id/tvLikeCounterReview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/chbLike"
-                        android:layout_toRightOf="@id/chbLike"
-                        android:text="0" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_weight="1">
-
-                    <CheckBox
-                        android:id="@+id/chbDislike"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerHorizontal="true"
-                        android:background="@drawable/dislike_selector"
-                        android:button="@null"
-                        android:checked="false"
-                        android:scaleType="fitCenter" />
-
-                    <TextView
-                        android:id="@+id/tvDislikeCounterReview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/chbDislike"
-                        android:layout_toRightOf="@id/chbDislike"
-                        android:text="0" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_weight="1">
-
-                    <ImageButton
-                        android:id="@+id/imBtnComments"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerHorizontal="true"
-                        android:background="@android:color/transparent"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/comments" />
-
-                    <TextView
-                        android:id="@+id/tvCommentCounterReview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/imBtnComments"
-                        android:layout_toRightOf="@id/imBtnComments"
-                        android:text="0" />
-                </RelativeLayout>
-            </LinearLayout>
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                app:srcCompat="@android:drawable/ic_menu_send" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tvComments"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/reviewCardView"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:text="Комментарии"
-        android:textSize="18sp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvComments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/linLayoutComment"
-        android:layout_below="@id/tvComments"
-        android:layout_marginTop="6dp" />
-
-    <LinearLayout
-        android:id="@+id/linLayoutComment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
-
-        <EditText
-            android:id="@+id/etCommentText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="Введите комментарий"
-            android:inputType="textMultiLine" />
-
-        <ImageButton
-            android:id="@+id/imBtnSendComment"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            app:srcCompat="@android:drawable/ic_menu_send" />
-    </LinearLayout>
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class UserReviewsFragment extends Fragment implements UserReviewsRecycler
     private List<Review> reviews;
     private String serviceId;
     private RecyclerView recyclerView;
+    private ProgressBar progBarUserReviews;
     private TextView tvUserReviews;
     private OnUserReviewsFragmentDataListener mListener;
 
@@ -76,6 +78,7 @@ public class UserReviewsFragment extends Fragment implements UserReviewsRecycler
         recyclerView = v.findViewById(R.id.rvUserReviews);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         tvUserReviews = v.findViewById(R.id.tvUserReviews);
+        progBarUserReviews = v.findViewById(R.id.progBarUserReviews);
         return v;
     }
 
@@ -95,6 +98,7 @@ public class UserReviewsFragment extends Fragment implements UserReviewsRecycler
                         List<Review> reviews = response.body();
                         adapter.setData(reviews);
                         recyclerView.setAdapter(adapter);
+                        progBarUserReviews.setVisibility(View.INVISIBLE);
                     }
                 } else {
                     try {

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class UserCommentsFragment extends Fragment implements UserCommentsRecycl
     private List<MyCommentsResponse> comments;
     private String serviceId;
     private RecyclerView recyclerView;
+    private ProgressBar progBarUserComments;
     private TextView tvUserComments;
     private OnUserCommentsFragmentDataListener mListener;
 
@@ -90,6 +92,7 @@ public class UserCommentsFragment extends Fragment implements UserCommentsRecycl
         recyclerView = v.findViewById(R.id.rvUserComments);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         tvUserComments = v.findViewById(R.id.tvUserComments);
+        progBarUserComments = v.findViewById(R.id.progBarUserComments);
         return v;
     }
 
@@ -108,6 +111,7 @@ public class UserCommentsFragment extends Fragment implements UserCommentsRecycl
                         tvUserComments.setText("Мои комментарии");
                         adapter.setData(response.body());
                         recyclerView.setAdapter(adapter);
+                        progBarUserComments.setVisibility(View.INVISIBLE);
                     }
                 } else {
                     try {

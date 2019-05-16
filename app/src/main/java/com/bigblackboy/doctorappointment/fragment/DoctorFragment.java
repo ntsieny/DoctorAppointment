@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.controller.HospitalController;
@@ -35,6 +36,7 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
     RecyclerView recyclerView;
     private String specialityId, hospitalId, patientId;
     private OnDoctorFragmentDataListener mListener;
+    private ProgressBar progBarDoctor;
 
     public interface OnDoctorFragmentDataListener {
         void onDoctorFragmentDataListener(Doctor doctor);
@@ -69,7 +71,9 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_doctor, null);
+        View v = inflater.inflate(R.layout.fragment_doctor, null);
+        progBarDoctor = v.findViewById(R.id.progBarDoctor);
+        return v;
     }
 
     @Override
@@ -101,12 +105,16 @@ public class DoctorFragment extends Fragment implements RecyclerViewAdapter.Item
                         doctors = respObj.getDoctors();
                         adapter.setData(doctors);
                         recyclerView.setAdapter(adapter);
+                        progBarDoctor.setVisibility(View.INVISIBLE);
                         /*Log.d(LOG_TAG, "--- СПИСОК ДОКТОРОВ ---\n");
                         for (Doctor doctor : respObj.getDoctors()) {
                             Log.d(LOG_TAG, doctor.getName() + " Участок: " + doctor.getAriaNumber() + " СНИЛС: " + doctor.getSnils() + "\n");
                             Log.d(LOG_TAG, doctor.getIdDoc()); // сохранить для form-data
                         }*/
-                    } else Toast.makeText(getContext(), "Ошибка: " + response.body().getError().getErrorDescription(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Ошибка: " + response.body().getError().getErrorDescription(), Toast.LENGTH_SHORT).show();
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
                 } else Toast.makeText(getContext(), "Запрос не прошел (" + response.code() + ")", Toast.LENGTH_SHORT).show();
             }
 

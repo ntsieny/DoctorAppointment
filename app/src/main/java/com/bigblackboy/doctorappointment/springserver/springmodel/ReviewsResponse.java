@@ -6,7 +6,6 @@ import java.util.List;
 
 public class ReviewsResponse extends Review implements Serializable {
 
-    //reviewId, date, time, dateTime, text, mark, doctorId, docName, serviceId, authorId, specId, specName, lpuId, lpuName, districtId, districtName унаследовано
     private String name;
     private String lastname;
     private String middlename;

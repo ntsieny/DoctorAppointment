@@ -24,4 +24,7 @@
     <string name="btn_register">Зарегистрироваться</string>
 
     <string name="three_dots">&#8942;</string>
+
+    <!--TOAST MESSAGES-->
+    <string name="toast_you_have_to_login_for_action">"Необходимо войти в аккаунт"</string>
 </resources>

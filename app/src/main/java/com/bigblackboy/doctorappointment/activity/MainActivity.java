@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +53,7 @@ import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SET
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DistrictFragment.OnDistrictFragmentDataListener,
         HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
-        ChooseAppointmentFragment.OnAppointmentFragmentDataListener {
+        ChooseAppointmentFragment.OnAppointmentFragmentDataListener, ProfileFragment.OnProfileFragmentDataListener {
 
 
     private static final String LOG_TAG = "myLog: MainActivity";
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Speciality speciality;
     private Doctor doctor;
     private boolean loggedIn;
+    private boolean guestMode;
     private SpringApi springApi;
 
     @Override
@@ -90,10 +92,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         speciality = new Speciality();
         doctor = new Doctor();
-        boolean userLoggedIn = prefManager.isUserLoggedIn();
-        boolean guestMode = prefManager.isGuestMode();
 
-        if (userLoggedIn) {
+        if (prefManager.isUserLoggedIn()) {
             loggedIn = true;
             addFragmentToContainer(ProfileFragment.newInstance(patient), R.id.fragContainerMainMenu);
             setNavigationDrawer();
@@ -105,7 +105,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             TextView tvPatientAddress = navigationView.getHeaderView(0).findViewById(R.id.tvPatientAddress);
             tvPatientAddress.setText(patient.getHospital().getLPUShortName() + ", " + patient.getDistrict().getName());
         }
-        else if (guestMode) {
+        else if (prefManager.isGuestMode()) {
+            guestMode = true;
             addFragmentToContainer(ProfileFragment.newInstance(patient), R.id.fragContainerMainMenu);
             setNavigationDrawer();
 
@@ -184,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.make_appointment:
                 if(loggedIn) {
                     replaceToSpecialityFragment();
-                } else Toast.makeText(this, "Необходимо войти в аккаунт", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(this, R.string.toast_you_have_to_login_for_action, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.doctor_schedule:
                 replaceToDoctorScheduleFragment();
@@ -192,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.appointment_history:
                 if (loggedIn) {
                     replaceToAppointmentHistoryFragment();
-                } else Toast.makeText(this, "Необходимо войти в аккаунт", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(this, R.string.toast_you_have_to_login_for_action, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.reviews:
                 Intent intent = new Intent(this, ReviewActivity.class);
@@ -314,10 +315,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         app.setDocName(doctor.getName());
         app.setDateTime(appInfo.getDateStart().getDateTime());
         createAppointment(app);
-        for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
+        /*for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
             fm.popBackStack();
-        }
-        replaceToProfileFragment();
+        }*/
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        replaceToAppointmentHistoryFragment();
     }
 
     private void createAppointment(Appointment app) {
@@ -352,5 +354,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.d(LOG_TAG, t.getMessage());
             }
         });
+    }
+
+    @Override
+    public void onProfileFragmentBtnClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnMyAppointments:
+                if(!guestMode)
+                    replaceToAppointmentHistoryFragment();
+                else Toast.makeText(this, R.string.toast_you_have_to_login_for_action, Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btnMyReviews:
+                if (!guestMode) {
+                    Intent myReviewsIntent = new Intent(this, ReviewActivity.class);
+                    myReviewsIntent.putExtra("fragToLoad", ReviewActivity.FRAGMENT_MY_REVIEWS);
+                    startActivity(myReviewsIntent);
+                } else Toast.makeText(this, R.string.toast_you_have_to_login_for_action, Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btnMyComments:
+                if (!guestMode) {
+                    Intent myCommentsIntent = new Intent(this, ReviewActivity.class);
+                    myCommentsIntent.putExtra("fragToLoad", ReviewActivity.FRAGMENT_MY_COMMENTS);
+                    startActivity(myCommentsIntent);
+                } else Toast.makeText(this, R.string.toast_you_have_to_login_for_action, Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }
