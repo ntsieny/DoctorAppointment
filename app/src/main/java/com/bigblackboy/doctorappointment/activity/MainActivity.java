@@ -71,6 +71,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FragmentTransaction fTrans;
     NavigationView navigationView;
     private Patient patient;
+
+    public Speciality getSpeciality() {
+        return speciality;
+    }
+
     private Speciality speciality;
     private Doctor doctor;
     private boolean loggedIn;

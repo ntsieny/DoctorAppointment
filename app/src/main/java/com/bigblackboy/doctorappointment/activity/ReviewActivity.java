@@ -84,8 +84,16 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
                     break;
                 case FRAGMENT_DOCTOR_REVIEWS:
                     if(getIntent().hasExtra("doctorId") && getIntent().hasExtra("doctorName")) {
+                        this.doctor = new Doctor();
                         String doctorId = getIntent().getStringExtra("doctorId");
                         String doctorName = getIntent().getStringExtra("doctorName");
+                        doctor.setIdDoc(doctorId);
+                        doctor.setName(doctorName);
+                        String specId = getIntent().getStringExtra("specialityId");
+                        String specName = getIntent().getStringExtra("specialityName");
+                        this.speciality = new Speciality();
+                        speciality.setIdSpeciality(specId);
+                        speciality.setNameSpeciality(specName);
                         addFragmentToContainer(DoctorReviewsFragment.newInstance(doctorId, doctorName, prefManager.getCurrentPatient().getServiceId()), R.id.fragContainerReview);
                     }
                     break;

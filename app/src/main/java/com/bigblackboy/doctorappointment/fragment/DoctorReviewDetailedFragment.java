@@ -47,7 +47,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     private String serviceId;
     private int reviewId;
     private ReviewsResponse review;
-    private TextView tvAuthorNameReview, tvDateReview, tvLikeCounterReview, tvDislikeCounterReview, tvCommentCounterReview, tvReviewText, tvDoctorName;
+    private TextView tvAuthorNameReview, tvDateReview, tvLikeCounterReview, tvDislikeCounterReview, tvCommentCounterReview, tvReviewText, tvDoctorName, tvComments;
     private EditText etCommentText;
     private RatingBar rBarReview;
     private CheckBox chbLike, chbDislike;
@@ -143,6 +143,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
         imBtnSendComment.setOnClickListener(this);
         progBarReviewDetailed = v.findViewById(R.id.progBarReviewDetailed);
         innerLayoutDetailedReview = v.findViewById(R.id.innerLayoutDetailedReview);
+        tvComments = v.findViewById(R.id.tvComments);
         return v;
     }
 
@@ -172,6 +173,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
                         JSONObject error = new JSONObject(response.errorBody().string());
                         progBarReviewDetailed.setVisibility(View.INVISIBLE);
                         innerLayoutDetailedReview.setVisibility(View.VISIBLE);
+                        tvComments.setText("Комментариев нет");
                         Toast.makeText(getContext(), error.getString("message"), Toast.LENGTH_SHORT).show();
                         Log.d(LOG_TAG, error.getString("message"));
                     } catch (Exception e) {

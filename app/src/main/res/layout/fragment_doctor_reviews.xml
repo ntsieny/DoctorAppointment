@@ -55,6 +55,16 @@
             android:layout_below="@+id/linLayoutMark"
             android:text="Добавить отзыв" />
 
+        <TextView
+            android:id="@+id/tvReviewsEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Отзывов нет"
+            android:textSize="18sp"
+            android:visibility="invisible" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

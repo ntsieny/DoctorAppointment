@@ -24,6 +24,7 @@ import com.bigblackboy.doctorappointment.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.ReviewRecyclerViewAdapter;
+import com.bigblackboy.doctorappointment.springserver.springmodel.Review;
 import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewsResponse;
 
 import org.json.JSONObject;
@@ -47,6 +48,7 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     private TextView tvDoctorNameReview, tvAvgMark;
     private RatingBar rBarAvgMark;
     private Button btnAddReview;
+    private TextView tvReviewsEmpty;
     private RecyclerView recyclerView;
     private ProgressBar progBarReviews;
     private RelativeLayout innerLayoutReviews;
@@ -100,6 +102,7 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
         recyclerView = v.findViewById(R.id.rvDoctorReviews);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         btnAddReview = v.findViewById(R.id.btnAddReview);
+
         btnAddReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +111,7 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
         });
         progBarReviews = v.findViewById(R.id.progBarReviews);
         innerLayoutReviews = v.findViewById(R.id.innerLayoutReviews);
+        tvReviewsEmpty = v.findViewById(R.id.tvReviewsEmpty);
         return v;
     }
 
@@ -138,6 +142,7 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
                         JSONObject error = new JSONObject(response.errorBody().string());
                         progBarReviews.setVisibility(View.INVISIBLE);
                         innerLayoutReviews.setVisibility(View.VISIBLE);
+                        tvReviewsEmpty.setVisibility(View.VISIBLE);
                         Toast.makeText(getContext(), "Отзывы не найдены", Toast.LENGTH_SHORT).show();
                         Log.d(LOG_TAG, error.getString("message"));
                     } catch (Exception e) {

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.activity.MainActivity;
 import com.bigblackboy.doctorappointment.activity.ReviewActivity;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
@@ -51,6 +52,8 @@ public class DoctorFragment extends Fragment implements DoctorRecyclerViewAdapte
                 args.putInt("fragToLoad", ReviewActivity.FRAGMENT_DOCTOR_REVIEWS);
                 args.putString("doctorId", adapter.getItem(position).getIdDoc());
                 args.putString("doctorName", adapter.getItem(position).getName());
+                args.putString("specialityId", ((MainActivity)getActivity()).getSpeciality().getIdSpeciality());
+                args.putString("specialityName", ((MainActivity)getActivity()).getSpeciality().getNameSpeciality());
                 reviewsIntent.putExtras(args);
                 startActivity(reviewsIntent);
                 break;
