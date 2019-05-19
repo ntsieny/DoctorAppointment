@@ -23,6 +23,7 @@ import com.bigblackboy.doctorappointment.springserver.springmodel.Appointment;
 
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -66,8 +67,6 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
         springApi = SpringController.getApi();
         recyclerView = getView().findViewById(R.id.rvAppointmentHistory);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
-        recyclerView.addItemDecoration(dividerItemDecoration);
         registerForContextMenu(recyclerView);
         adapter = new AppointmentHistoryRecyclerViewAdapter(getContext());
         adapter.setClickListener(this);
@@ -96,11 +95,12 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
                 if (response.isSuccessful()) {
                     if(response.body().size() > 0) {
                         appointments = response.body();
+                        Collections.sort(appointments);
+                        Collections.reverse(appointments);
                         adapter.setData(appointments);
                         recyclerView.setAdapter(adapter);
                         progBarAppointmentHistory.setVisibility(View.INVISIBLE);
-                    }
-                    else Toast.makeText(getContext(), "Записей не обнаружено", Toast.LENGTH_SHORT).show();
+                    } else Toast.makeText(getContext(), "Записей не обнаружено", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
                         JSONObject error = new JSONObject(response.errorBody().string());
@@ -128,8 +128,7 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
                 if (response.isSuccessful()) {
                     if(response.body().isSuccess()) {
                         Toast.makeText(getContext(), "Запись отменена", Toast.LENGTH_SHORT).show();
-                    }
-                    else Toast.makeText(getContext(), "Запись не отменена", Toast.LENGTH_SHORT).show();
+                    } else Toast.makeText(getContext(), "Запись не отменена", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
                         JSONObject error = new JSONObject(response.errorBody().string());

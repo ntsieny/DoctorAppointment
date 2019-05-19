@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.activity.MainActivity;
 import com.bigblackboy.doctorappointment.model.Doctor;
 
 import java.util.List;
@@ -53,26 +54,27 @@ public class DoctorRecyclerViewAdapter extends RecyclerView.Adapter<DoctorRecycl
                 mListener.onDoctorItemClick(holder.getAdapterPosition());
             }
         });
-        holder.tvDoctorItemBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(mContext, holder.tvDoctorItemBtn);
-                popup.inflate(R.menu.doctor_popup_menu);
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()) {
-                            case R.id.doctorReviewsPopupItem:
-                                mListener.onDoctorPopupMenuItemClick(menuItem, holder.getAdapterPosition());
-                                break;
+        if (mContext.getClass().getSimpleName().equals(MainActivity.class.getSimpleName())) {
+            holder.tvDoctorItemBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PopupMenu popup = new PopupMenu(mContext, holder.tvDoctorItemBtn);
+                    popup.inflate(R.menu.doctor_popup_menu);
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            switch (menuItem.getItemId()) {
+                                case R.id.doctorReviewsPopupItem:
+                                    mListener.onDoctorPopupMenuItemClick(menuItem, holder.getAdapterPosition());
+                                    break;
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                });
-                popup.show();
-            }
-        });
-
+                    });
+                    popup.show();
+                }
+            });
+        } else holder.tvDoctorItemBtn.setVisibility(View.INVISIBLE);
     }
 
     // total number of rows

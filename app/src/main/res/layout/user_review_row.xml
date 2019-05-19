@@ -33,6 +33,7 @@
                 android:layout_height="25dp"
                 android:layout_marginRight="10dp"
                 android:background="@android:color/transparent"
+                android:scaleType="centerInside"
                 app:srcCompat="@android:drawable/ic_menu_edit" />
 
             <ImageButton
@@ -41,6 +42,7 @@
                 android:layout_height="25dp"
                 android:layout_marginRight="5dp"
                 android:background="@android:color/transparent"
+                android:scaleType="centerInside"
                 app:srcCompat="@android:drawable/ic_menu_delete" />
         </LinearLayout>
 

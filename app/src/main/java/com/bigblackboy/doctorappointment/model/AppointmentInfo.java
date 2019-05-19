@@ -2,7 +2,7 @@ package com.bigblackboy.doctorappointment.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AppointmentInfo {
+public class AppointmentInfo implements Comparable<AppointmentInfo> {
     @SerializedName("date_start")
     private Date dateStart;
 
@@ -39,6 +39,11 @@ public class AppointmentInfo {
     @Override
     public String toString() {
         return dateStart.getDay() + " " + dateStart.getMonthVerbose() + " " + dateStart.getTime() + ", " + dateStart.getDayVerbose();
+    }
+
+    @Override
+    public int compareTo(AppointmentInfo o) {
+        return this.id.compareTo(o.getId());
     }
 }
 

@@ -2,7 +2,7 @@ package com.bigblackboy.doctorappointment.springserver.springmodel;
 
 import java.util.Date;
 
-public class Appointment {
+public class Appointment implements Comparable<Appointment> {
 
     private int appId;
     private String appString;
@@ -147,5 +147,10 @@ public class Appointment {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    @Override
+    public int compareTo(Appointment o) {
+        return appString.compareTo(o.appString);
     }
 }

@@ -1,48 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_marginBottom="6dp"
+    android:orientation="vertical"
+    app:contentPadding="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvSpecName"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Специальность"
-            android:textSize="18sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvSpecName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Специальность"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvAppHistItemBtn"
+                android:layout_width="15dp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:text="@string/three_dots"
+                android:textSize="18sp" />
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tvAppHistItemBtn"
-            android:layout_width="15dp"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:text="@string/three_dots"
-            android:textSize="18sp" />
+            android:id="@+id/tvHospitalName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Поликлиника"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvAppDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Дата и время приема"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvDoctorNameAppHist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Врач"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvDoctorNameAppHist"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Врач" />
-
-    <TextView
-        android:id="@+id/tvAppDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Дата и время приема" />
-
-    <TextView
-        android:id="@+id/tvHospitalName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Поликлиника" />
-
-</LinearLayout>
+</android.support.v7.widget.CardView>

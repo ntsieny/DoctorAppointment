@@ -1,9 +1,11 @@
 package com.bigblackboy.doctorappointment.fragment;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DividerItemDecoration;
@@ -19,11 +21,14 @@ import android.widget.Toast;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.recyclerviewadapter.AppointmentDatesRecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.api.AppointmentListApiResponse;
 import com.bigblackboy.doctorappointment.model.AppointmentInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,16 +37,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChooseAppointmentFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
+public class ChooseAppointmentFragment extends Fragment implements AppointmentDatesRecyclerViewAdapter.OnAppointmentDatesItemClickListener {
 
     private String LOG_TAG = "myLog: ChooseAppointmentFragment";
     private static HospitalApi hospitalApi;
-    RecyclerViewAdapter adapter;
+    AppointmentDatesRecyclerViewAdapter adapter;
     List<AppointmentInfo> appointments;
     RecyclerView recyclerView;
     private String doctorId, patientId, hospitalId;
     private OnAppointmentFragmentDataListener mListener;
     private ProgressBar progBarChooseAppointment;
+
+    @Override
+    public void onAppointmentDatesItemClick(View view, int position) {
+        mListener.onAppointmentFragmentDataListener((AppointmentInfo)adapter.getItem(position));
+    }
 
     public interface OnAppointmentFragmentDataListener {
         void onAppointmentFragmentDataListener(AppointmentInfo appointmentInfo);
@@ -88,9 +98,9 @@ public class ChooseAppointmentFragment extends Fragment implements RecyclerViewA
         hospitalApi = HospitalController.getApi();
         recyclerView = getView().findViewById(R.id.rvChooseAppointment);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        adapter = new RecyclerViewAdapter(getContext());
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(itemDecoration);
+        adapter = new AppointmentDatesRecyclerViewAdapter(getContext());
         adapter.setClickListener(this);
     }
 
@@ -119,6 +129,7 @@ public class ChooseAppointmentFragment extends Fragment implements RecyclerViewA
                                 //Log.d(LOG_TAG, info.toString() + "\n");
                             }
                         }
+                        Collections.sort(appoints);
                         adapter.setData(appoints);
                         recyclerView.setAdapter(adapter);
                         progBarChooseAppointment.setVisibility(View.INVISIBLE);
@@ -185,10 +196,5 @@ public class ChooseAppointmentFragment extends Fragment implements RecyclerViewA
                 Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    @Override
-    public void onItemClick(View view, int position) {
-        mListener.onAppointmentFragmentDataListener((AppointmentInfo)adapter.getItem(position));
     }
 }
