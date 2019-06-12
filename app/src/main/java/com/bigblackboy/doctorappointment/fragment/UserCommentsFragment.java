@@ -116,6 +116,7 @@ public class UserCommentsFragment extends Fragment implements UserCommentsRecycl
                 } else {
                     try {
                         tvUserComments.setText("Комментариев нет");
+                        progBarUserComments.setVisibility(View.INVISIBLE);
                         JSONObject error = new JSONObject(response.errorBody().string());
                         Toast.makeText(getContext(), error.getString("message"), Toast.LENGTH_SHORT).show();
                         Log.d(LOG_TAG, error.getString("message"));
@@ -129,6 +130,7 @@ public class UserCommentsFragment extends Fragment implements UserCommentsRecycl
             @Override
             public void onFailure(Call<List<MyCommentsResponse>> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
+                progBarUserComments.setVisibility(View.INVISIBLE);
                 Log.d(LOG_TAG, t.getMessage());
             }
         });

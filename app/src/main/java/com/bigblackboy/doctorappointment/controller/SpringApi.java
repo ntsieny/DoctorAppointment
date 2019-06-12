@@ -4,6 +4,7 @@ import com.bigblackboy.doctorappointment.springserver.Response;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Appointment;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Comment;
 import com.bigblackboy.doctorappointment.springserver.springmodel.CommentResponse;
+import com.bigblackboy.doctorappointment.springserver.springmodel.HealthInfo;
 import com.bigblackboy.doctorappointment.springserver.springmodel.MyCommentsResponse;
 import com.bigblackboy.doctorappointment.springserver.springmodel.Review;
 import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewsResponse;
@@ -107,4 +108,7 @@ public interface SpringApi {
 
     @DELETE("app/delete/{appId}")
     Call<Response> deleteAppointment(@Path("appId") int appId);
+
+    @GET("health/get/age/{age}")
+    Call<HealthInfo> getHealthInfo(@Path("age") int age);
 }

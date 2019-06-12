@@ -2,6 +2,7 @@ package com.bigblackboy.doctorappointment.controller;
 
 import com.bigblackboy.doctorappointment.api.AppointmentListApiResponse;
 import com.bigblackboy.doctorappointment.api.DoctorsApiResponse;
+import com.bigblackboy.doctorappointment.api.ScheduleApiResponse;
 import com.bigblackboy.doctorappointment.api.SpecialitiesApiResponse;
 import com.bigblackboy.doctorappointment.api.HospitalApiResponse;
 import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
@@ -143,4 +144,25 @@ public interface HospitalApi {
     Call<Object> createAppointment(@Field("app_id") String appointmentId, @Field("patient_id") String patientId,
                                                      @Field("lpu_id") String hospitalId, @Field("doctor_form-history_id") String historyId,
                                                      @Field("doctor_form-appointment_type") String appointmentType);
+
+    @Headers({
+            "Host: www.kuban-online.ru",
+            "Connection: keep-alive",
+            "Content-Length: 145",
+            "Accept: */*",
+            "Origin: http://www.kuban-online.ru",
+            "X-Requested-With: XMLHttpRequest",
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
+            "DNT: 1",
+            "Content-Type: application/x-www-form-urlencoded; charset=UTF-8",
+            "Referer: http://www.kuban-online.ru/signup/free/",
+            "Accept-Encoding: gzip, deflate",
+            "Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Cookie: _ym_uid=15360594171004491340; _ym_d=1536059417; sessionid=zaz44uvkmpjhg74jfrx0pi8pz7z89kqe; _ym_isad=1; jv_enter_ts_Tmyx3k0Kz1=1541604378017; jv_visits_count_Tmyx3k0Kz1=21; jv_utm_Tmyx3k0Kz1=; jv_invitation_time_Tmyx3k0Kz1=1541604399197; jv_close_time_Tmyx3k0Kz1=1541604447645; jv_pages_count_Tmyx3k0Kz1=2"
+    })
+    @FormUrlEncoded
+    @POST("api/doctor_schedule/")
+    Call<ScheduleApiResponse> getSchedule(@Field("doctor_form-doctor_id") String doctorId, @Field("doctor_form-clinic_id") String hospitalId,
+                                          @Field("doctor_form-patient_id") String patientId, @Field("doctor_form-history_id") String historyId,
+                                          @Field("doctor_form-appointment_type") String appointmentType);
 }

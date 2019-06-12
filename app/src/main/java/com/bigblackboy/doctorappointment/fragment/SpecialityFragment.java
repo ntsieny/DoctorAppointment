@@ -104,9 +104,12 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
                         specialities = respObj.getSpecialities();
                         adapter.setData(specialities);
                         recyclerView.setAdapter(adapter);
-                        progBarSpeciality.setVisibility(View.INVISIBLE);
-                    } else Toast.makeText(getContext(), "Ошибка: " + response.body().getError().getErrorDescription(), Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), "Ошибка: " + response.body().getError().getErrorDescription(), Toast.LENGTH_LONG).show();
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
                 } else Toast.makeText(getContext(), "Запрос не прошел (" + response.code() + ")", Toast.LENGTH_LONG).show();
+                progBarSpeciality.setVisibility(View.INVISIBLE);
             }
 
             @Override

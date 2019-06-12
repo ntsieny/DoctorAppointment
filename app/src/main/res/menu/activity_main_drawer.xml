@@ -24,6 +24,10 @@
             android:id="@+id/reviews"
             android:icon="@drawable/review"
             android:title="Отзывы о врачах" />
+        <item
+            android:id="@+id/checkup"
+            android:icon="@drawable/heart"
+            android:title="Диспансеризация" />
     </group>
 
 </menu>

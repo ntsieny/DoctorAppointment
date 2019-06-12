@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.ReviewActivity"></activity>
+        <activity android:name=".activity.ScheduleActivity"></activity>
+        <activity android:name=".activity.ReviewActivity" />
         <activity android:name=".activity.ChooseLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
