@@ -22,6 +22,7 @@ import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.model.Doctor;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.ScheduleRecyclerViewAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -85,9 +86,18 @@ public class ScheduleFragment extends Fragment {
             @Override
             public void onResponse(Call<ScheduleApiResponse> call, Response<ScheduleApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<ScheduleApiResponse.MResponse> resp = response.body().getResponse().get(0);
-                    adapter.setData(resp);
-                    rvSchedule.setAdapter(adapter);
+                    if (response.body().getResponse().size() <= 1) {
+                        adapter.setData(response.body().getResponse().get(0));
+                        rvSchedule.setAdapter(adapter);
+                    } else {
+                        List<ScheduleApiResponse.MResponse> schedule = new ArrayList();
+                        schedule.addAll(response.body().getResponse().get(0));
+                        for (int i = 1; i < response.body().getResponse().size(); i++) {
+                            schedule.addAll(response.body().getResponse().get(i));
+                        }
+                        adapter.setData(schedule);
+                        rvSchedule.setAdapter(adapter);
+                    }
                     progBarSchedule.setVisibility(View.INVISIBLE);
                     innerScheduleLayout.setVisibility(View.VISIBLE);
                 } else Toast.makeText(getContext(), response.body().getError().getErrorDescription(), Toast.LENGTH_SHORT).show();

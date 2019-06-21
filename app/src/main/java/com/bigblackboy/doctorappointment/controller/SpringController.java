@@ -14,8 +14,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SpringController {
 
-    //static final String BASE_URL = "https://doctor-appointment-server.herokuapp.com/api/";
-    static final String BASE_URL = "http://10.0.0.6:8080/api/";
+    static final String BASE_URL = "https://doctor-appointment-server.herokuapp.com/api/";
+    //static final String BASE_URL = "http://10.0.0.6:8080/api/";
 
     public static SpringApi getApi() {
         Gson gson = new GsonBuilder()

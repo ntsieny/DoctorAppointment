@@ -68,7 +68,7 @@ public class CheckupFragment extends Fragment {
             int nextAge = age;
             do { nextAge++; }
             while (nextAge % 3 != 0);
-            tvHint.setText(String.format("Вы сможете пройти диспансеризацию в " + new LocalDate().getYear() + (nextAge - age) + " году."));
+            tvHint.setText(String.format("Вы сможете пройти диспансеризацию в " + (new LocalDate().getYear() + (nextAge - age)) + " году."));
         }
         rvFirstStep.setLayoutManager(new LinearLayoutManager(getContext()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvFirstStep.getContext(), getResources().getConfiguration().orientation);

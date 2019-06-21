@@ -60,15 +60,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private static final String LOG_TAG = "myLog: MainActivity";
-    private static final String TITLE_MY_PROFILE = "Мой профиль";
-    private static final String TITLE_CHECKUP = "Диспансеризация";
-    private static final String TITLE_CHOOSE_DISTRICT = "Выбор района";
-    private static final String TITLE_MAIN_MENU = "Главное меню";
-    private static final String TITLE_CHOOSE_APPOINTMENT = "Выбор даты и времени";
-    private static final String TITLE_DOCTOR_SCHEDULE = "Расписание врачей";
-    private static final String TITLE_APPOINTMENT_HISTORY = "История заявок";
-    private static final String TITLE_CHOOSE_SPECIALITY = "Выбор специальности";
-    private static final String TITLE_MY_REVIEWS = "Мои отзывы";
     SharedPreferences mSettings;
     SharedPreferences.Editor editor;
     FragmentManager fm;
@@ -104,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (prefManager.isUserLoggedIn()) {
             loggedIn = true;
-            addFragmentToContainer(ProfileFragment.newInstance(patient), R.id.fragContainerMainMenu, "profile");
             setNavigationDrawer();
+            replaceToProfileFragment();
 
             String fio = String.format("%s %s %s", patient.getLastName(), patient.getName(), patient.getMiddleName());
             TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
@@ -116,8 +107,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else if (prefManager.isGuestMode()) {
             guestMode = true;
-            addFragmentToContainer(ProfileFragment.newInstance(patient), R.id.fragContainerMainMenu, null);
             setNavigationDrawer();
+            replaceToProfileFragment();
 
             TextView tvPatientFIO = navigationView.getHeaderView(0).findViewById(R.id.tvPatientFIO);
             tvPatientFIO.setText(patient.getName());
@@ -130,13 +121,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fm.beginTransaction().add(R.id.fragContainerMainMenu, districtFragment).commit();
             setNavigationDrawer();
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // TODO сделать чтобы при возвращении на mainmenuactivity выделялся соответствующий прошлому пункт navigation drawer
-        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     private void addFragmentToContainer(Fragment fragment, int containerId, String backstackTitle) {
@@ -235,32 +219,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void replaceToProfileFragment() {
         ProfileFragment profileFragment = ProfileFragment.newInstance(patient);
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, profileFragment).commit();
-        getSupportActionBar().setTitle(TITLE_MY_PROFILE);
+        getSupportActionBar().setTitle(R.string.action_bar_title_my_profile);
     }
 
     private void replaceToCheckupFragment() {
-        CheckupFragment checkupFragment = CheckupFragment.newInstance(AgeCalculator.getAge(new LocalDate(patient.getYearBirth(), patient.getMonthBirth(), patient.getDayBirth()), new LocalDate()));
+        CheckupFragment checkupFragment = null;
+        if (loggedIn) {
+            checkupFragment = CheckupFragment.newInstance(AgeCalculator.getAge(new LocalDate(patient.getYearBirth(), patient.getMonthBirth(), patient.getDayBirth()), new LocalDate()));
+        } else if (guestMode) {
+            checkupFragment = CheckupFragment.newInstance(20);
+        }
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, checkupFragment).commit();
-        getSupportActionBar().setTitle(TITLE_CHECKUP);
+        getSupportActionBar().setTitle(R.string.action_bar_title_checkup);
     }
 
     private void replaceToSpecialityFragment() {
         String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
         SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patient.getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, specialityFragment).commit();
-        getSupportActionBar().setTitle(TITLE_CHOOSE_SPECIALITY);
+        getSupportActionBar().setTitle(R.string.action_bar_title_choose_speciality);
     }
 
     public void replaceToAppointmentHistoryFragment() {
         AppointmentHistoryFragment appHistoryFrag = AppointmentHistoryFragment.newInstance(patient.getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, appHistoryFrag).addToBackStack(null).commit();
-        getSupportActionBar().setTitle(TITLE_APPOINTMENT_HISTORY);
+        getSupportActionBar().setTitle(R.string.action_bar_title_appointment_history);
     }
 
     private void replaceToChooseAppointmentFragment(String doctorId, String hospitalId) {
         ChooseAppointmentFragment chooseAppointmentFragment = ChooseAppointmentFragment.newInstance(doctorId, hospitalId, patient.getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, chooseAppointmentFragment).addToBackStack("doctor_fragment").commit();
-        getSupportActionBar().setTitle(TITLE_CHOOSE_APPOINTMENT);
+        getSupportActionBar().setTitle(R.string.action_bar_title_choose_appointment);
     }
 
     @Override
@@ -303,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String specialityId = speciality.getIdSpeciality();
         DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patient.getServiceId(), specialityId);
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, doctorFragment).addToBackStack("spec_fragment").commit();
+        getSupportActionBar().setTitle(R.string.action_bar_title_choose_doctor);
     }
 
     @Override
