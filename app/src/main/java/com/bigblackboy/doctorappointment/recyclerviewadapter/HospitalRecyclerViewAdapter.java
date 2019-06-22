@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.model.Hospital;
+import com.bigblackboy.doctorappointment.model.hospitalmodel.Hospital;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class HospitalRecyclerViewAdapter extends RecyclerView.Adapter<HospitalRe
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(HospitalRecyclerViewAdapter.ViewHolder holder, int position) {
-        com.bigblackboy.doctorappointment.model.Hospital hospital = mData.get(position);
+        Hospital hospital = mData.get(position);
         holder.hospitalName.setText(hospital.getLpuName());
         holder.hospitalAddress.setText(getShortAddress(hospital.getFullAddress()));
     }

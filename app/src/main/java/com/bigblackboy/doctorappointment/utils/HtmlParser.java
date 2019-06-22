@@ -1,20 +1,13 @@
 package com.bigblackboy.doctorappointment.utils;
 
-import android.util.Log;
-
-import com.bigblackboy.doctorappointment.model.District;
-import com.bigblackboy.doctorappointment.model.Hospital;
+import com.bigblackboy.doctorappointment.model.hospitalmodel.District;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class HtmlParser {

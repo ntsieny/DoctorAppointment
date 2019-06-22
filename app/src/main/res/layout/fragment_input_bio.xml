@@ -8,7 +8,7 @@
     android:paddingRight="24dp"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    tools:context=".activity.RegistrationActivity">
+    tools:context=".view.activity.RegistrationActivity">
 
     <TextView
         android:layout_width="match_parent"

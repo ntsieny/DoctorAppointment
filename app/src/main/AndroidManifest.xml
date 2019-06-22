@@ -12,18 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.ScheduleActivity"></activity>
-        <activity android:name=".activity.ReviewActivity" />
-        <activity android:name=".activity.ChooseLoginActivity">
+        <activity android:name=".view.activity.ScheduleActivity"></activity>
+        <activity android:name=".view.activity.ReviewActivity" />
+        <activity android:name=".view.activity.ChooseLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.RegistrationActivity" />
-        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".view.activity.MainActivity" />
+        <activity android:name=".view.activity.RegistrationActivity" />
+        <activity android:name=".view.activity.LoginActivity" />
     </application>
 
 </manifest>

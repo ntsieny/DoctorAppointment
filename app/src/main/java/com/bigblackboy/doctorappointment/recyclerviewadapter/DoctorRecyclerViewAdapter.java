@@ -8,11 +8,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.activity.MainActivity;
-import com.bigblackboy.doctorappointment.model.Doctor;
+import com.bigblackboy.doctorappointment.view.activity.MainActivity;
+import com.bigblackboy.doctorappointment.model.hospitalmodel.Doctor;
 
 import java.util.List;
 

@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.api.ScheduleApiResponse;
-import com.bigblackboy.doctorappointment.model.AppointmentInfo;
 
 import java.util.List;
 

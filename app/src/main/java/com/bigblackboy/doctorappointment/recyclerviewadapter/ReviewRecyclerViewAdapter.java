@@ -11,7 +11,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.springserver.springmodel.ReviewsResponse;
+import com.bigblackboy.doctorappointment.model.springmodel.ReviewsResponse;
 import com.bigblackboy.doctorappointment.utils.DateParser;
 
 import java.util.List;

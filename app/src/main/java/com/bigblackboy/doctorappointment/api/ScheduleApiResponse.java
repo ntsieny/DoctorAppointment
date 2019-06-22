@@ -1,12 +1,10 @@
 package com.bigblackboy.doctorappointment.api;
 
-import com.bigblackboy.doctorappointment.model.AppointmentInfo;
-import com.bigblackboy.doctorappointment.model.Date;
+import com.bigblackboy.doctorappointment.model.hospitalmodel.Date;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
-import java.util.Map;
 
 public class ScheduleApiResponse extends ApiResponse {
 
