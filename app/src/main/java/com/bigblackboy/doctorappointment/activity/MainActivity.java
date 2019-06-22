@@ -219,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void replaceToProfileFragment() {
         ProfileFragment profileFragment = ProfileFragment.newInstance(patient);
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, profileFragment).commit();
-        getSupportActionBar().setTitle(R.string.action_bar_title_my_profile);
     }
 
     private void replaceToCheckupFragment() {
@@ -230,26 +229,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             checkupFragment = CheckupFragment.newInstance(20);
         }
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, checkupFragment).commit();
-        getSupportActionBar().setTitle(R.string.action_bar_title_checkup);
     }
 
     private void replaceToSpecialityFragment() {
         String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
         SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patient.getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, specialityFragment).commit();
-        getSupportActionBar().setTitle(R.string.action_bar_title_choose_speciality);
     }
 
     public void replaceToAppointmentHistoryFragment() {
         AppointmentHistoryFragment appHistoryFrag = AppointmentHistoryFragment.newInstance(patient.getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, appHistoryFrag).addToBackStack(null).commit();
-        getSupportActionBar().setTitle(R.string.action_bar_title_appointment_history);
     }
 
     private void replaceToChooseAppointmentFragment(String doctorId, String hospitalId) {
         ChooseAppointmentFragment chooseAppointmentFragment = ChooseAppointmentFragment.newInstance(doctorId, hospitalId, patient.getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, chooseAppointmentFragment).addToBackStack("doctor_fragment").commit();
-        getSupportActionBar().setTitle(R.string.action_bar_title_choose_appointment);
     }
 
     @Override
@@ -292,7 +287,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String specialityId = speciality.getIdSpeciality();
         DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patient.getServiceId(), specialityId);
         fm.beginTransaction().replace(R.id.fragContainerMainMenu, doctorFragment).addToBackStack("spec_fragment").commit();
-        getSupportActionBar().setTitle(R.string.action_bar_title_choose_doctor);
     }
 
     @Override

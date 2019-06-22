@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.activity.MainActivity;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
@@ -108,6 +109,7 @@ public class ChooseAppointmentFragment extends Fragment implements AppointmentDa
     public void onResume() {
         super.onResume();
         getAppointmentDates();
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.action_bar_title_choose_appointment);
     }
 
 

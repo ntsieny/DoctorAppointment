@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.activity.MainActivity;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.AppointmentHistoryRecyclerViewAdapter;
@@ -76,6 +77,7 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
     public void onResume() {
         super.onResume();
         getAppointments();
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.action_bar_title_appointment_history);
     }
 
     @Override

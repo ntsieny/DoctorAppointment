@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.activity.MainActivity;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
@@ -83,6 +84,7 @@ public class CheckupFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getHealthInfo(age);
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.action_bar_title_checkup);
     }
 
     private void getHealthInfo(int age) {
