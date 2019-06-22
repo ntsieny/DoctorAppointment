@@ -58,13 +58,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
         ChooseAppointmentFragment.OnAppointmentFragmentDataListener, ProfileFragment.OnProfileFragmentDataListener {
 
-
     private static final String LOG_TAG = "myLog: MainActivity";
-    SharedPreferences mSettings;
-    SharedPreferences.Editor editor;
-    FragmentManager fm;
-    FragmentTransaction fTrans;
-    NavigationView navigationView;
+    private SharedPreferences mSettings;
+    private SharedPreferences.Editor editor;
+    private FragmentManager fm;
+    private FragmentTransaction fTrans;
+    private NavigationView navigationView;
     private Patient patient;
 
     public Speciality getSpeciality() {
@@ -121,10 +120,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fm.beginTransaction().add(R.id.fragContainerMainMenu, districtFragment).commit();
             setNavigationDrawer();
         }
-    }
-
-    private void addFragmentToContainer(Fragment fragment, int containerId, String backstackTitle) {
-        fm.beginTransaction().add(containerId, fragment).addToBackStack(backstackTitle).commit();
     }
 
     private void setNavigationDrawer() {

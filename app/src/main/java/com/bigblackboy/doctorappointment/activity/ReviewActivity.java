@@ -43,10 +43,8 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
 
     private static final String LOG_TAG = "myLog: ReviewActivity";
     private FragmentManager fm;
-    private SpringApi springApi;
-    SharedPreferences mSettings;
-    SharedPreferencesManager prefManager;
-    private boolean loggedIn;
+    private SharedPreferences mSettings;
+    private SharedPreferencesManager prefManager;
     private boolean guestMode;
     private Patient patient;
     private Speciality speciality;
@@ -61,13 +59,11 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
         setContentView(R.layout.activity_review);
 
         fm = getSupportFragmentManager();
-        springApi = SpringController.getApi();
 
         mSettings = getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE);
         prefManager = new SharedPreferencesManager(mSettings);
         patient = prefManager.getCurrentPatient();
 
-        loggedIn = prefManager.isUserLoggedIn();
         guestMode = prefManager.isGuestMode();
 
         if (getIntent().hasExtra("fragToLoad")) {

@@ -39,12 +39,12 @@ import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SET
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String LOG_TAG = "myLog: LoginActivity";
-    EditText etLogin, etPassword;
-    Button btnLogin;
-    Patient patient;
-    SharedPreferences mSettings;
-    SharedPreferences.Editor editor;
-    SpringApi springApi;
+    private EditText etLogin, etPassword;
+    private Button btnLogin;
+    private Patient patient;
+    private SharedPreferences mSettings;
+    private SharedPreferences.Editor editor;
+    private SpringApi springApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -15,9 +15,9 @@ import static com.bigblackboy.doctorappointment.SharedPreferencesManager.APP_SET
 
 public class ChooseLoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btnLoginUser, btnLoginGuest, btnRegistration;
-    SharedPreferences mSettings;
-    SharedPreferences.Editor editor;
+    private Button btnLoginUser, btnLoginGuest, btnRegistration;
+    private SharedPreferences mSettings;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

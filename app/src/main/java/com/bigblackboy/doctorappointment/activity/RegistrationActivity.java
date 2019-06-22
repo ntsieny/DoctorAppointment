@@ -49,15 +49,14 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         SignUpFragment.OnSignUpFragmentDataListener, InputBioFragment.OnInputBioFragmentDataListener {
 
     private static final String LOG_TAG = "myLog: RegActivity";
-    SpringApi springApi;
-    FragmentManager fm;
+    private SpringApi springApi;
+    private FragmentManager fm;
     private Patient patient;
     private Hospital hospital;
     private String districtId, districtName;
     private String login, password;
-    SharedPreferences mSettings;
-    SharedPreferences.Editor editor;
-    FragmentTransaction fTrans;
+    private SharedPreferences mSettings;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
