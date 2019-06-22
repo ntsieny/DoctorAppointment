@@ -28,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.bigblackboy.doctorappointment.utils.SharedPreferencesManager.APP_SETTINGS;
+import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS;
 
 public class InputBioFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener{
 

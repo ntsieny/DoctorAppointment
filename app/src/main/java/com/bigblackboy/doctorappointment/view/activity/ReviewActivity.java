@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.utils.SharedPreferencesManager;
+import com.bigblackboy.doctorappointment.model.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.view.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.view.fragment.DoctorFragment;
 import com.bigblackboy.doctorappointment.view.fragment.DoctorReviewDetailedFragment;

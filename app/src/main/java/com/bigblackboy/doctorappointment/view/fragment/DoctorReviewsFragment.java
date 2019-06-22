@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.utils.SharedPreferencesManager;
+import com.bigblackboy.doctorappointment.model.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.ReviewRecyclerViewAdapter;

@@ -1,4 +1,4 @@
-package com.bigblackboy.doctorappointment.utils;
+package com.bigblackboy.doctorappointment.model;
 
 import android.content.SharedPreferences;
 

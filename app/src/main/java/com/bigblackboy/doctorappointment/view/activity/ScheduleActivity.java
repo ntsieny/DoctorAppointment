@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.utils.SharedPreferencesManager;
+import com.bigblackboy.doctorappointment.model.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.view.fragment.DistrictFragment;

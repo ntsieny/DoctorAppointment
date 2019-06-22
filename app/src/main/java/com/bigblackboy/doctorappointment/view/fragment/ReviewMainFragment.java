@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.utils.SharedPreferencesManager;
+import com.bigblackboy.doctorappointment.model.SharedPreferencesManager;
 
 public class ReviewMainFragment extends Fragment implements View.OnClickListener {
 

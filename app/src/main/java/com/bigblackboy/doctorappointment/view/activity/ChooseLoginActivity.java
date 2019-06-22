@@ -8,21 +8,32 @@ import android.view.View;
 import android.widget.Button;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.model.UserModel;
+import com.bigblackboy.doctorappointment.presenter.ChooseLoginPresenter;
 
-import static com.bigblackboy.doctorappointment.utils.SharedPreferencesManager.APP_SETTINGS;
-import static com.bigblackboy.doctorappointment.utils.SharedPreferencesManager.APP_SETTINGS_GUEST_MODE;
-import static com.bigblackboy.doctorappointment.utils.SharedPreferencesManager.APP_SETTINGS_USER_LOGGED_IN;
+import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS;
+import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_GUEST_MODE;
+import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_USER_LOGGED_IN;
 
 public class ChooseLoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private ChooseLoginPresenter presenter;
     private Button btnLoginUser, btnLoginGuest, btnRegistration;
     private SharedPreferences mSettings;
-    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        init();
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
+    private void init() {
         mSettings = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
         boolean loggedId = mSettings.getBoolean(APP_SETTINGS_USER_LOGGED_IN, false);
         boolean guestMode = mSettings.getBoolean(APP_SETTINGS_GUEST_MODE, false);
@@ -40,28 +51,38 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
             btnRegistration = findViewById(R.id.btnRegistration);
             btnRegistration.setOnClickListener(this);
         }
+        UserModel userModel = new UserModel(mSettings);
+        presenter = new ChooseLoginPresenter(userModel);
+        presenter.attachView(this);
+    }
+
+    public void showLoginActivity() {
+        finish();
+        startActivity(new Intent(this, LoginActivity.class));
+    }
+
+    public void showRegistrationActivity() {
+        finish();
+        startActivity(new Intent(this, RegistrationActivity.class));
+    }
+
+    public void showMainActivity() {
+        finish();
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     @Override
     public void onClick(View v) {
-        Intent intent = null;
         switch (v.getId()) {
             case R.id.btnLoginUser:
-                finish();
-                intent = new Intent(this, LoginActivity.class);
+                presenter.loginAsUser();
                 break;
             case R.id.btnRegistration:
-                finish();
-                intent = new Intent(this, RegistrationActivity.class);
+                presenter.register();
                 break;
             case R.id.btnLoginGuest:
-                editor = mSettings.edit();
-                editor.putBoolean(APP_SETTINGS_USER_LOGGED_IN, false);
-                editor.apply();
-                finish();
-                intent = new Intent(this, MainActivity.class);
+                presenter.loginAsGuest();
                 break;
         }
-        startActivity(intent);
     }
 }

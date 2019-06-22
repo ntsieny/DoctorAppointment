@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.utils.SharedPreferencesManager;
+import com.bigblackboy.doctorappointment.model.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.view.fragment.AppointmentHistoryFragment;
@@ -47,11 +47,11 @@ import org.json.JSONObject;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-import static com.bigblackboy.doctorappointment.utils.SharedPreferencesManager.APP_SETTINGS_DISTRICT_ID;
-import static com.bigblackboy.doctorappointment.utils.SharedPreferencesManager.APP_SETTINGS_DISTRICT_NAME;
-import static com.bigblackboy.doctorappointment.utils.SharedPreferencesManager.APP_SETTINGS_GUEST_MODE;
-import static com.bigblackboy.doctorappointment.utils.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_ID;
-import static com.bigblackboy.doctorappointment.utils.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_NAME_SHORT;
+import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_DISTRICT_ID;
+import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_DISTRICT_NAME;
+import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_GUEST_MODE;
+import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_ID;
+import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_NAME_SHORT;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DistrictFragment.OnDistrictFragmentDataListener,
         HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
