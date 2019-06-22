@@ -94,6 +94,8 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
     public void onResume() {
         super.onResume();
         getSpecialities();
+        if(getActivity() instanceof MainActivity)
+            ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.action_bar_title_choose_speciality);
     }
 
     private void getSpecialities() {

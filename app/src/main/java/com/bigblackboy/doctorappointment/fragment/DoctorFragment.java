@@ -120,6 +120,8 @@ public class DoctorFragment extends Fragment implements DoctorRecyclerViewAdapte
     public void onResume() {
         super.onResume();
         getDoctors();
+        if(getActivity() instanceof MainActivity)
+            ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.action_bar_title_choose_doctor);
     }
 
     private void getDoctors() {
