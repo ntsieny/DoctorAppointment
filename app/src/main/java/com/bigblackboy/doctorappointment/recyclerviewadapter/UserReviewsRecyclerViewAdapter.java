@@ -12,7 +12,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.model.springmodel.Review;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Review;
 import com.bigblackboy.doctorappointment.utils.DateParser;
 
 import java.util.List;

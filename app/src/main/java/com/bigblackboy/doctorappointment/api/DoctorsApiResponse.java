@@ -1,6 +1,6 @@
 package com.bigblackboy.doctorappointment.api;
 
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Doctor;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

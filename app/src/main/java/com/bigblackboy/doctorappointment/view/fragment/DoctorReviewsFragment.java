@@ -24,7 +24,7 @@ import com.bigblackboy.doctorappointment.utils.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.ReviewRecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.model.springmodel.ReviewsResponse;
+import com.bigblackboy.doctorappointment.pojos.springpojos.ReviewsResponse;
 
 import org.json.JSONObject;
 
@@ -197,9 +197,9 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     }
 
     private void sendLike(String serviceId, int reviewId) {
-        springApi.likeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.likeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
                         //Toast.makeText(getContext(), "Лайк отправлен", Toast.LENGTH_SHORT).show();
@@ -217,7 +217,7 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
@@ -225,9 +225,9 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     }
 
     private void sendDislike(String serviceId, int reviewId) {
-        springApi.dislikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.dislikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
                         //Toast.makeText(getContext(), "Дизлайк отправлен", Toast.LENGTH_SHORT).show();
@@ -245,7 +245,7 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
@@ -253,9 +253,9 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     }
 
     private void deleteLike(String serviceId, int reviewId) {
-        springApi.deletelikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.deletelikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
                         //Toast.makeText(getContext(), "Лайк/дизлайк удален", Toast.LENGTH_SHORT).show();
@@ -273,7 +273,7 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }

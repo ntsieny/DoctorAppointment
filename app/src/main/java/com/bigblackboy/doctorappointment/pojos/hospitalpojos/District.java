@@ -1,4 +1,4 @@
-package com.bigblackboy.doctorappointment.model.hospitalmodel;
+package com.bigblackboy.doctorappointment.pojos.hospitalpojos;
 
 import java.io.Serializable;
 import java.util.ArrayList;

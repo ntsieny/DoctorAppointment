@@ -22,7 +22,7 @@ import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.AppointmentDatesRecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.api.AppointmentListApiResponse;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.AppointmentInfo;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.AppointmentInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;

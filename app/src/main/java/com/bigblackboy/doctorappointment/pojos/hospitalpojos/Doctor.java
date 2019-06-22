@@ -1,20 +1,28 @@
-package com.bigblackboy.doctorappointment.model.hospitalmodel;
+package com.bigblackboy.doctorappointment.pojos.hospitalpojos;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Speciality implements Serializable {
+public class Doctor implements Serializable {
 
-    public Speciality() {
+    public Doctor() {
 
     }
 
-    public Speciality(String specialityId, String specialityName) {
-        this.idSpeciality = specialityId;
-        this.nameSpeciality = specialityName;
+    public Doctor(String idDoc, String doctorName) {
+        this.idDoc = idDoc;
+        this.name = doctorName;
     }
+
+    @SerializedName("AriaNumber")
+    @Expose
+    private String ariaNumber;
+
+    @SerializedName("Comment")
+    @Expose
+    private String comment;
 
     @SerializedName("CountFreeParticipantIE")
     @Expose
@@ -22,23 +30,23 @@ public class Speciality implements Serializable {
 
     @SerializedName("CountFreeTicket")
     @Expose
-    private int countFreeTickets;
+    private String countFreeTickets;
 
-    @SerializedName("FerIdSpesiality")
+    @SerializedName("IdDoc")
     @Expose
-    private String ferIdSpeciality;
+    private String idDoc;
 
-    @SerializedName("IdSpesiality")
+    @SerializedName("Name")
     @Expose
-    private String idSpeciality;
+    private String name;
+
+    @SerializedName("Snils")
+    @Expose
+    private String snils;
 
     @SerializedName("LastDate")
     @Expose
     private Date lastDate;
-
-    @SerializedName("NameSpesiality")
-    @Expose
-    private String nameSpeciality;
 
     @SerializedName("NearestDate")
     @Expose
@@ -52,28 +60,52 @@ public class Speciality implements Serializable {
         this.countFreeParticipants = countFreeParticipants;
     }
 
-    public int getCountFreeTickets() {
+    public String getCountFreeTickets() {
         return countFreeTickets;
     }
 
-    public void setCountFreeTickets(int countFreeTickets) {
+    public void setCountFreeTickets(String countFreeTickets) {
         this.countFreeTickets = countFreeTickets;
     }
 
-    public String getFerIdSpeciality() {
-        return ferIdSpeciality;
+    public String getAriaNumber() {
+        return ariaNumber;
     }
 
-    public void setFerIdSpeciality(String ferIdSpeciality) {
-        this.ferIdSpeciality = ferIdSpeciality;
+    public void setAriaNumber(String ariaNumber) {
+        this.ariaNumber = ariaNumber;
     }
 
-    public String getIdSpeciality() {
-        return idSpeciality;
+    public String getComment() {
+        return comment;
     }
 
-    public void setIdSpeciality(String idSpeciality) {
-        this.idSpeciality = idSpeciality;
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getIdDoc() {
+        return idDoc;
+    }
+
+    public void setIdDoc(String idDoc) {
+        this.idDoc = idDoc;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSnils() {
+        return snils;
+    }
+
+    public void setSnils(String snils) {
+        this.snils = snils;
     }
 
     public Date getLastDate() {
@@ -82,14 +114,6 @@ public class Speciality implements Serializable {
 
     public void setLastDate(Date lastDate) {
         this.lastDate = lastDate;
-    }
-
-    public String getNameSpeciality() {
-        return nameSpeciality;
-    }
-
-    public void setNameSpeciality(String nameSpeciality) {
-        this.nameSpeciality = nameSpeciality;
     }
 
     public Date getNearestDate() {
@@ -102,9 +126,9 @@ public class Speciality implements Serializable {
 
     @Override
     public String toString() {
-        if(getCountFreeTickets() > 0)
-            return nameSpeciality + " (" + getCountFreeTickets() + " талонов)";
-        else return nameSpeciality;
+        if(ariaNumber != null)
+            return String.format("%s (Участок № %s)", name, ariaNumber);
+        else return name;
     }
 
     public class Date {

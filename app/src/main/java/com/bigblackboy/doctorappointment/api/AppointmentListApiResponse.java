@@ -1,6 +1,6 @@
 package com.bigblackboy.doctorappointment.api;
 
-import com.bigblackboy.doctorappointment.model.hospitalmodel.AppointmentInfo;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.AppointmentInfo;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

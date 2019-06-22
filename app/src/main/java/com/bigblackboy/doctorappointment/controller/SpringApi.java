@@ -1,14 +1,14 @@
 package com.bigblackboy.doctorappointment.controller;
 
-import com.bigblackboy.doctorappointment.model.springmodel.Response;
-import com.bigblackboy.doctorappointment.model.springmodel.Appointment;
-import com.bigblackboy.doctorappointment.model.springmodel.Comment;
-import com.bigblackboy.doctorappointment.model.springmodel.CommentResponse;
-import com.bigblackboy.doctorappointment.model.springmodel.HealthInfo;
-import com.bigblackboy.doctorappointment.model.springmodel.MyCommentsResponse;
-import com.bigblackboy.doctorappointment.model.springmodel.Review;
-import com.bigblackboy.doctorappointment.model.springmodel.ReviewsResponse;
-import com.bigblackboy.doctorappointment.model.springmodel.User;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Response;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Appointment;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Comment;
+import com.bigblackboy.doctorappointment.pojos.springpojos.CommentResponse;
+import com.bigblackboy.doctorappointment.pojos.springpojos.HealthInfo;
+import com.bigblackboy.doctorappointment.pojos.springpojos.MyCommentsResponse;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Review;
+import com.bigblackboy.doctorappointment.pojos.springpojos.ReviewsResponse;
+import com.bigblackboy.doctorappointment.pojos.springpojos.User;
 
 import java.util.List;
 

@@ -16,11 +16,11 @@ import com.bigblackboy.doctorappointment.view.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.view.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.view.fragment.InputBioFragment;
 import com.bigblackboy.doctorappointment.view.fragment.SignUpFragment;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.District;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Hospital;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Patient;
-import com.bigblackboy.doctorappointment.model.springmodel.Response;
-import com.bigblackboy.doctorappointment.model.springmodel.User;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Response;
+import com.bigblackboy.doctorappointment.pojos.springpojos.User;
 
 import org.json.JSONObject;
 

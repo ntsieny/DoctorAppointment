@@ -1,6 +1,6 @@
 package com.bigblackboy.doctorappointment.utils;
 
-import com.bigblackboy.doctorappointment.model.hospitalmodel.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

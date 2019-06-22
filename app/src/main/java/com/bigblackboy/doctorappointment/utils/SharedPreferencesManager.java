@@ -2,9 +2,9 @@ package com.bigblackboy.doctorappointment.utils;
 
 import android.content.SharedPreferences;
 
-import com.bigblackboy.doctorappointment.model.hospitalmodel.District;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Hospital;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Patient;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
 
 public class SharedPreferencesManager {
 

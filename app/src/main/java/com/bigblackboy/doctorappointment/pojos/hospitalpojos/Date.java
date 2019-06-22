@@ -1,9 +1,7 @@
-package com.bigblackboy.doctorappointment.model.hospitalmodel;
+package com.bigblackboy.doctorappointment.pojos.hospitalpojos;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
 
 public class Date {
     @SerializedName("day")

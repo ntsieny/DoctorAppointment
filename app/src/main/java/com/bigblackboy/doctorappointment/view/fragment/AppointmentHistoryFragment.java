@@ -18,7 +18,7 @@ import com.bigblackboy.doctorappointment.view.activity.MainActivity;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.AppointmentHistoryRecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.model.springmodel.Appointment;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Appointment;
 
 import org.json.JSONObject;
 
@@ -122,9 +122,9 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
     }
 
     private void deleteAppointment(int appointmentId) {
-        springApi.deleteAppointment(appointmentId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.deleteAppointment(appointmentId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if(response.body().isSuccess()) {
                         Toast.makeText(getContext(), "Запись отменена", Toast.LENGTH_SHORT).show();
@@ -142,7 +142,7 @@ public class AppointmentHistoryFragment extends Fragment implements AppointmentH
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }

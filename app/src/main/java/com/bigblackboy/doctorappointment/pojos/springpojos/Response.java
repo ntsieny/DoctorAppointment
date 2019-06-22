@@ -1,4 +1,4 @@
-package com.bigblackboy.doctorappointment.model.springmodel;
+package com.bigblackboy.doctorappointment.pojos.springpojos;
 
 import com.google.gson.annotations.SerializedName;
 

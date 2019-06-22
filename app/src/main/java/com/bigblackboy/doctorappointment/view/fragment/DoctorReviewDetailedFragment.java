@@ -26,9 +26,9 @@ import com.bigblackboy.doctorappointment.utils.SharedPreferencesManager;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.CommentRecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.model.springmodel.Comment;
-import com.bigblackboy.doctorappointment.model.springmodel.CommentResponse;
-import com.bigblackboy.doctorappointment.model.springmodel.ReviewsResponse;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Comment;
+import com.bigblackboy.doctorappointment.pojos.springpojos.CommentResponse;
+import com.bigblackboy.doctorappointment.pojos.springpojos.ReviewsResponse;
 import com.bigblackboy.doctorappointment.utils.DateParser;
 import com.bigblackboy.doctorappointment.utils.ErrorTranslator;
 
@@ -191,9 +191,9 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     }
 
     private void sendComment(Comment comment) {
-        springApi.createComment(comment).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.createComment(comment).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
                         Toast.makeText(getContext(), "Комментарий отправлен", Toast.LENGTH_SHORT).show();
@@ -211,7 +211,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
@@ -219,9 +219,9 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     }
 
     private void sendCommentLike(String serviceId, int commentId) {
-        springApi.likeComment(serviceId, commentId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.likeComment(serviceId, commentId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
 
@@ -239,7 +239,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
@@ -247,9 +247,9 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     }
 
     private void deleteCommentLike(String serviceId, int commentId) {
-        springApi.deletelikeComment(serviceId, commentId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.deletelikeComment(serviceId, commentId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
                         //Toast.makeText(getContext(), "Лайк/дизлайк удален", Toast.LENGTH_SHORT).show();
@@ -267,7 +267,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
@@ -275,9 +275,9 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     }
 
     private void sendCommentDislike(String serviceId, int commentId) {
-        springApi.dislikeComment(serviceId, commentId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.dislikeComment(serviceId, commentId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
 
@@ -295,7 +295,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
@@ -331,9 +331,9 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     }
 
     private void sendReviewLike(String serviceId, int reviewId) {
-        springApi.likeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.likeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
                         //Toast.makeText(getContext(), "Лайк отправлен", Toast.LENGTH_SHORT).show();
@@ -351,7 +351,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
@@ -359,9 +359,9 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     }
 
     private void sendReviewDislike(String serviceId, int reviewId) {
-        springApi.dislikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.dislikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
                         //Toast.makeText(getContext(), "Дизлайк отправлен", Toast.LENGTH_SHORT).show();
@@ -379,7 +379,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
@@ -387,9 +387,9 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     }
 
     private void deleteReviewLike(String serviceId, int reviewId) {
-        springApi.deletelikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.deletelikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
                         //Toast.makeText(getContext(), "Лайк/дизлайк удален", Toast.LENGTH_SHORT).show();
@@ -407,7 +407,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }
@@ -415,9 +415,9 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
     }
 
     private void deleteComment(int commentId) {
-        springApi.deleteComment(commentId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.deleteComment(commentId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if (response.body().isSuccess()) {
                         //Toast.makeText(getContext(), "Комментарий удален", Toast.LENGTH_SHORT).show();
@@ -435,7 +435,7 @@ public class DoctorReviewDetailedFragment extends Fragment implements View.OnCli
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }

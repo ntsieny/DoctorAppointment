@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Hospital;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
 
 import java.util.List;
 

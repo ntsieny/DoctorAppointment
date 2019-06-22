@@ -18,7 +18,7 @@ import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.api.ScheduleApiResponse;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Doctor;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.ScheduleRecyclerViewAdapter;
 
 import java.util.ArrayList;

@@ -17,12 +17,12 @@ import android.widget.Toast;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.District;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Doctor;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Hospital;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Speciality;
-import com.bigblackboy.doctorappointment.model.springmodel.Response;
-import com.bigblackboy.doctorappointment.model.springmodel.Review;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Speciality;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Response;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Review;
 
 import org.json.JSONObject;
 

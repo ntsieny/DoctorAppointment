@@ -20,7 +20,7 @@ import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.api.SpecialitiesApiResponse;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Speciality;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Speciality;
 
 import java.util.List;
 

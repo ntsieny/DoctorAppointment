@@ -19,7 +19,7 @@ import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.UserReviewsRecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.model.springmodel.Review;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Review;
 
 import org.json.JSONObject;
 
@@ -139,9 +139,9 @@ public class UserReviewsFragment extends Fragment implements UserReviewsRecycler
     }
 
     private void deleteReview(int reviewId) {
-        springApi.deleteReview(reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.model.springmodel.Response>() {
+        springApi.deleteReview(reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
             @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, retrofit2.Response<com.bigblackboy.doctorappointment.model.springmodel.Response> response) {
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, retrofit2.Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
                 if (response.isSuccessful()) {
                     if(response.body().isSuccess()) {
                         Toast.makeText(getContext(), "Отзыв удален", Toast.LENGTH_SHORT).show();
@@ -159,7 +159,7 @@ public class UserReviewsFragment extends Fragment implements UserReviewsRecycler
             }
 
             @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.model.springmodel.Response> call, Throwable t) {
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG, t.getMessage());
             }

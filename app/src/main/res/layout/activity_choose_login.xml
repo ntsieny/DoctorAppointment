@@ -8,15 +8,13 @@
     android:paddingRight="24dp">
 
     <TextView
-        android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Информационная система для записи к врачу"
+        android:text="@string/choose_login_activity_title"
         android:textSize="24sp" />
 
     <ImageView
-        android:id="@+id/imageView3"
         android:layout_width="match_parent"
         android:layout_height="164dp"
         app:srcCompat="@drawable/hospital_big" />

@@ -19,7 +19,7 @@ import com.bigblackboy.doctorappointment.view.activity.MainActivity;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.model.springmodel.HealthInfo;
+import com.bigblackboy.doctorappointment.pojos.springpojos.HealthInfo;
 
 import org.joda.time.LocalDate;
 

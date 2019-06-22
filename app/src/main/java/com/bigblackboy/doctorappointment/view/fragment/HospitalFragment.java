@@ -18,8 +18,8 @@ import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.api.HospitalApiResponse;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.District;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Hospital;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.HospitalRecyclerViewAdapter;
 
 import java.util.List;

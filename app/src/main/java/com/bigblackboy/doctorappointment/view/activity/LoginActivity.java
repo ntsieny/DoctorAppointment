@@ -15,8 +15,8 @@ import android.widget.Toast;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Patient;
-import com.bigblackboy.doctorappointment.model.springmodel.User;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
+import com.bigblackboy.doctorappointment.pojos.springpojos.User;
 
 import retrofit2.Call;
 import retrofit2.Callback;

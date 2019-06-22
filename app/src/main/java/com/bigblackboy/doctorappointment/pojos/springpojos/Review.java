@@ -1,4 +1,4 @@
-package com.bigblackboy.doctorappointment.model.springmodel;
+package com.bigblackboy.doctorappointment.pojos.springpojos;
 
 import java.io.Serializable;
 import java.util.Date;

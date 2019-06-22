@@ -1,28 +1,20 @@
-package com.bigblackboy.doctorappointment.model.hospitalmodel;
+package com.bigblackboy.doctorappointment.pojos.hospitalpojos;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Doctor implements Serializable {
+public class Speciality implements Serializable {
 
-    public Doctor() {
+    public Speciality() {
 
     }
 
-    public Doctor(String idDoc, String doctorName) {
-        this.idDoc = idDoc;
-        this.name = doctorName;
+    public Speciality(String specialityId, String specialityName) {
+        this.idSpeciality = specialityId;
+        this.nameSpeciality = specialityName;
     }
-
-    @SerializedName("AriaNumber")
-    @Expose
-    private String ariaNumber;
-
-    @SerializedName("Comment")
-    @Expose
-    private String comment;
 
     @SerializedName("CountFreeParticipantIE")
     @Expose
@@ -30,23 +22,23 @@ public class Doctor implements Serializable {
 
     @SerializedName("CountFreeTicket")
     @Expose
-    private String countFreeTickets;
+    private int countFreeTickets;
 
-    @SerializedName("IdDoc")
+    @SerializedName("FerIdSpesiality")
     @Expose
-    private String idDoc;
+    private String ferIdSpeciality;
 
-    @SerializedName("Name")
+    @SerializedName("IdSpesiality")
     @Expose
-    private String name;
-
-    @SerializedName("Snils")
-    @Expose
-    private String snils;
+    private String idSpeciality;
 
     @SerializedName("LastDate")
     @Expose
     private Date lastDate;
+
+    @SerializedName("NameSpesiality")
+    @Expose
+    private String nameSpeciality;
 
     @SerializedName("NearestDate")
     @Expose
@@ -60,52 +52,28 @@ public class Doctor implements Serializable {
         this.countFreeParticipants = countFreeParticipants;
     }
 
-    public String getCountFreeTickets() {
+    public int getCountFreeTickets() {
         return countFreeTickets;
     }
 
-    public void setCountFreeTickets(String countFreeTickets) {
+    public void setCountFreeTickets(int countFreeTickets) {
         this.countFreeTickets = countFreeTickets;
     }
 
-    public String getAriaNumber() {
-        return ariaNumber;
+    public String getFerIdSpeciality() {
+        return ferIdSpeciality;
     }
 
-    public void setAriaNumber(String ariaNumber) {
-        this.ariaNumber = ariaNumber;
+    public void setFerIdSpeciality(String ferIdSpeciality) {
+        this.ferIdSpeciality = ferIdSpeciality;
     }
 
-    public String getComment() {
-        return comment;
+    public String getIdSpeciality() {
+        return idSpeciality;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public String getIdDoc() {
-        return idDoc;
-    }
-
-    public void setIdDoc(String idDoc) {
-        this.idDoc = idDoc;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSnils() {
-        return snils;
-    }
-
-    public void setSnils(String snils) {
-        this.snils = snils;
+    public void setIdSpeciality(String idSpeciality) {
+        this.idSpeciality = idSpeciality;
     }
 
     public Date getLastDate() {
@@ -114,6 +82,14 @@ public class Doctor implements Serializable {
 
     public void setLastDate(Date lastDate) {
         this.lastDate = lastDate;
+    }
+
+    public String getNameSpeciality() {
+        return nameSpeciality;
+    }
+
+    public void setNameSpeciality(String nameSpeciality) {
+        this.nameSpeciality = nameSpeciality;
     }
 
     public Date getNearestDate() {
@@ -126,9 +102,9 @@ public class Doctor implements Serializable {
 
     @Override
     public String toString() {
-        if(ariaNumber != null)
-            return String.format("%s (Участок № %s)", name, ariaNumber);
-        else return name;
+        if(getCountFreeTickets() > 0)
+            return nameSpeciality + " (" + getCountFreeTickets() + " талонов)";
+        else return nameSpeciality;
     }
 
     public class Date {

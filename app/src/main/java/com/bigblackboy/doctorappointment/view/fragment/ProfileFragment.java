@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.view.activity.MainActivity;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Patient;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
 import com.bigblackboy.doctorappointment.utils.AgeCalculator;
 
 import org.joda.time.LocalDate;

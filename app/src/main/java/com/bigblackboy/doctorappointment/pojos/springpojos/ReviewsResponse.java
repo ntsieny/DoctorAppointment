@@ -1,68 +1,21 @@
-package com.bigblackboy.doctorappointment.model.springmodel;
+package com.bigblackboy.doctorappointment.pojos.springpojos;
 
-import java.util.Date;
+import java.io.Serializable;
 import java.util.List;
 
-public class CommentResponse {
+public class ReviewsResponse extends Review implements Serializable {
 
-    private int commentId;
-    private int reviewId;
-    private String date;
-    private String time;
-    private String dateTime;
-    private String text;
-    private int authorId;
     private String name;
     private String lastname;
     private String middlename;
     private int daybirth;
     private int monthbirth;
     private int yearbirth;
-    private String serviceId;
     private int likes;
     private int dislikes;
     private List likers;
     private List dislikers;
-
-    public int getCommentId() {
-        return commentId;
-    }
-
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
-    }
-
-    public int getReviewId() {
-        return reviewId;
-    }
-
-    public void setReviewId(int reviewId) {
-        this.reviewId = reviewId;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
-    }
+    private int commentCount;
 
     public String getName() {
         return name;
@@ -112,14 +65,6 @@ public class CommentResponse {
         this.yearbirth = yearbirth;
     }
 
-    public String getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-
     public int getLikes() {
         return likes;
     }
@@ -152,19 +97,11 @@ public class CommentResponse {
         this.dislikers = dislikers;
     }
 
-    public String getTime() {
-        return time;
+    public int getCommentCount() {
+        return commentCount;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 }

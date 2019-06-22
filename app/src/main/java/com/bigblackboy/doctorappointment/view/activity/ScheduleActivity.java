@@ -19,11 +19,11 @@ import com.bigblackboy.doctorappointment.view.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.view.fragment.ReviewMainFragment;
 import com.bigblackboy.doctorappointment.view.fragment.ScheduleFragment;
 import com.bigblackboy.doctorappointment.view.fragment.SpecialityFragment;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.District;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Doctor;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Hospital;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Patient;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Speciality;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Speciality;
 
 public class ScheduleActivity extends AppCompatActivity implements ReviewMainFragment.OnReviewMainFragmentDataListener, DistrictFragment.OnDistrictFragmentDataListener,
         SpecialityFragment.OnSpecialityFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener {

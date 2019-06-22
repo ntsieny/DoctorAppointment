@@ -1,6 +1,5 @@
-package com.bigblackboy.doctorappointment.model.springmodel;
+package com.bigblackboy.doctorappointment.pojos.springpojos;
 
-import java.util.Collections;
 import java.util.List;
 
 public class HealthInfo {

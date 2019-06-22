@@ -1,7 +1,4 @@
-package com.bigblackboy.doctorappointment.model.springmodel;
-
-import java.util.Date;
-import java.util.List;
+package com.bigblackboy.doctorappointment.pojos.springpojos;
 
 public class MyCommentsResponse {
 

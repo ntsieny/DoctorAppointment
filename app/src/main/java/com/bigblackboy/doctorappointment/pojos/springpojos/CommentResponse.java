@@ -1,23 +1,67 @@
-package com.bigblackboy.doctorappointment.model.springmodel;
+package com.bigblackboy.doctorappointment.pojos.springpojos;
 
-import com.bigblackboy.doctorappointment.model.springmodel.Review;
-
-import java.io.Serializable;
 import java.util.List;
 
-public class ReviewsResponse extends Review implements Serializable {
+public class CommentResponse {
 
+    private int commentId;
+    private int reviewId;
+    private String date;
+    private String time;
+    private String dateTime;
+    private String text;
+    private int authorId;
     private String name;
     private String lastname;
     private String middlename;
     private int daybirth;
     private int monthbirth;
     private int yearbirth;
+    private String serviceId;
     private int likes;
     private int dislikes;
     private List likers;
     private List dislikers;
-    private int commentCount;
+
+    public int getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
+    }
+
+    public int getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(int reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public int getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
+    }
 
     public String getName() {
         return name;
@@ -67,6 +111,14 @@ public class ReviewsResponse extends Review implements Serializable {
         this.yearbirth = yearbirth;
     }
 
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
+
     public int getLikes() {
         return likes;
     }
@@ -99,11 +151,19 @@ public class ReviewsResponse extends Review implements Serializable {
         this.dislikers = dislikers;
     }
 
-    public int getCommentCount() {
-        return commentCount;
+    public String getTime() {
+        return time;
     }
 
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 }

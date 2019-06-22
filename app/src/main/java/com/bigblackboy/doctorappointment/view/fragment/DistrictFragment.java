@@ -17,7 +17,7 @@ import android.widget.ProgressBar;
 import com.bigblackboy.doctorappointment.utils.HtmlParser;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
 
 import java.util.ArrayList;
 import java.util.HashMap;

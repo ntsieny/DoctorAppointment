@@ -21,13 +21,13 @@ import com.bigblackboy.doctorappointment.view.fragment.ReviewMainFragment;
 import com.bigblackboy.doctorappointment.view.fragment.SpecialityFragment;
 import com.bigblackboy.doctorappointment.view.fragment.UserCommentsFragment;
 import com.bigblackboy.doctorappointment.view.fragment.UserReviewsFragment;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.District;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Doctor;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Hospital;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Patient;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Speciality;
-import com.bigblackboy.doctorappointment.model.springmodel.Review;
-import com.bigblackboy.doctorappointment.model.springmodel.ReviewsResponse;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Speciality;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Review;
+import com.bigblackboy.doctorappointment.pojos.springpojos.ReviewsResponse;
 
 public class ReviewActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
         DoctorReviewsFragment.OnDoctorReviewsFragmentDataListener, DoctorReviewDetailedFragment.OnDoctorReviewDetailedFragmentDataListener, ReviewMainFragment.OnReviewMainFragmentDataListener,

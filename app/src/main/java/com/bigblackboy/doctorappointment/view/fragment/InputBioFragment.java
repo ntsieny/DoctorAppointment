@@ -22,7 +22,7 @@ import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
-import com.bigblackboy.doctorappointment.model.hospitalmodel.Patient;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
 
 import retrofit2.Call;
 import retrofit2.Callback;

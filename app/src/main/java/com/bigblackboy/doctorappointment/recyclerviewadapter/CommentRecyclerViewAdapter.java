@@ -12,7 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.model.springmodel.CommentResponse;
+import com.bigblackboy.doctorappointment.pojos.springpojos.CommentResponse;
 import com.bigblackboy.doctorappointment.utils.DateParser;
 
 import java.util.List;
