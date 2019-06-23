@@ -3,12 +3,12 @@ package com.bigblackboy.doctorappointment.presenter;
 import com.bigblackboy.doctorappointment.model.UserModel;
 import com.bigblackboy.doctorappointment.view.activity.ChooseLoginActivity;
 
-public class ChooseLoginPresenter {
+public class ChooseLoginActivityPresenter {
 
     private ChooseLoginActivity view;
     private UserModel model;
 
-    public ChooseLoginPresenter(UserModel model) {
+    public ChooseLoginActivityPresenter(UserModel model) {
         this.model = model;
     }
 

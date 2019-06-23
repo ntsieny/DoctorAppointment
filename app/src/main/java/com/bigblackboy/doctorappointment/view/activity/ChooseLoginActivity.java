@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.model.UserModel;
-import com.bigblackboy.doctorappointment.presenter.ChooseLoginPresenter;
+import com.bigblackboy.doctorappointment.presenter.ChooseLoginActivityPresenter;
 
 import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS;
 import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_GUEST_MODE;
@@ -17,7 +17,7 @@ import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.A
 
 public class ChooseLoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ChooseLoginPresenter presenter;
+    private ChooseLoginActivityPresenter presenter;
     private Button btnLoginUser, btnLoginGuest, btnRegistration;
     private SharedPreferences mSettings;
 
@@ -52,7 +52,7 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
             btnRegistration.setOnClickListener(this);
         }
         UserModel userModel = new UserModel(mSettings);
-        presenter = new ChooseLoginPresenter(userModel);
+        presenter = new ChooseLoginActivityPresenter(userModel);
         presenter.attachView(this);
     }
 
