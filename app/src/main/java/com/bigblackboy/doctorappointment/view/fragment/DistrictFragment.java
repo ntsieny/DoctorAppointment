@@ -1,7 +1,6 @@
 package com.bigblackboy.doctorappointment.view.fragment;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,21 +12,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.bigblackboy.doctorappointment.utils.HtmlParser;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
+import com.bigblackboy.doctorappointment.presenter.DistrictFragmentPresenter;
+import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 
 public class DistrictFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
 
+    private DistrictFragmentPresenter presenter;
     private String LOG_TAG = "myLog: DistrictFragment";
-    RecyclerViewAdapter adapter;
-    ArrayList<District> districts;
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter adapter;
     private OnDistrictFragmentDataListener mListener;
     private ProgressBar progBarDistrict;
 
@@ -43,10 +43,24 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
         } else throw new RuntimeException(context.toString() + " must implement OnDistrictFragmentDataListener");
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenter = new DistrictFragmentPresenter();
+        presenter.attachView(this);
+
+        adapter = new RecyclerViewAdapter(getContext());
+        adapter.setClickListener(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_district, null);
+        recyclerView = v.findViewById(R.id.rvDistrict);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
+        recyclerView.addItemDecoration(dividerItemDecoration);
         progBarDistrict = v.findViewById(R.id.progBarDistrict);
         return v;
     }
@@ -54,25 +68,14 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
     @Override
     public void onResume() {
         super.onResume();
+        showProgressBar();
+        presenter.getDistricts();
+        hideProgressBar();
+    }
 
-        AsyncRequest request = new AsyncRequest();
-        request.execute();
-        try {
-            districts = request.get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        RecyclerView recyclerView = getView().findViewById(R.id.rvDistrict);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        adapter = new RecyclerViewAdapter(getContext(), districts);
-        adapter.setClickListener(this);
+    public void showDistricts(List<District> districts) {
+        adapter.setData(districts);
         recyclerView.setAdapter(adapter);
-        progBarDistrict.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -83,11 +86,25 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
         mListener.onDistrictFragmentDataListener((District) adapter.getItem(position));
     }
 
-    class AsyncRequest extends AsyncTask<Void, Void, ArrayList<District>> {
+    public void showProgressBar() {
+        progBarDistrict.setVisibility(View.VISIBLE);
+    }
 
-        @Override
-        protected ArrayList<District> doInBackground(Void... voids) {
-            return new HtmlParser().getDistricts();
-        }
+    public void hideProgressBar() {
+        progBarDistrict.setVisibility(View.INVISIBLE);
+    }
+
+    public void showToast(int resId) {
+        Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    public void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
