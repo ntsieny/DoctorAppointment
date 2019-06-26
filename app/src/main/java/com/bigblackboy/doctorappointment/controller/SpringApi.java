@@ -22,40 +22,40 @@ import retrofit2.http.Path;
 
 public interface SpringApi {
 
-    @GET("user/get/{serviceId}")
+    @GET("user/{serviceId}")
     Call<User> getUserByServiceId(@Path("serviceId") String serviceId);
 
-    @POST("user/get/")
+    @POST("user/get")
     Call<User> getUserByLoginPassword(@Body User user);
 
-    @POST("user/create/")
+    @POST("user/")
     Call<Response> createUser(@Body User user);
 
-    @PUT("user/update/")
+    @PUT("user/")
     Call<Response> updateUser(@Body User user);
 
-    @DELETE("user/delete/{serviceId}")
+    @DELETE("user/{serviceId}")
     Call<Response> deleteUser(@Path("serviceId") String serviceId);
 
     @POST("checklogin/")
     Call<Response> checkLoginUnique(@Body User user);
 
-    @GET("review/get/review_id/{reviewId}")
+    @GET("review/{reviewId}")
     Call<ReviewsResponse> getReview(@Path("reviewId") int reviewId);
 
-    @GET("review/get/doctor_id/{doctorId}")
+    @GET("review/doctor/{doctorId}")
     Call<List<ReviewsResponse>> getReviews(@Path("doctorId") int doctorId);
 
-    @GET("review/get/service_id/{serviceId}")
+    @GET("review/user/{serviceId}")
     Call<List<Review>> getReviews(@Path("serviceId") String serviceId);
 
     @POST("review/create")
     Call<Response> createReview(@Body Review review);
 
-    @POST("review/update")
+    @PUT("review/update")
     Call<Response> updateReview(@Body Review review);
 
-    @DELETE("review/delete/{reviewId}")
+    @DELETE("review/{reviewId}")
     Call<Response> deleteReview(@Path("reviewId") int reviewId);
 
     @POST("review/like/{serviceId}/{reviewId}")
@@ -67,22 +67,22 @@ public interface SpringApi {
     @POST("review/deletelike/{serviceId}/{reviewId}")
     Call<Response> deletelikeReview(@Path("serviceId") String serviceId, @Path("reviewId") int reviewId);
 
-    @GET("comment/get/comment_id/{commentId}")
+    @GET("comment/{commentId}")
     Call<CommentResponse> getComment(@Path("commentId") int commentId);
 
-    @GET("comment/get/review_id/{reviewId}")
+    @GET("comment/review/{reviewId}")
     Call<List<CommentResponse>> getComments(@Path("reviewId") int reviewId);
 
-    @GET("comment/get/service_id/{serviceId}")
+    @GET("comment/user/{serviceId}")
     Call<List<MyCommentsResponse>> getComments(@Path("serviceId") String serviceId);
 
     @POST("comment/create")
     Call<Response> createComment(@Body Comment comment);
 
-    @POST("comment/update")
+    @PUT("comment/update")
     Call<Response> updateComment(@Body Comment comment);
 
-    @DELETE("comment/delete/{commentId}")
+    @DELETE("comment/{commentId}")
     Call<Response> deleteComment(@Path("commentId") int commentId);
 
     @POST("comment/like/{serviceId}/{commentId}")
@@ -94,21 +94,21 @@ public interface SpringApi {
     @POST("comment/deletelike/{serviceId}/{commentId}")
     Call<Response> deletelikeComment(@Path("serviceId") String serviceId, @Path("commentId") int commentId);
 
-    @GET("app/get/app_id/{appId}")
+    @GET("app/{appId}")
     Call<Appointment> getAppointment(@Path("appId") int appId);
 
-    @GET("app/get/service_id/{serviceId}")
+    @GET("app/user/{serviceId}")
     Call<List<Appointment>> getAppointments(@Path("serviceId") String serviceId);
 
     @POST("app/create")
     Call<Response> createAppointment(@Body Appointment app);
 
-    @POST("app/update")
+    @PUT("app/update")
     Call<Response> updateAppointment(@Body Appointment app);
 
-    @DELETE("app/delete/{appId}")
+    @DELETE("app/{appId}")
     Call<Response> deleteAppointment(@Path("appId") int appId);
 
-    @GET("health/get/age/{age}")
+    @GET("health/{age}")
     Call<HealthInfo> getHealthInfo(@Path("age") int age);
 }
