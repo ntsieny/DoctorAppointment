@@ -27,12 +27,6 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
         init();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.detachView();
-    }
-
     private void init() {
         mSettings = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
         boolean loggedId = mSettings.getBoolean(APP_SETTINGS_USER_LOGGED_IN, false);
@@ -84,5 +78,11 @@ public class ChooseLoginActivity extends AppCompatActivity implements View.OnCli
                 presenter.loginAsGuest();
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

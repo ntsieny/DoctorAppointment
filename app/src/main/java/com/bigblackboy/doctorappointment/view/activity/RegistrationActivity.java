@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
+import com.bigblackboy.doctorappointment.model.UserModel;
+import com.bigblackboy.doctorappointment.presenter.RegistrationActivityPresenter;
 import com.bigblackboy.doctorappointment.view.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.view.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.view.fragment.InputBioFragment;
@@ -47,6 +49,7 @@ import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.A
 public class RegistrationActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener,
         SignUpFragment.OnSignUpFragmentDataListener, InputBioFragment.OnInputBioFragmentDataListener {
 
+    private RegistrationActivityPresenter presenter;
     private static final String LOG_TAG = "myLog: RegActivity";
     private SpringApi springApi;
     private FragmentManager fm;
@@ -69,6 +72,10 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         fm.beginTransaction().add(R.id.linLayoutRegistration, districtFragment).commit();
 
         springApi = SpringController.getApi();
+
+        UserModel userModel = new UserModel(mSettings);
+        presenter = new RegistrationActivityPresenter(userModel);
+        presenter.attachView(this);
     }
 
     @Override
@@ -178,5 +185,11 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
                 Log.d(LOG_TAG, t.getMessage());
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
