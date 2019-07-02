@@ -14,32 +14,25 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.api.HospitalApiResponse;
-import com.bigblackboy.doctorappointment.controller.HospitalApi;
-import com.bigblackboy.doctorappointment.controller.HospitalController;
+import com.bigblackboy.doctorappointment.model.HospitalModel;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
+import com.bigblackboy.doctorappointment.presenter.HospitalFragmentPresenter;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.HospitalRecyclerViewAdapter;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class HospitalFragment extends Fragment implements HospitalRecyclerViewAdapter.ItemClickListener {
+public class HospitalFragment extends Fragment implements HospitalRecyclerViewAdapter.ItemClickListener, MVPBaseInterface.View {
 
     private String LOG_TAG = "myLog: HospitalFragment";
-    private static HospitalApi hospitalApi;
-
     private HospitalRecyclerViewAdapter adapter;
-    private List<Hospital> hospitals;
     private RecyclerView recyclerView;
     private ProgressBar progBarHospital;
     private String districtId;
     private OnHospitalFragmentDataListener mListener;
-
+    private HospitalFragmentPresenter presenter;
 
     public interface OnHospitalFragmentDataListener {
         void onHospitalFragmentDataListener(Hospital hospital);
@@ -65,12 +58,23 @@ public class HospitalFragment extends Fragment implements HospitalRecyclerViewAd
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         districtId = getArguments().getString("district_id");
+
+        adapter = new HospitalRecyclerViewAdapter(getContext());
+        adapter.setClickListener(this);
+
+        HospitalModel hospitalModel = new HospitalModel();
+        presenter = new HospitalFragmentPresenter(hospitalModel);
+        presenter.attachView(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_hospital, null);
+        recyclerView = v.findViewById(R.id.rvHospital);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
+        recyclerView.addItemDecoration(dividerItemDecoration);
         progBarHospital = v.findViewById(R.id.progBarHospital);
         return v;
     }
@@ -78,45 +82,48 @@ public class HospitalFragment extends Fragment implements HospitalRecyclerViewAd
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        hospitalApi = HospitalController.getApi();
-        recyclerView = getView().findViewById(R.id.rvHospital);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        adapter = new HospitalRecyclerViewAdapter(getContext());
-        adapter.setClickListener(this);
+        presenter.viewIsReady();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getHospitals();
+        presenter.getHospitals(districtId);
     }
 
-    private void getHospitals() {
-        hospitalApi.getHospitals(districtId).enqueue(new Callback<HospitalApiResponse>() {
-            @Override
-            public void onResponse(Call<HospitalApiResponse> call, Response<HospitalApiResponse> response) {
-                if(response.isSuccessful()) {
-                    if(response.body() != null) {
-                        HospitalApiResponse res = response.body();
-                        hospitals = res.getHospitals();
-                        adapter.setData(hospitals);
-                        recyclerView.setAdapter(adapter);
-                        progBarHospital.setVisibility(View.INVISIBLE);
-                    }
-                } else Toast.makeText(getContext(), "Body is null. Code: " + response.code(), Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void onFailure(Call<HospitalApiResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    public void showHospitals(List<Hospital> hospitals) {
+        adapter.setData(hospitals);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onItemClick(View view, int position) {
         mListener.onHospitalFragmentDataListener((Hospital)adapter.getItem(position));
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressBar() {
+        progBarHospital.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progBarHospital.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
