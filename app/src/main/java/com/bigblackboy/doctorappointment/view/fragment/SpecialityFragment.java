@@ -14,31 +14,26 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.bigblackboy.doctorappointment.view.activity.MainActivity;
-import com.bigblackboy.doctorappointment.controller.HospitalController;
-import com.bigblackboy.doctorappointment.controller.HospitalApi;
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
-import com.bigblackboy.doctorappointment.api.SpecialitiesApiResponse;
+import com.bigblackboy.doctorappointment.model.SpecialityModel;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Speciality;
+import com.bigblackboy.doctorappointment.presenter.SpecialityFragmentPresenter;
+import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter;
+import com.bigblackboy.doctorappointment.view.activity.MainActivity;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
+public class SpecialityFragment extends Fragment implements MVPBaseInterface.View, RecyclerViewAdapter.ItemClickListener {
 
     private String LOG_TAG = "myLog: SpecialityFragment";
-    private static HospitalApi hospitalApi;
-    RecyclerViewAdapter adapter;
-    List<Speciality> specialities;
-    RecyclerView recyclerView;
+    private RecyclerViewAdapter adapter;
+    private RecyclerView recyclerView;
     private String patientId;
     private String hospitalId;
-    OnSpecialityFragmentDataListener mListener;
-    ProgressBar progBarSpeciality;
+    private OnSpecialityFragmentDataListener mListener;
+    private ProgressBar progBarSpeciality;
+    private SpecialityFragmentPresenter presenter;
 
     public interface OnSpecialityFragmentDataListener {
         void onSpecialityFragmentDataListener(Speciality speciality);
@@ -66,12 +61,23 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
         super.onCreate(savedInstanceState);
         hospitalId = getArguments().getString("hospital_id");
         patientId = getArguments().getString("patient_id");
+
+        adapter = new RecyclerViewAdapter(getContext());
+        adapter.setClickListener(this);
+
+        SpecialityModel specialityModel = new SpecialityModel();
+        presenter = new SpecialityFragmentPresenter(specialityModel);
+        presenter.attachView(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_speciality, null);
+        recyclerView = v.findViewById(R.id.rvSpeciality);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
+        recyclerView.addItemDecoration(dividerItemDecoration);
         progBarSpeciality = v.findViewById(R.id.progBarSpeciality);
         return v;
     }
@@ -79,51 +85,54 @@ public class SpecialityFragment extends Fragment implements RecyclerViewAdapter.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        hospitalApi = HospitalController.getApi();
-        recyclerView = getView().findViewById(R.id.rvSpeciality);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), getResources().getConfiguration().orientation);
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        adapter = new RecyclerViewAdapter(getContext());
-        adapter.setClickListener(this);
+        presenter.viewIsReady();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getSpecialities();
+        presenter.getSpecialities(hospitalId, null, null, patientId);
         if(getActivity() instanceof MainActivity)
             ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.action_bar_title_choose_speciality);
     }
 
-    private void getSpecialities() {
-        hospitalApi.getSpecialities(hospitalId, "", "", patientId).enqueue(new Callback<SpecialitiesApiResponse>() {
-            @Override
-            public void onResponse(Call<SpecialitiesApiResponse> call, Response<SpecialitiesApiResponse> response) {
-                if(response.isSuccessful()) {
-                    if(response.body().getSuccess()) {
-                        SpecialitiesApiResponse respObj = response.body();
-                        specialities = respObj.getSpecialities();
-                        adapter.setData(specialities);
-                        recyclerView.setAdapter(adapter);
-                    } else {
-                        Toast.makeText(getContext(), "Ошибка: " + response.body().getError().getErrorDescription(), Toast.LENGTH_LONG).show();
-                        getActivity().getSupportFragmentManager().popBackStack();
-                    }
-                } else Toast.makeText(getContext(), "Запрос не прошел (" + response.code() + ")", Toast.LENGTH_LONG).show();
-                progBarSpeciality.setVisibility(View.INVISIBLE);
-            }
+    public void showSpecialities(List<Speciality> specialities) {
+        adapter.setData(specialities);
+        recyclerView.setAdapter(adapter);
+    }
 
-            @Override
-            public void onFailure(Call<SpecialitiesApiResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+    public void popBackStack() {
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressBar() {
+        progBarSpeciality.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progBarSpeciality.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onItemClick(View view, int position) {
         mListener.onSpecialityFragmentDataListener((Speciality)adapter.getItem(position));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
