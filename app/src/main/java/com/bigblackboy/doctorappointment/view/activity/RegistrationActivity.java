@@ -6,59 +6,36 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.controller.SpringApi;
-import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.model.UserModel;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
+import com.bigblackboy.doctorappointment.pojos.springpojos.User;
 import com.bigblackboy.doctorappointment.presenter.RegistrationActivityPresenter;
 import com.bigblackboy.doctorappointment.view.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.view.fragment.HospitalFragment;
 import com.bigblackboy.doctorappointment.view.fragment.InputBioFragment;
 import com.bigblackboy.doctorappointment.view.fragment.SignUpFragment;
-import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
-import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
-import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
-import com.bigblackboy.doctorappointment.pojos.springpojos.Response;
-import com.bigblackboy.doctorappointment.pojos.springpojos.User;
-
-import org.json.JSONObject;
 
 import java.util.Map;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-
 import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_DISTRICT_ID;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_DISTRICT_NAME;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_ID;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_NAME_FULL;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_HOSPITAL_NAME_SHORT;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_PATIENT_DAYBIRTH;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_PATIENT_ID;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_PATIENT_LASTNAME;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_PATIENT_MIDDLENAME;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_PATIENT_MONTHBIRTH;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_PATIENT_NAME;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_PATIENT_YEARBIRTH;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_USER_LOGGED_IN;
 
-public class RegistrationActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener,
+public class RegistrationActivity extends AppCompatActivity implements MVPBaseInterface.View, DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener,
         SignUpFragment.OnSignUpFragmentDataListener, InputBioFragment.OnInputBioFragmentDataListener {
 
     private RegistrationActivityPresenter presenter;
     private static final String LOG_TAG = "myLog: RegActivity";
-    private SpringApi springApi;
     private FragmentManager fm;
     private Patient patient;
     private Hospital hospital;
     private String districtId, districtName;
     private String login, password;
     private SharedPreferences mSettings;
-    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +47,6 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         fm = getSupportFragmentManager();
         DistrictFragment districtFragment = new DistrictFragment();
         fm.beginTransaction().add(R.id.linLayoutRegistration, districtFragment).commit();
-
-        springApi = SpringController.getApi();
 
         UserModel userModel = new UserModel(mSettings);
         presenter = new RegistrationActivityPresenter(userModel);
@@ -104,10 +79,10 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
     @Override
     public void onInputBioFragmentDataListener(Patient patient) {
         this.patient = patient;
-        createUser(createUserObjectForRequest());
+        presenter.createUser();
     }
 
-    private User createUserObjectForRequest() {
+    public User createUserObjectForRequest() {
         User user = new User();
         user.setLogin(login);
         user.setPassword(password);
@@ -131,60 +106,30 @@ public class RegistrationActivity extends AppCompatActivity implements DistrictF
         return user;
     }
 
-    private void writeSharedPreferences() {
-        editor = mSettings.edit();
-        editor.putString(APP_SETTINGS_PATIENT_ID, patient.getServiceId());
-        editor.putString(APP_SETTINGS_PATIENT_NAME, patient.getName());
-        editor.putString(APP_SETTINGS_PATIENT_LASTNAME, patient.getLastName());
-        editor.putString(APP_SETTINGS_PATIENT_MIDDLENAME, patient.getMiddleName());
-        editor.putInt(APP_SETTINGS_PATIENT_DAYBIRTH, patient.getDayBirth());
-        editor.putInt(APP_SETTINGS_PATIENT_MONTHBIRTH, patient.getMonthBirth());
-        editor.putInt(APP_SETTINGS_PATIENT_YEARBIRTH, patient.getYearBirth());
-        editor.putString(APP_SETTINGS_DISTRICT_ID, districtId);
-        editor.putString(APP_SETTINGS_DISTRICT_NAME, districtName);
-        editor.putInt(APP_SETTINGS_HOSPITAL_ID, hospital.getIdLPU());
-        editor.putString(APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
-        editor.putString(APP_SETTINGS_HOSPITAL_NAME_FULL, hospital.getLpuName());
-        editor.putBoolean(APP_SETTINGS_USER_LOGGED_IN, true);
-        editor.apply();
-    }
-
-    private void openMainMenuAcvitity() {
+    public void openMainMenuActivity() {
         finish();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    private void createUser(final User user) {
-        springApi.createUser(user).enqueue(new Callback<Response>() {
-            @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                Response resp = response.body();
-                if (response.isSuccessful()) {
-                    if (resp.isSuccess()) {
-                        Log.d(LOG_TAG, "Пользователь создан");
-                        writeSharedPreferences();
-                        openMainMenuAcvitity();
-                        Toast.makeText(RegistrationActivity.this, String.format("Добро пожаловать, %s!", user.getName()), Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Log.d(LOG_TAG, "Пользователь не создан. " + resp.getMessage());
-                    }
-                } else {
-                    try {
-                        JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(RegistrationActivity.this, error.getString("message"), Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        Toast.makeText(RegistrationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
+    }
 
-            @Override
-            public void onFailure(Call<Response> call, Throwable t) {
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        });
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressBar() {
+
+    }
+
+    @Override
+    public void hideProgressBar() {
+
     }
 
     @Override

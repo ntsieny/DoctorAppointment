@@ -1,12 +1,16 @@
 package com.bigblackboy.doctorappointment.model;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Response;
 import com.bigblackboy.doctorappointment.pojos.springpojos.User;
 import com.bigblackboy.doctorappointment.utils.MyApplication;
+
+import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +31,7 @@ import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.A
 
 public class UserModel {
 
+    private static final String LOG_TAG = "myLog: UserModel";
     private SharedPreferences mSettings;
     private SharedPreferences.Editor editor;
     private SpringApi springApi;
@@ -80,9 +85,36 @@ public class UserModel {
         });
     }
 
+    public void createUser(final User user, final OnFinishedListener onFinishedListener) {
+        springApi.createUser(user).enqueue(new Callback<Response>() {
+            @Override
+            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                Response resp = response.body();
+                if (response.isSuccessful()) {
+                    if (resp.isSuccess()) {
+                        writeSharedPreferences(user);
+                        editSharedPrefsUserLoggedIn(true);
+                        onFinishedListener.onFinished(user);
+                    } else onFinishedListener.onFailure(new Throwable(MyApplication.getAppContext().getResources().getString(R.string.user_not_created)));
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        onFinishedListener.onFailure(new Throwable(error.getString("message")));
+                    } catch (Exception e) {
+                        Log.d(LOG_TAG, e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Response> call, Throwable t) {
+                onFinishedListener.onFailure(t);
+            }
+        });
+    }
+
     public interface OnFinishedListener {
         void onFinished(User user);
-
         void onFailure(Throwable t);
     }
 }
