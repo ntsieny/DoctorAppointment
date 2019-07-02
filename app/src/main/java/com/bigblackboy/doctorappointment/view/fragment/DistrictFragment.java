@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
 import com.bigblackboy.doctorappointment.presenter.DistrictFragmentPresenter;
@@ -22,7 +23,7 @@ import com.bigblackboy.doctorappointment.recyclerviewadapter.RecyclerViewAdapter
 import java.util.HashMap;
 import java.util.List;
 
-public class DistrictFragment extends Fragment implements RecyclerViewAdapter.ItemClickListener {
+public class DistrictFragment extends Fragment implements MVPBaseInterface.View, RecyclerViewAdapter.ItemClickListener {
 
     private DistrictFragmentPresenter presenter;
     private String LOG_TAG = "myLog: DistrictFragment";
@@ -86,20 +87,24 @@ public class DistrictFragment extends Fragment implements RecyclerViewAdapter.It
         mListener.onDistrictFragmentDataListener((District) adapter.getItem(position));
     }
 
-    public void showProgressBar() {
-        progBarDistrict.setVisibility(View.VISIBLE);
-    }
-
-    public void hideProgressBar() {
-        progBarDistrict.setVisibility(View.INVISIBLE);
-    }
-
+    @Override
     public void showToast(int resId) {
         Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
     public void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressBar() {
+        progBarDistrict.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progBarDistrict.setVisibility(View.INVISIBLE);
     }
 
     @Override
