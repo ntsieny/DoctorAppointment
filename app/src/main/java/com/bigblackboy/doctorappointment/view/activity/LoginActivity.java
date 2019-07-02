@@ -10,13 +10,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.model.UserModel;
 import com.bigblackboy.doctorappointment.presenter.LoginActivityPresenter;
 
 import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements MVPBaseInterface.View, View.OnClickListener {
 
     private LoginActivityPresenter presenter;
     private static final String LOG_TAG = "myLog: LoginActivity";
@@ -50,14 +51,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public void showToast(int resId) {
-        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
-    }
-
-    public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
     public void openMainActivity() {
         finish();
         Intent intent = new Intent(this, MainActivity.class);
@@ -68,5 +61,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressBar() {
+        //
+    }
+
+    @Override
+    public void hideProgressBar() {
+        //
     }
 }
