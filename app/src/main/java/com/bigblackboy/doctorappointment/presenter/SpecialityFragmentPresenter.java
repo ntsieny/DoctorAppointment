@@ -12,8 +12,8 @@ public class SpecialityFragmentPresenter implements MVPBaseInterface.Presenter {
     private SpecialityModel model;
     private MVPBaseInterface.View view;
 
-    public SpecialityFragmentPresenter(SpecialityModel model) {
-        this.model = model;
+    public SpecialityFragmentPresenter() {
+        model = new SpecialityModel();
     }
 
     @Override

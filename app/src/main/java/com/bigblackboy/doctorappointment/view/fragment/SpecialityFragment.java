@@ -65,8 +65,7 @@ public class SpecialityFragment extends Fragment implements MVPBaseInterface.Vie
         adapter = new RecyclerViewAdapter(getContext());
         adapter.setClickListener(this);
 
-        SpecialityModel specialityModel = new SpecialityModel();
-        presenter = new SpecialityFragmentPresenter(specialityModel);
+        presenter = new SpecialityFragmentPresenter();
         presenter.attachView(this);
     }
 
