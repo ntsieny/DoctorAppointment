@@ -38,7 +38,6 @@ public class ScheduleActivity extends AppCompatActivity implements ReviewMainFra
     private Patient patient;
     private SharedPreferences prefs;
     private SharedPreferencesManager prefManager;
-    private HospitalApi hospitalApi;
 
     @Override
     public void onBackPressed() {
@@ -58,8 +57,6 @@ public class ScheduleActivity extends AppCompatActivity implements ReviewMainFra
         prefManager = new SharedPreferencesManager(prefs);
         patient = prefManager.getCurrentPatient();
         hospital = prefManager.getCurrentHospital();
-
-        hospitalApi = HospitalController.getApi();
 
         fm = getSupportFragmentManager();
         fragContainer = findViewById(R.id.fragContainerSchedule);

@@ -58,12 +58,6 @@ public class LoginActivity extends AppCompatActivity implements MVPBaseInterface
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.detachView();
-    }
-
-    @Override
     public void showToast(int resId) {
         Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
     }
@@ -81,5 +75,11 @@ public class LoginActivity extends AppCompatActivity implements MVPBaseInterface
     @Override
     public void hideProgressBar() {
         //
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
