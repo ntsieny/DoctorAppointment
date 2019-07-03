@@ -12,8 +12,8 @@ public class HospitalFragmentPresenter implements MVPBaseInterface.Presenter {
     private HospitalModel model;
     private MVPBaseInterface.View view;
 
-    public HospitalFragmentPresenter(HospitalModel model) {
-        this.model = model;
+    public HospitalFragmentPresenter() {
+        model = new HospitalModel();
     }
 
     @Override

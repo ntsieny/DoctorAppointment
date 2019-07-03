@@ -62,8 +62,7 @@ public class HospitalFragment extends Fragment implements HospitalRecyclerViewAd
         adapter = new HospitalRecyclerViewAdapter(getContext());
         adapter.setClickListener(this);
 
-        HospitalModel hospitalModel = new HospitalModel();
-        presenter = new HospitalFragmentPresenter(hospitalModel);
+        presenter = new HospitalFragmentPresenter();
         presenter.attachView(this);
     }
 
