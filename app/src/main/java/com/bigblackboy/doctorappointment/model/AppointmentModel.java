@@ -22,8 +22,6 @@ public class AppointmentModel {
 
     private SpringApi springApi;
     private HospitalApi hospitalApi;
-    private List<Appointment> appointments;
-    private List<AppointmentInfo> appointmentDates;
 
     public AppointmentModel() {
         springApi = SpringController.getApi();
@@ -36,7 +34,7 @@ public class AppointmentModel {
             public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
                 if (response.isSuccessful()) {
                     if(response.body() != null && response.body().size() > 0) {
-                        appointments = response.body();
+                        List<Appointment> appointments = response.body();
                         onFinishedListener.onFinished(appointments);
                     } else onFinishedListener.onFailure(new Throwable("Записей не обнаружено"));
                 } else {
