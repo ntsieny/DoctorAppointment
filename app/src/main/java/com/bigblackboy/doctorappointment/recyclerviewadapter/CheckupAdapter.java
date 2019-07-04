@@ -44,6 +44,7 @@ public class CheckupAdapter extends RecyclerView.Adapter<CheckupAdapter.ViewHold
         Procedure proc = mData.get(position);
         if (proc.getType() == Procedure.FIRST_STEP_TYPE) {
             if (position == 0) {
+                holder.tvProcedureType.setVisibility(View.VISIBLE);
                 holder.tvProcedureType.setText("1-й этап диспансеризации:");
             } else holder.tvProcedureType.setVisibility(View.GONE);
         } else if (proc.getType() == Procedure.SECOND_STEP_TYPE) {
