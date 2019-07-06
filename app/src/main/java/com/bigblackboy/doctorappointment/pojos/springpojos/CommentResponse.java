@@ -2,7 +2,7 @@ package com.bigblackboy.doctorappointment.pojos.springpojos;
 
 import java.util.List;
 
-public class CommentResponse {
+public class CommentResponse implements Comparable<CommentResponse> {
 
     private int commentId;
     private int reviewId;
@@ -165,5 +165,10 @@ public class CommentResponse {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    @Override
+    public int compareTo(CommentResponse o) {
+        return dateTime.compareTo(o.dateTime);
     }
 }
