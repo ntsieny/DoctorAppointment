@@ -2,13 +2,11 @@ package com.bigblackboy.doctorappointment.view.fragment;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,31 +16,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bigblackboy.doctorappointment.controller.HospitalController;
-import com.bigblackboy.doctorappointment.controller.HospitalApi;
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
+import com.bigblackboy.doctorappointment.presenter.InputBioFragmentPresenter;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS;
-
-public class InputBioFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener{
+public class InputBioFragment extends Fragment implements MVPBaseInterface.View, View.OnClickListener, DatePickerDialog.OnDateSetListener{
 
     private static final String LOG_TAG = "myLog: InputBioFragment";
-    EditText etNameReg, etLastnameReg, etMiddlanameReg;
-    TextView tvBirthdayReg;
-    Button btnBioReg;
-    OnInputBioFragmentDataListener mListener;
-    Patient patient;
-    private static HospitalApi hospitalApi;
+    private InputBioFragmentPresenter presenter;
+    private EditText etNameReg, etLastnameReg, etMiddlenameReg;
+    private TextView tvBirthdayReg;
+    private Button btnBioReg;
+    private OnInputBioFragmentDataListener mListener;
+    private Patient patient;
     private String hospitalId;
-    private String districtId;
-    SharedPreferences mSettings;
-    SharedPreferences.Editor editor;
+    private boolean birthdayIsSet;
 
     public interface OnInputBioFragmentDataListener {
         void onInputBioFragmentDataListener(Patient patient);
@@ -68,44 +58,50 @@ public class InputBioFragment extends Fragment implements View.OnClickListener, 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hospitalId = getArguments().getString("hospital_id");
+        patient = new Patient();
+        patient.setHospital(new Hospital(Integer.valueOf(hospitalId), null));
+        presenter = new InputBioFragmentPresenter();
+        presenter.attachView(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mSettings = getActivity().getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
-        hospitalApi = HospitalController.getApi();
-
         View v = inflater.inflate(R.layout.fragment_input_bio, container, false);
         etNameReg = v.findViewById(R.id.etNameReg);
         etLastnameReg = v.findViewById(R.id.etLastnameReg);
-        etMiddlanameReg = v.findViewById(R.id.etMiddlenameReg);
+        etMiddlenameReg = v.findViewById(R.id.etMiddlenameReg);
         tvBirthdayReg = v.findViewById(R.id.tvBirthdayReg);
         tvBirthdayReg.setOnClickListener(this);
         btnBioReg = v.findViewById(R.id.btnBioReg);
         btnBioReg.setOnClickListener(this);
-        patient = new Patient();
         return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.viewIsReady();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnBioReg:
-                if(!(TextUtils.isEmpty(etNameReg.getText().toString())) && !(TextUtils.isEmpty(etLastnameReg.getText().toString()))) {
+                if(!(TextUtils.isEmpty(etNameReg.getText().toString())) && !(TextUtils.isEmpty(etLastnameReg.getText().toString())) && birthdayIsSet) {
                     patient.setName(etNameReg.getText().toString());
                     patient.setLastName(etLastnameReg.getText().toString());
-                    patient.setMiddleName(etMiddlanameReg.getText().toString());
-                    checkPatient(patient.getName(), patient.getLastName(), patient.getMiddleName());
+                    patient.setMiddleName(etMiddlenameReg.getText().toString());
+                    presenter.checkUserExistsInHospital(patient, null);
                 } else Toast.makeText(getContext(), "Введите данные!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tvBirthdayReg:
-                showDatePicker();
+                presenter.onChooseDateLabelClick();
                 break;
         }
     }
 
-    private void showDatePicker() {
+    public void showDatePicker() {
         DatePickerFragment datePickerFrag;
         if (patient.getDayBirth() != 0 && patient.getMonthBirth() != 0 && patient.getYearBirth() != 0) {
             datePickerFrag = DatePickerFragment.newInstance(patient.getYearBirth(), patient.getMonthBirth() - 1, patient.getDayBirth());
@@ -116,65 +112,40 @@ public class InputBioFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        birthdayIsSet = true;
         patient.setDayBirth(dayOfMonth);
         patient.setMonthBirth(month + 1);
         patient.setYearBirth(year);
         tvBirthdayReg.setText(String.format("%d.%d.%d", dayOfMonth, month + 1, year));
     }
 
-    private void checkPatient(String name, String lastname, String middlename) {
-        hospitalApi.getMetadata(name, lastname, middlename, patient.getInsuranceSeries(), patient.getInsuranceNumber(),
-                patient.getBirthdayFormatted(), hospitalId, "").enqueue(new Callback<CheckPatientApiResponse>() {
-            @Override
-            public void onResponse(Call<CheckPatientApiResponse> call, Response<CheckPatientApiResponse> response) {
-                if(response.isSuccessful()) {
-                    if(response.body().getSuccess()) {
-                        CheckPatientApiResponse respObj = response.body();
-                        patient.setServiceId(respObj.getResponse().getPatientId());
-                        //dataHashMap.put("patient_id", respObj.getResponse().getPatientId());
+    public void openMainMenuActivity(Patient patient) {
+        mListener.onInputBioFragmentDataListener(patient);
+    }
 
-                        String cookie = response.headers().get("Set-Cookie");
-                        Log.d(LOG_TAG, "patientId: " + patient.getServiceId() + ", cookie: " + cookie);
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+    }
 
-                        /*editor = mSettings.edit();
-                        editor.putString(MainActivity.APP_SETTINGS_PATIENT_ID, patient.getId());
-                        editor.putBoolean(MainActivity.APP_SETTINGS_USER_LOGGED_IN, true);
-                        editor.apply();*/
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
 
-                        /*String welcomePhr = "Добро пожаловать, " + patient.getName().substring(0,1).toUpperCase() + patient.getName().substring(1) + "!";
-                        Toast.makeText(getContext(), welcomePhr, Toast.LENGTH_LONG).show();*/
+    @Override
+    public void showProgressBar() {
 
-                        /*Intent intent = new Intent(getContext(), MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);*/
+    }
 
-                        /*editor = mSettings.edit();
-                        editor.putString(MainActivity.APP_SETTINGS_PATIENT_NAME, patient.getName());
-                        editor.putString(MainActivity.APP_SETTINGS_PATIENT_LASTNAME, patient.getLastName());
-                        editor.putString(MainActivity.APP_SETTINGS_PATIENT_BIRTHDAY, patient.getBirthdayFormatted());
-                        editor.apply();*/
-                        mListener.onInputBioFragmentDataListener(patient);
-                        Log.d(LOG_TAG, "Пациент найден");
-                    }
-                    else {
-                        Log.d(LOG_TAG, "Ошибка авторизации: " + response.body().getError().getErrorDescription());
-                        Toast.makeText(getContext(), "Ошибка авторизации: " + response.body().getError().getErrorDescription(), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Log.d(LOG_TAG, "Запрос не прошел (" + response.code() + ")");
-                    Toast.makeText(getContext(), "Запрос не прошел (\" + response.code() + \")", Toast.LENGTH_SHORT).show();
-                }
-            }
+    @Override
+    public void hideProgressBar() {
 
-            @Override
-            public void onFailure(Call<CheckPatientApiResponse> call, Throwable t) {
-                Log.d(LOG_TAG, "Error: " + t.getMessage());
-                String errorMessage;
-                if (t.getMessage() == null) {
-                    errorMessage = "Удаленный сервер недоступен";
-                } else errorMessage = "Error: " + t.getMessage();
-                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
-            }
-        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

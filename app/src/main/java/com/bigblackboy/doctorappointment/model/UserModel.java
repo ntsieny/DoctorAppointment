@@ -4,8 +4,12 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.api.CheckPatientApiResponse;
+import com.bigblackboy.doctorappointment.controller.HospitalApi;
+import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
 import com.bigblackboy.doctorappointment.pojos.springpojos.Response;
 import com.bigblackboy.doctorappointment.pojos.springpojos.User;
 import com.bigblackboy.doctorappointment.utils.MyApplication;
@@ -35,10 +39,17 @@ public class UserModel {
     private SharedPreferences mSettings;
     private SharedPreferences.Editor editor;
     private SpringApi springApi;
+    private HospitalApi hospitalApi;
+
+    public UserModel() {
+        springApi = SpringController.getApi();
+        hospitalApi = HospitalController.getApi();
+    }
 
     public UserModel(SharedPreferences mSettings) {
         this.mSettings = mSettings;
         springApi = SpringController.getApi();
+        hospitalApi = HospitalController.getApi();
     }
 
     public void editSharedPrefsUserLoggedIn(boolean value) {
@@ -113,8 +124,35 @@ public class UserModel {
         });
     }
 
+    public void checkUserExistsInHospital(final Patient patient, String token, final OnCheckUserListener listener) {
+        hospitalApi.getMetadata(patient.getName(), patient.getLastName(), patient.getMiddleName(), patient.getInsuranceSeries(), patient.getInsuranceNumber(),
+                patient.getBirthdayFormatted(), String.valueOf(patient.getHospital().getIdLPU()), "").enqueue(new Callback<CheckPatientApiResponse>() {
+            @Override
+            public void onResponse(Call<CheckPatientApiResponse> call, retrofit2.Response<CheckPatientApiResponse> response) {
+                if(response.isSuccessful() && response.body() != null) {
+                    if(response.body().getSuccess()) {
+                        CheckPatientApiResponse respObj = response.body();
+                        patient.setServiceId(respObj.getResponse().getPatientId());
+                        listener.onFinished(patient);
+                        //String cookie = response.headers().get("Set-Cookie");
+                    } else listener.onFailure(new Throwable("Ошибка авторизации: " + response.body().getError().getErrorDescription()));
+                } else listener.onFailure(new Throwable("Запрос не прошел (" + response.code() + ")"));
+            }
+
+            @Override
+            public void onFailure(Call<CheckPatientApiResponse> call, Throwable t) {
+                listener.onFailure(t);
+            }
+        });
+    }
+
     public interface OnFinishedListener {
         void onFinished(User user);
+        void onFailure(Throwable t);
+    }
+
+    public interface OnCheckUserListener {
+        void onFinished(Patient patient);
         void onFailure(Throwable t);
     }
 }
