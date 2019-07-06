@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,31 +18,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.model.SharedPreferencesManager;
-import com.bigblackboy.doctorappointment.controller.SpringApi;
-import com.bigblackboy.doctorappointment.controller.SpringController;
-import com.bigblackboy.doctorappointment.recyclerviewadapter.ReviewRecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.pojos.springpojos.ReviewsResponse;
-
-import org.json.JSONObject;
+import com.bigblackboy.doctorappointment.presenter.DoctorReviewsFragmentPresenter;
+import com.bigblackboy.doctorappointment.recyclerviewadapter.ReviewRecyclerViewAdapter;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+public class DoctorReviewsFragment extends Fragment implements MVPBaseInterface.View, ReviewRecyclerViewAdapter.ItemClickListener {
 
-public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerViewAdapter.ItemClickListener {
-
+    private boolean guestMode;
+    private SharedPreferencesManager prefManager;
     private static final String LOG_TAG = "myLog: DocReviewsFrag";
-    private static SpringApi springApi;
-    private ReviewRecyclerViewAdapter adapter;
-    private List<ReviewsResponse> reviews;
     private ReviewsResponse review;
     private String doctorId;
     private String doctorName;
     private String serviceId;
+    private DoctorReviewsFragmentPresenter presenter;
+    private ReviewRecyclerViewAdapter adapter;
     private TextView tvDoctorNameReview, tvAvgMark;
     private RatingBar rBarAvgMark;
     private Button btnAddReview;
@@ -52,8 +46,6 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     private ProgressBar progBarReviews;
     private RelativeLayout innerLayoutReviews;
     private OnDoctorReviewsFragmentDataListener mListener;
-    private boolean guestMode;
-    private SharedPreferencesManager prefManager;
 
     public interface OnDoctorReviewsFragmentDataListener {
         void onDoctorReviewsFragmentBtnClickListener(View v, ReviewsResponse review);
@@ -84,11 +76,13 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
         doctorId = getArguments().getString("doctor_id");
         doctorName = getArguments().getString("doctor_name");
         serviceId = getArguments().getString("service_id");
-        springApi = SpringController.getApi();
         adapter = new ReviewRecyclerViewAdapter(getContext(), serviceId);
         adapter.setClickListener(this);
         prefManager = new SharedPreferencesManager(getActivity().getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE));
         guestMode = prefManager.isGuestMode();
+
+        presenter = new DoctorReviewsFragmentPresenter();
+        presenter.attachView(this);
     }
 
     @Nullable
@@ -115,56 +109,70 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.viewIsReady();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         tvDoctorNameReview.setText(doctorName);
-        getDoctorReviews();
+        presenter.getDoctorReviews(Integer.valueOf(doctorId));
     }
 
-    private void getDoctorReviews() {
-        springApi.getReviews(Integer.valueOf(doctorId)).enqueue(new Callback<List<ReviewsResponse>>() {
-            @Override
-            public void onResponse(Call<List<ReviewsResponse>> call, Response<List<ReviewsResponse>> response) {
-                if (response.isSuccessful()) {
-                    if(response.body().size() > 0) {
-                        reviews = response.body();
-                        adapter.setData(reviews);
-                        recyclerView.setAdapter(adapter);
-                        float avgMark = countAvgMark(reviews);
-                        rBarAvgMark.setRating(avgMark);
-                        tvAvgMark.append(String.valueOf(Math.round(avgMark * 10.0) / 10.0));
-                        progBarReviews.setVisibility(View.INVISIBLE);
-                        innerLayoutReviews.setVisibility(View.VISIBLE);
-                    } else Toast.makeText(getContext(), "Отзывов не обнаружено", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        JSONObject error = new JSONObject(response.errorBody().string());
-                        progBarReviews.setVisibility(View.INVISIBLE);
-                        innerLayoutReviews.setVisibility(View.VISIBLE);
-                        tvReviewsEmpty.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), "Отзывы не найдены", Toast.LENGTH_SHORT).show();
-                        Log.d(LOG_TAG, error.getString("message"));
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d(LOG_TAG, e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ReviewsResponse>> call, Throwable t) {
-                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        });
+    public void showDoctorReviews(List<ReviewsResponse> reviews) {
+        adapter.setData(reviews);
+        recyclerView.setAdapter(adapter);
     }
 
-    private float countAvgMark(List<ReviewsResponse> list) {
-        float sum = 0;
-        for (ReviewsResponse rev : list) {
-            sum += rev.getMark();
-        }
-        return sum / list.size();
+    public void setDoctorStarRating(float rating) {
+        rBarAvgMark.setRating(rating);
+    }
+
+    public void setDoctorTextRating(float avgMark) {
+        tvAvgMark.append(String.valueOf(Math.round(avgMark * 10.0) / 10.0));
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressBar() {
+        progBarReviews.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progBarReviews.setVisibility(View.INVISIBLE);
+    }
+
+    public void showInnerLayout() {
+        innerLayoutReviews.setVisibility(View.VISIBLE);
+    }
+
+    public void hideInnerLayout() {
+        innerLayoutReviews.setVisibility(View.INVISIBLE);
+    }
+
+    public void showReviewsEmptyLabel() {
+        tvReviewsEmpty.setVisibility(View.VISIBLE);
+    }
+
+    public void hideReviewsEmptyLabel() {
+        tvReviewsEmpty.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onItemClick(View v, int position) {
+        mListener.onDoctorReviewsFragmentDataListener(adapter.getItem(position));
     }
 
     @Override
@@ -173,15 +181,15 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
             case R.id.chbLike:
                 if (!guestMode) {
                     if (((CheckBox) v).isChecked()) {
-                        sendLike(serviceId, adapter.getItem(position).getReviewId());
-                    } else deleteLike(serviceId, adapter.getItem(position).getReviewId());
+                        presenter.sendReviewLike(serviceId, adapter.getItem(position).getReviewId());
+                    } else presenter.deleteLike(serviceId, adapter.getItem(position).getReviewId());
                 }
                 break;
             case R.id.chbDislike:
                 if (!guestMode) {
                     if (((CheckBox) v).isChecked()) {
-                        sendDislike(serviceId, adapter.getItem(position).getReviewId());
-                    } else deleteLike(serviceId, adapter.getItem(position).getReviewId());
+                        presenter.sendReviewDislike(serviceId, adapter.getItem(position).getReviewId());
+                    } else presenter.deleteLike(serviceId, adapter.getItem(position).getReviewId());
                 }
                 break;
             case R.id.imBtnComments:
@@ -192,91 +200,8 @@ public class DoctorReviewsFragment extends Fragment implements ReviewRecyclerVie
     }
 
     @Override
-    public void onItemClick(View v, int position) {
-        mListener.onDoctorReviewsFragmentDataListener(adapter.getItem(position));
-    }
-
-    private void sendLike(String serviceId, int reviewId) {
-        springApi.likeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
-            @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().isSuccess()) {
-                        //Toast.makeText(getContext(), "Лайк отправлен", Toast.LENGTH_SHORT).show();
-                    } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getContext(), "Лайк не отправлен", Toast.LENGTH_SHORT).show();
-                        Log.d(LOG_TAG, error.getString("message"));
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d(LOG_TAG, e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
-                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        });
-    }
-
-    private void sendDislike(String serviceId, int reviewId) {
-        springApi.dislikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
-            @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().isSuccess()) {
-                        //Toast.makeText(getContext(), "Дизлайк отправлен", Toast.LENGTH_SHORT).show();
-                    } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getContext(), "Дизлайк не отправлен", Toast.LENGTH_SHORT).show();
-                        Log.d(LOG_TAG, error.getString("message"));
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d(LOG_TAG, e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
-                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        });
-    }
-
-    private void deleteLike(String serviceId, int reviewId) {
-        springApi.deletelikeReview(serviceId, reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
-            @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().isSuccess()) {
-                        //Toast.makeText(getContext(), "Лайк/дизлайк удален", Toast.LENGTH_SHORT).show();
-                    } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getContext(), "Лайк/дизлайк не удален", Toast.LENGTH_SHORT).show();
-                        Log.d(LOG_TAG, error.getString("message"));
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d(LOG_TAG, e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
-                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        });
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

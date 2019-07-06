@@ -6,6 +6,8 @@ import com.bigblackboy.doctorappointment.pojos.springpojos.ReviewsResponse;
 
 import org.json.JSONObject;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -114,10 +116,42 @@ public class ReviewModel {
         });
     }
 
+    public void getDoctorReviews(int doctorId, final OnGetDoctorReviewsListener listener) {
+        springApi.getReviews(doctorId).enqueue(new Callback<List<ReviewsResponse>>() {
+            @Override
+            public void onResponse(Call<List<ReviewsResponse>> call, Response<List<ReviewsResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if(response.body().size() > 0) {
+                        List<ReviewsResponse> reviews = response.body();
+                        listener.onFinished(reviews);
+                    } else listener.onFailure(new Throwable("Отзывы не найдены"));
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        listener.onFailure(new Throwable(error.getString("message")));
+                    } catch (Exception e) {
+                        listener.onFailure(new Throwable(e.getMessage()));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ReviewsResponse>> call, Throwable t) {
+                listener.onFailure(t);
+            }
+        });
+    }
+
 
 
     public interface OnGetReviewListener {
         void onFinished(ReviewsResponse review);
+
+        void onFailure(Throwable t);
+    }
+
+    public interface OnGetDoctorReviewsListener {
+        void onFinished(List<ReviewsResponse> reviews);
 
         void onFailure(Throwable t);
     }
