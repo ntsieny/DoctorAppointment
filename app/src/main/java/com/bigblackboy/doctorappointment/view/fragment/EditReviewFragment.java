@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,25 +13,19 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.controller.SpringApi;
-import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Speciality;
-import com.bigblackboy.doctorappointment.pojos.springpojos.Response;
 import com.bigblackboy.doctorappointment.pojos.springpojos.Review;
+import com.bigblackboy.doctorappointment.presenter.EditReviewFragmentPresenter;
 
-import org.json.JSONObject;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-
-public class EditReviewFragment extends Fragment {
+public class EditReviewFragment extends Fragment implements MVPBaseInterface.View {
 
     private static final String LOG_TAG = "myLog: EditRevFrag";
-    private SpringApi springApi;
+    private EditReviewFragmentPresenter presenter;
     private TextView tvFioEditReview, tvHospitalEditReview;
     private RatingBar rBarEditReview;
     private EditText etEditReview;
@@ -56,19 +49,6 @@ public class EditReviewFragment extends Fragment {
         return frag;
     }
 
-    /*public static EditReviewFragment newInstance(District district, Speciality speciality, Doctor doctor, Hospital hospital, String serviceId, Review review) {
-        EditReviewFragment frag = new EditReviewFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("district", district);
-        args.putSerializable("speciality", speciality);
-        args.putSerializable("doctor", doctor);
-        args.putSerializable("hospital", hospital);
-        args.putString("service_id", serviceId);
-        args.putSerializable("review", review);
-        frag.setArguments(args);
-        return frag;
-    }*/
-
     public static EditReviewFragment newInstance(String serviceId, Review review) {
         District district = new District(String.valueOf(review.getDistrictId()), review.getDistrictName(), null);
         Speciality speciality = new Speciality(String.valueOf(review.getSpecialityId()), review.getSpecialityName());
@@ -90,7 +70,6 @@ public class EditReviewFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        springApi = SpringController.getApi();
         if(getArguments() != null) {
             if(getArguments().containsKey("district"))
                 district = (District) getArguments().getSerializable("district");
@@ -105,6 +84,8 @@ public class EditReviewFragment extends Fragment {
             if(getArguments().containsKey("review"))
                 review = (Review) getArguments().getSerializable("review");
         }
+        presenter = new EditReviewFragmentPresenter();
+        presenter.attachView(this);
     }
 
     @Nullable
@@ -120,16 +101,15 @@ public class EditReviewFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(review == null)
-                    sendReview();
-                else editReview();
+                    presenter.sendReview(getFilledData());
+                else presenter.editReview(getFilledData());
             }
         });
         btnDeleteReview = v.findViewById(R.id.btnDeleteReview);
         btnDeleteReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteReview(review.getReviewId());
-                //getActivity().getSupportFragmentManager().popBackStack();
+                presenter.deleteReview(review.getReviewId());
             }
         });
         return v;
@@ -144,101 +124,17 @@ public class EditReviewFragment extends Fragment {
             setFilledData(review);
             btnDeleteReview.setVisibility(View.VISIBLE);
         }
+        presenter.viewIsReady();
     }
 
-    private void sendReview() {
-        springApi.createReview(getFilledData()).enqueue(new Callback<Response>() {
-            @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                if (response.isSuccessful()) {
-                    if(response.body().isSuccess()) {
-                        Toast.makeText(getContext(), "Отзыв отправлен", Toast.LENGTH_SHORT).show();
-                        getActivity().getSupportFragmentManager().popBackStack();
-                    } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getContext(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
-                        Log.d(LOG_TAG, error.getString("message"));
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d(LOG_TAG, e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Response> call, Throwable t) {
-                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        });
-    }
-
-    private void editReview() {
-        springApi.updateReview(getFilledData()).enqueue(new Callback<Response>() {
-            @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                if (response.isSuccessful()) {
-                    if(response.body().isSuccess()) {
-                        Toast.makeText(getContext(), "Отзыв отредактирован", Toast.LENGTH_SHORT).show();
-                        getActivity().getSupportFragmentManager().popBackStack();
-                    } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getContext(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
-                        Log.d(LOG_TAG, error.getString("message"));
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d(LOG_TAG, e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Response> call, Throwable t) {
-                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        });
-    }
-
-    private void deleteReview(int reviewId) {
-        springApi.deleteReview(reviewId).enqueue(new Callback<Response>() {
-            @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                if (response.isSuccessful()) {
-                    if(response.body().isSuccess()) {
-                        Toast.makeText(getContext(), "Отзыв удален", Toast.LENGTH_SHORT).show();
-                        getActivity().getSupportFragmentManager().popBackStack();
-                        getActivity().getSupportFragmentManager().popBackStack();
-                    } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getContext(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
-                        Log.d(LOG_TAG, error.getString("message"));
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d(LOG_TAG, e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Response> call, Throwable t) {
-                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        });
+    public void popBackStack() {
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     private Review getFilledData() {
         Review rev = new Review();
-        if (review != null) {
+        if (review != null)
             rev.setReviewId(review.getReviewId());
-        }
         rev.setDoctorId(Integer.valueOf(doctor.getIdDoc()));
         rev.setDoctorName(doctor.getName());
         rev.setText(etEditReview.getText().toString());
@@ -258,5 +154,31 @@ public class EditReviewFragment extends Fragment {
         tvHospitalEditReview.setText(hospital.getLPUShortName());
         rBarEditReview.setRating(rev.getMark());
         etEditReview.setText(rev.getText());
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressBar() {
+
+    }
+
+    @Override
+    public void hideProgressBar() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

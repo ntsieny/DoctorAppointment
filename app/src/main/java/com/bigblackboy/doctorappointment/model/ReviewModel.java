@@ -2,6 +2,7 @@ package com.bigblackboy.doctorappointment.model;
 
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Review;
 import com.bigblackboy.doctorappointment.pojos.springpojos.ReviewsResponse;
 
 import org.json.JSONObject;
@@ -137,6 +138,81 @@ public class ReviewModel {
 
             @Override
             public void onFailure(Call<List<ReviewsResponse>> call, Throwable t) {
+                listener.onFailure(t);
+            }
+        });
+    }
+
+    public void sendReview(Review review, final OnFinishedListener listener) {
+        springApi.createReview(review).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
+            @Override
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, retrofit2.Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if(response.body().isSuccess()) {
+                        listener.onFinished();
+                    } else listener.onFailure(new Throwable("Отзыв не отправлен"));
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        listener.onFailure(new Throwable(error.getString("message")));
+                    } catch (Exception e) {
+                        listener.onFailure(new Throwable(e.getMessage()));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
+                listener.onFailure(t);
+            }
+        });
+    }
+
+    public void editReview(Review review, final OnFinishedListener listener) {
+        springApi.updateReview(review).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
+            @Override
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, retrofit2.Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if(response.body().isSuccess()) {
+                        listener.onFinished();
+                    } else listener.onFailure(new Throwable("Отзыв не отредактирован"));
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        listener.onFailure(new Throwable(error.getString("message")));
+                    } catch (Exception e) {
+                        listener.onFailure(new Throwable(e.getMessage()));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
+                listener.onFailure(t);
+            }
+        });
+    }
+
+    public void deleteReview(int reviewId, final OnFinishedListener listener) {
+        springApi.deleteReview(reviewId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
+            @Override
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, retrofit2.Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if(response.body().isSuccess()) {
+                        listener.onFinished();
+                    } else listener.onFailure(new Throwable("Отзыв не удален"));
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        listener.onFailure(new Throwable(error.getString("message")));
+                    } catch (Exception e) {
+                        listener.onFailure(new Throwable(e.getMessage()));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
                 listener.onFailure(t);
             }
         });
