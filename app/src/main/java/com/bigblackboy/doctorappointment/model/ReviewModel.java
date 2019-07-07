@@ -218,17 +218,42 @@ public class ReviewModel {
         });
     }
 
+    public void getUserReviews(String serviceId, final OnGetUserReviewsListener listener) {
+        springApi.getReviews(serviceId).enqueue(new Callback<List<Review>>() {
+            @Override
+            public void onResponse(Call<List<Review>> call, Response<List<Review>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().size() > 0) listener.onFinished(response.body());
+                    else listener.onFinished(null);
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        listener.onFailure(new Throwable(error.getString("message")));
+                    } catch (Exception e) {
+                        listener.onFailure(new Throwable(e.getMessage()));
+                    }
+                }
+            }
 
+            @Override
+            public void onFailure(Call<List<Review>> call, Throwable t) {
+                listener.onFailure(t);
+            }
+        });
+    }
 
     public interface OnGetReviewListener {
         void onFinished(ReviewsResponse review);
-
         void onFailure(Throwable t);
     }
 
     public interface OnGetDoctorReviewsListener {
         void onFinished(List<ReviewsResponse> reviews);
+        void onFailure(Throwable t);
+    }
 
+    public interface OnGetUserReviewsListener {
+        void onFinished(List<Review> reviews);
         void onFailure(Throwable t);
     }
 }
