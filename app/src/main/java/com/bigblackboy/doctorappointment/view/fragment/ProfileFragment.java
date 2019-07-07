@@ -10,19 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.view.activity.MainActivity;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
-import com.bigblackboy.doctorappointment.utils.AgeCalculator;
+import com.bigblackboy.doctorappointment.presenter.ProfileFragmentPresenter;
+import com.bigblackboy.doctorappointment.view.activity.MainActivity;
 
-import org.joda.time.LocalDate;
-
-public class ProfileFragment extends Fragment implements View.OnClickListener {
+public class ProfileFragment extends Fragment implements MVPBaseInterface.View, View.OnClickListener {
 
     private TextView tvFioProfile, tvBirthdayProfile, tvDistrictProfile, tvHospitalProfile;
     private Button btnMyAppointments, btnMyReviews, btnMyComments;
     private OnProfileFragmentDataListener mListener;
+    private Patient patient;
+    private ProfileFragmentPresenter presenter;
 
     public interface OnProfileFragmentDataListener {
         void onProfileFragmentBtnClick(View v);
@@ -31,22 +33,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public static ProfileFragment newInstance(Patient patient) {
         ProfileFragment profileFragment = new ProfileFragment();
         Bundle args = new Bundle();
-        if(patient.getName() != null)
-            args.putString("name", patient.getName());
-        if(patient.getLastName() != null)
-            args.putString("lastname", patient.getLastName());
-        if(patient.getMiddleName() != null)
-            args.putString("middlename", patient.getMiddleName());
-        if(patient.getDayBirth() > 0 && patient.getDayBirth() <= 31)
-            args.putInt("dayBirth", patient.getDayBirth());
-        if(patient.getMonthBirth() > 0 && patient.getMonthBirth() <= 12)
-            args.putInt("monthBirth", patient.getMonthBirth());
-        if(patient.getYearBirth() > 0)
-            args.putInt("yearBirth", patient.getYearBirth());
-        if(patient.getDistrict().getName() != null)
-            args.putString("districtName", patient.getDistrict().getName());
-        if(patient.getHospital().getLPUShortName() != null)
-            args.putString("hospitalNameShort", patient.getHospital().getLPUShortName());
+        args.putSerializable("patient", patient);
         profileFragment.setArguments(args);
         return profileFragment;
     }
@@ -57,6 +44,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (context instanceof OnProfileFragmentDataListener) {
             mListener = (OnProfileFragmentDataListener) context;
         } else throw new RuntimeException(context.toString() + " must implement OnProfileFragmentDataListener");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenter = new ProfileFragmentPresenter();
+        presenter.attachView(this);
     }
 
     @Nullable
@@ -74,34 +68,62 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         btnMyComments = v.findViewById(R.id.btnMyComments);
         btnMyComments.setOnClickListener(this);
 
-        if (getArguments().containsKey("name") && getArguments().containsKey("lastname")) {
-            String name = getArguments().getString("name");
-            String lastname = getArguments().getString("lastname");
-            String middlename = getArguments().getString("middlename");
-            tvFioProfile.setText(String.format("%s %s %s", lastname, name, middlename));
-        } else if (getArguments().containsKey("name") && !getArguments().containsKey("lastname")) {
-            String name = getArguments().getString("name");
-            tvFioProfile.setText(name);
-        }
-
-        if(getArguments().containsKey("dayBirth") && getArguments().containsKey("monthBirth") && getArguments().containsKey("yearBirth")) {
-            int dayBirth = getArguments().getInt("dayBirth");
-            int monthBirth = getArguments().getInt("monthBirth");
-            int yearBirth = getArguments().getInt("yearBirth");
-            String birthday = String.format("%d.%d.%d", dayBirth, monthBirth, yearBirth);
-            String ageVerbal = AgeCalculator.getAgeVerbal(new LocalDate(yearBirth, monthBirth, dayBirth), new LocalDate());
-            tvBirthdayProfile.setText(String.format("%s, %s", birthday, ageVerbal));
-        } else tvBirthdayProfile.setVisibility(View.GONE);
-
-        tvDistrictProfile.setText(getArguments().getString("districtName"));
-        tvHospitalProfile.setText(getArguments().getString("hospitalNameShort"));
+        if (getArguments() != null && getArguments().containsKey("patient"))
+            this.patient = (Patient) getArguments().getSerializable("patient");
+        presenter.setPatientInfo(patient);
         return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.viewIsReady();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         ((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.action_bar_title_my_profile);
+    }
+
+    public void setPatientFio(String fio) {
+        tvFioProfile.setText(fio);
+    }
+
+    public void setPatientBirthday(String birthday) {
+        tvBirthdayProfile.setText(birthday);
+    }
+
+    public void hideBirthdayLabel() {
+        tvBirthdayProfile.setVisibility(View.GONE);
+    }
+
+    public void setDistrict(String districtName) {
+        tvDistrictProfile.setText(districtName);
+    }
+
+    public void setHospital(String hospitalName) {
+        tvHospitalProfile.setText(hospitalName);
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressBar() {
+
+    }
+
+    @Override
+    public void hideProgressBar() {
+
     }
 
     @Override
@@ -117,5 +139,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 mListener.onProfileFragmentBtnClick(v);
                 break;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

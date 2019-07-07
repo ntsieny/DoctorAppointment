@@ -1,6 +1,8 @@
 package com.bigblackboy.doctorappointment.pojos.hospitalpojos;
 
-public class Patient {
+import java.io.Serializable;
+
+public class Patient implements Serializable {
 
     private String serviceId;
     private String name;
