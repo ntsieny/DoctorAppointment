@@ -146,6 +146,26 @@ public class UserModel {
         });
     }
 
+    public void checkLoginUnique(String login, String serviceId, final OnCheckLoginUnique listener) {
+        User user = new User();
+        user.setLogin(login);
+        user.setServiceId(serviceId);
+        springApi.checkLoginUnique(user).enqueue(new Callback<Response>() {
+            @Override
+            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                Response resp = response.body();
+                if (resp.isSuccess())
+                    listener.onFinished(true);
+                else listener.onFinished(false);
+            }
+
+            @Override
+            public void onFailure(Call<Response> call, Throwable t) {
+                listener.onFailure(t);
+            }
+        });
+    }
+
     public interface OnFinishedListener {
         void onFinished(User user);
         void onFailure(Throwable t);
@@ -153,6 +173,11 @@ public class UserModel {
 
     public interface OnCheckUserListener {
         void onFinished(Patient patient);
+        void onFailure(Throwable t);
+    }
+
+    public interface OnCheckLoginUnique {
+        void onFinished(boolean unique);
         void onFailure(Throwable t);
     }
 }

@@ -7,9 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,26 +15,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.controller.SpringApi;
-import com.bigblackboy.doctorappointment.controller.SpringController;
-import com.bigblackboy.doctorappointment.pojos.springpojos.Response;
-import com.bigblackboy.doctorappointment.pojos.springpojos.User;
+import com.bigblackboy.doctorappointment.presenter.SignUpFragmentPresenter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-
-public class SignUpFragment extends Fragment implements View.OnClickListener {
+public class SignUpFragment extends Fragment implements MVPBaseInterface.View, View.OnClickListener {
 
     private static final String LOG_TAG = "myLog: SignUpFragment";
     private EditText etLoginReg, etPasswordReg, etPasswordRepeat;
     private Button btnSignup;
     private OnSignUpFragmentDataListener mListener;
-    private SpringApi springApi;
     private TextInputLayout loginTextInputLayout;
+    private SignUpFragmentPresenter presenter;
+
+    public interface OnSignUpFragmentDataListener {
+        void onSignUpFragmentDataListener(Map<String, String> loginAndPassword);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -46,8 +43,11 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         } else throw new RuntimeException(context.toString() + " must implement onSignUpFragmentDataListener");
     }
 
-    public interface OnSignUpFragmentDataListener {
-        void onSignUpFragmentDataListener(Map<String, String> loginAndPassword);
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenter = new SignUpFragmentPresenter();
+        presenter.attachView(this);
     }
 
     @Nullable
@@ -68,58 +68,72 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             @Override
             public void afterTextChanged(Editable s) {
                 String login = etLoginReg.getText().toString();
-                if (login.length() > 6) {
-                    checkLoginUnique(login, "");
-                } else loginTextInputLayout.setError("Логин должен быть длиннее 6 символов");
-
+                presenter.checkLoginUnique(login, "");
             }
         });
         etPasswordReg = view.findViewById(R.id.etPasswordReg);
         etPasswordRepeat = view.findViewById(R.id.etPasswordRepeat);
-        springApi = SpringController.getApi();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.viewIsReady();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnSignup:
-                String login = etLoginReg.getText().toString();
-                String password = etPasswordReg.getText().toString();
-                String passwordRepeat = etPasswordRepeat.getText().toString();
-                if(!(TextUtils.isEmpty(login)) && !(TextUtils.isEmpty(password) && !(TextUtils.isEmpty(passwordRepeat)))) {
-                    if(password.equals(passwordRepeat)) {
-                        if (loginTextInputLayout.getError() == null) {
-                            // создание пользователя и передача в ActivityRegistration
-                            HashMap<String, String> hashMap = new HashMap();
-                            hashMap.put("login", etLoginReg.getText().toString());
-                            hashMap.put("password", etPasswordReg.getText().toString());
-                            mListener.onSignUpFragmentDataListener(hashMap);
-                        } else Toast.makeText(getContext(), "Придумайте другой логин", Toast.LENGTH_SHORT).show();
-                    } else Toast.makeText(getContext(), "Пароли не совпадают", Toast.LENGTH_SHORT).show();
-                } else Toast.makeText(getContext(), "Введите данные!", Toast.LENGTH_SHORT).show();
+                presenter.onBtnSignupClick();
                 break;
         }
     }
 
-    private void checkLoginUnique(String login, String serviceId) {
-        User user = new User();
-        user.setLogin(login);
-        user.setServiceId(serviceId);
-        springApi.checkLoginUnique(user).enqueue(new Callback<Response>() {
-            @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                Response resp = response.body();
-                if (resp.isSuccess())
-                    loginTextInputLayout.setError("");
-                else loginTextInputLayout.setError("Логин занят");
-            }
+    public void setInputError(String errorMessage) {
+        loginTextInputLayout.setError(errorMessage);
+    }
 
-            @Override
-            public void onFailure(Call<Response> call, Throwable t) {
-                Log.d(LOG_TAG, t.getMessage());
-                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
-            }
-        });
+    public String getLoginInput() {
+        return etLoginReg.getText().toString();
+    }
+
+    public String getPasswordInput() {
+        return etPasswordReg.getText().toString();
+    }
+
+    public String getPasswordRepeatInput() {
+        return etPasswordRepeat.getText().toString();
+    }
+
+    public void sendDataToActivity(HashMap<String, String> hashMap) {
+        mListener.onSignUpFragmentDataListener(hashMap);
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressBar() {
+
+    }
+
+    @Override
+    public void hideProgressBar() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
