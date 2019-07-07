@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,45 +14,24 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
-import com.bigblackboy.doctorappointment.controller.SpringApi;
-import com.bigblackboy.doctorappointment.controller.SpringController;
-import com.bigblackboy.doctorappointment.recyclerviewadapter.UserCommentsRecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.pojos.springpojos.MyCommentsResponse;
-
-import org.json.JSONObject;
+import com.bigblackboy.doctorappointment.presenter.UserCommentsFragmentPresenter;
+import com.bigblackboy.doctorappointment.recyclerviewadapter.UserCommentsRecyclerViewAdapter;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class UserCommentsFragment extends Fragment implements UserCommentsRecyclerViewAdapter.OnUserCommentsItemClickListener {
+public class UserCommentsFragment extends Fragment implements MVPBaseInterface.View, UserCommentsRecyclerViewAdapter.OnUserCommentsItemClickListener {
 
     private static final String LOG_TAG = "myLog: UserCommentsFrag";
-    private static SpringApi springApi;
     private UserCommentsRecyclerViewAdapter adapter;
-    private List<MyCommentsResponse> comments;
     private String serviceId;
     private RecyclerView recyclerView;
     private ProgressBar progBarUserComments;
     private TextView tvUserComments;
     private OnUserCommentsFragmentDataListener mListener;
-
-    @Override
-    public void onUserCommentsButtonClick(View v, int position) {
-        switch (v.getId()) {
-            case R.id.imBtnDeleteComment:
-                deleteComment(adapter.getItem(position).getCommentId());
-                break;
-        }
-    }
-
-    @Override
-    public void onUserCommentsItemClick(View v, int position) {
-        mListener.onUserCommentsFragmentDataListener(adapter.getItem(position).getReviewId());
-    }
+    private UserCommentsFragmentPresenter presenter;
 
     public interface OnUserCommentsFragmentDataListener {
         void onUserCommentsFragmentDataListener(int reviewId);
@@ -79,9 +57,11 @@ public class UserCommentsFragment extends Fragment implements UserCommentsRecycl
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         serviceId = getArguments().getString("service_id");
-        springApi = SpringController.getApi();
         adapter = new UserCommentsRecyclerViewAdapter(getContext(), serviceId);
         adapter.setClickListener(this);
+
+        presenter = new UserCommentsFragmentPresenter();
+        presenter.attachView(this);
     }
 
     @Nullable
@@ -96,70 +76,63 @@ public class UserCommentsFragment extends Fragment implements UserCommentsRecycl
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.viewIsReady();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        getUserComments(serviceId);
+        presenter.getUserComments(serviceId);
     }
 
-    private void getUserComments(String serviceId) {
-        springApi.getComments(serviceId).enqueue(new Callback<List<MyCommentsResponse>>() {
-            @Override
-            public void onResponse(Call<List<MyCommentsResponse>> call, Response<List<MyCommentsResponse>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().size() > 0) {
-                        tvUserComments.setText("Мои комментарии");
-                        adapter.setData(response.body());
-                        recyclerView.setAdapter(adapter);
-                        progBarUserComments.setVisibility(View.INVISIBLE);
-                    }
-                } else {
-                    try {
-                        tvUserComments.setText("Комментариев нет");
-                        progBarUserComments.setVisibility(View.INVISIBLE);
-                        JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getContext(), error.getString("message"), Toast.LENGTH_SHORT).show();
-                        Log.d(LOG_TAG, error.getString("message"));
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d(LOG_TAG, e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<MyCommentsResponse>> call, Throwable t) {
-                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
-                progBarUserComments.setVisibility(View.INVISIBLE);
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        });
+    public void setCommentsLabel(String text) {
+        tvUserComments.setText(text);
     }
 
-    private void deleteComment(int commentId) {
-        springApi.deleteComment(commentId).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
-            @Override
-            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
-                if (response.isSuccessful()) {
-                    if(response.body().isSuccess()) {
-                        Toast.makeText(getContext(), "Комментарий удален", Toast.LENGTH_SHORT).show();
-                    } else Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        JSONObject error = new JSONObject(response.errorBody().string());
-                        Toast.makeText(getContext(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
-                        Log.d(LOG_TAG, error.getString("message"));
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d(LOG_TAG, e.getMessage());
-                    }
-                }
-            }
+    public void showComments(List<MyCommentsResponse> comments) {
+        adapter.setData(comments);
+        recyclerView.setAdapter(adapter);
+    }
 
-            @Override
-            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
-                Toast.makeText(getContext(), "Ошибка соединения", Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, t.getMessage());
-            }
-        });
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressBar() {
+        progBarUserComments.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progBarUserComments.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onUserCommentsButtonClick(View v, int position) {
+        switch (v.getId()) {
+            case R.id.imBtnDeleteComment:
+                presenter.deleteComment(adapter.getItem(position).getCommentId());
+                break;
+        }
+    }
+
+    @Override
+    public void onUserCommentsItemClick(View v, int position) {
+        mListener.onUserCommentsFragmentDataListener(adapter.getItem(position).getReviewId());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

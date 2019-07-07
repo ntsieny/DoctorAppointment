@@ -4,6 +4,7 @@ import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
 import com.bigblackboy.doctorappointment.pojos.springpojos.Comment;
 import com.bigblackboy.doctorappointment.pojos.springpojos.CommentResponse;
+import com.bigblackboy.doctorappointment.pojos.springpojos.MyCommentsResponse;
 import com.bigblackboy.doctorappointment.utils.ErrorTranslator;
 
 import org.json.JSONObject;
@@ -167,8 +168,39 @@ public class CommentModel {
         });
     }
 
+    public void getUserComments(String serviceId, final OnGetUserCommentsListener listener) {
+        springApi.getComments(serviceId).enqueue(new Callback<List<MyCommentsResponse>>() {
+            @Override
+            public void onResponse(Call<List<MyCommentsResponse>> call, Response<List<MyCommentsResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().size() > 0) {
+                        listener.onFinished(response.body());
+                    } else listener.onFinished(null);
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        listener.onFailure(new Throwable(error.getString("message")));
+                    } catch (Exception e) {
+                        listener.onFailure(new Throwable(e.getMessage()));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MyCommentsResponse>> call, Throwable t) {
+                listener.onFailure(t);
+            }
+        });
+    }
+
     public interface OnFinishedListener {
         void onFinished(List<CommentResponse> comments);
+
+        void onFailure(Throwable t);
+    }
+
+    public interface OnGetUserCommentsListener {
+        void onFinished(List<MyCommentsResponse> comments);
 
         void onFailure(Throwable t);
     }
