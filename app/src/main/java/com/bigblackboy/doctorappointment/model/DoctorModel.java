@@ -1,10 +1,12 @@
 package com.bigblackboy.doctorappointment.model;
 
 import com.bigblackboy.doctorappointment.api.DoctorsApiResponse;
+import com.bigblackboy.doctorappointment.api.ScheduleApiResponse;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,8 +42,39 @@ public class DoctorModel {
         });
     }
 
+    public void getSchedule(String doctorId, String hospitalId, String patientId, String historyId, String appointmentType, final OnGetScheduleListener listener) {
+        hospitalApi.getSchedule(doctorId, hospitalId, "", "", "").enqueue(new Callback<ScheduleApiResponse>() {
+            @Override
+            public void onResponse(Call<ScheduleApiResponse> call, Response<ScheduleApiResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getResponse().size() == 1) {
+                        listener.onFinished(response.body().getResponse().get(0));
+                    } else {
+                        List<ScheduleApiResponse.MResponse> schedule = new ArrayList();
+                        schedule.addAll(response.body().getResponse().get(0));
+                        for (int i = 1; i < response.body().getResponse().size(); i++) {
+                            schedule.addAll(response.body().getResponse().get(i));
+                        }
+                        listener.onFinished(schedule);
+                    }
+                } else listener.onFailure(new Throwable(response.body().getError().getErrorDescription()));
+            }
+
+            @Override
+            public void onFailure(Call<ScheduleApiResponse> call, Throwable t) {
+                listener.onFailure(t);
+            }
+        });
+    }
+
     public interface OnFinishedListener {
         void onFinished(List<Doctor> doctors);
+
+        void onFailure(Throwable t);
+    }
+
+    public interface OnGetScheduleListener {
+        void onFinished(List<ScheduleApiResponse.MResponse> schedule);
 
         void onFailure(Throwable t);
     }
