@@ -14,14 +14,15 @@ import android.widget.TextView;
 
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.model.SharedPreferencesManager;
+import com.bigblackboy.doctorappointment.presenter.ReviewMainFragmentPresenter;
 
 public class ReviewMainFragment extends Fragment implements View.OnClickListener {
 
-    TextView tvHospitalReviewMain;
-    Button btnMyDoctorReviewMain, btnChangeHospitalReviewMain;
-    SharedPreferences mSettings;
-    SharedPreferencesManager prefManager;
-    OnReviewMainFragmentDataListener mListener;
+    private TextView tvHospitalReviewMain;
+    private Button btnMyDoctorReviewMain, btnChangeHospitalReviewMain;
+    private SharedPreferences mSettings;
+    private OnReviewMainFragmentDataListener mListener;
+    private ReviewMainFragmentPresenter presenter;
 
     public interface OnReviewMainFragmentDataListener {
         void onReviewMainFragmentBtnClick(View v);
@@ -35,21 +36,34 @@ public class ReviewMainFragment extends Fragment implements View.OnClickListener
         } else throw new RuntimeException(context.toString() + " must implement OnReviewMainFragmentDataListener");
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mSettings = getActivity().getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE);
+        presenter = new ReviewMainFragmentPresenter(mSettings);
+        presenter.attachView(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mSettings = this.getActivity().getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE);
-        prefManager = new SharedPreferencesManager(mSettings);
-
         View v = inflater.inflate(R.layout.fragment_review_main, container, false);
         tvHospitalReviewMain = v.findViewById(R.id.tvHospitalReviewMain);
-        tvHospitalReviewMain.setText(prefManager.getCurrentHospital().getLPUShortName() + ", " + prefManager.getCurrentDistrict().getName());
-
         btnMyDoctorReviewMain = v.findViewById(R.id.btnMyDoctorReviewMain);
         btnMyDoctorReviewMain.setOnClickListener(this);
         btnChangeHospitalReviewMain = v.findViewById(R.id.btnChangeHospitalReviewMain);
         btnChangeHospitalReviewMain.setOnClickListener(this);
         return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.viewIsReady();
+    }
+
+    public void setHospitalAddress(String address) {
+        tvHospitalReviewMain.setText(address);
     }
 
     @Override
@@ -62,5 +76,11 @@ public class ReviewMainFragment extends Fragment implements View.OnClickListener
                 mListener.onReviewMainFragmentBtnClick(v);
                 break;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
