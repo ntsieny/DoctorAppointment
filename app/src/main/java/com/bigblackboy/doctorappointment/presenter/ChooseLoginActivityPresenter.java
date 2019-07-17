@@ -29,7 +29,7 @@ public class ChooseLoginActivityPresenter {
     }
 
     public void loginAsGuest() {
-        model.editSharedPrefsUserLoggedIn(false);
+        model.setUserLoggedIn(false);
         view.showMainActivity();
     }
 }

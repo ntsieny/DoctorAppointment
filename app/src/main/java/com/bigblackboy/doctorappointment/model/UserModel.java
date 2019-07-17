@@ -9,6 +9,8 @@ import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
 import com.bigblackboy.doctorappointment.controller.SpringApi;
 import com.bigblackboy.doctorappointment.controller.SpringController;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
 import com.bigblackboy.doctorappointment.pojos.springpojos.Response;
 import com.bigblackboy.doctorappointment.pojos.springpojos.User;
@@ -37,6 +39,7 @@ public class UserModel {
 
     private static final String LOG_TAG = "myLog: UserModel";
     private SharedPreferences mSettings;
+    private SharedPreferencesManager prefManager;
     private SharedPreferences.Editor editor;
     private SpringApi springApi;
     private HospitalApi hospitalApi;
@@ -48,13 +51,38 @@ public class UserModel {
 
     public UserModel(SharedPreferences mSettings) {
         this.mSettings = mSettings;
+        prefManager = new SharedPreferencesManager(mSettings);
         springApi = SpringController.getApi();
         hospitalApi = HospitalController.getApi();
     }
 
-    public void editSharedPrefsUserLoggedIn(boolean value) {
+    public void setUserLoggedIn(boolean value) {
         editor = mSettings.edit();
         editor.putBoolean(APP_SETTINGS_USER_LOGGED_IN, value).apply();
+    }
+
+    public boolean isUserLoggedIn() {
+        return prefManager.isUserLoggedIn();
+    }
+
+    public boolean isGuestMode() {
+        return prefManager.isGuestMode();
+    }
+
+    public void setGuestMode(boolean value) {
+        prefManager.setGuestMode(value);
+    }
+
+    public void setDistrict(District district) {
+        prefManager.setCurrentDistrict(district);
+    }
+
+    public void setHospital(Hospital hospital) {
+        prefManager.setCurrentHospital(hospital);
+    }
+
+    public void clearSettings() {
+        prefManager.clearSettings();
     }
 
     private void writeSharedPreferences(User user) {
@@ -84,7 +112,7 @@ public class UserModel {
                 User user = response.body();
                 if (response.isSuccessful() && user != null) {
                     writeSharedPreferences(user);
-                    editSharedPrefsUserLoggedIn(true);
+                    setUserLoggedIn(true);
                     onFinishedListener.onFinished(user);
                 } else onFinishedListener.onFailure(new Throwable(MyApplication.getAppContext().getResources().getString(R.string.user_not_found)));
             }
@@ -104,7 +132,7 @@ public class UserModel {
                 if (response.isSuccessful()) {
                     if (resp.isSuccess()) {
                         writeSharedPreferences(user);
-                        editSharedPrefsUserLoggedIn(true);
+                        setUserLoggedIn(true);
                         onFinishedListener.onFinished(user);
                     } else onFinishedListener.onFailure(new Throwable(MyApplication.getAppContext().getResources().getString(R.string.user_not_created)));
                 } else {

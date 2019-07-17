@@ -97,6 +97,13 @@ public class SharedPreferencesManager {
         return district;
     }
 
+    public void setCurrentDistrict(District district) {
+        editor = mSettings.edit();
+        editor.putString(APP_SETTINGS_DISTRICT_ID, district.getId());
+        editor.putString(APP_SETTINGS_DISTRICT_NAME, district.getName());
+        editor.apply();
+    }
+
     public Hospital getCurrentHospital() {
         int hospitalId = mSettings.getInt(APP_SETTINGS_HOSPITAL_ID, -1);
         String hospitalNameShort = mSettings.getString(APP_SETTINGS_HOSPITAL_NAME_SHORT, null);
@@ -106,5 +113,18 @@ public class SharedPreferencesManager {
         hospital.setLPUShortName(hospitalNameShort);
         hospital.setLpuName(hospitalNameFull);
         return hospital;
+    }
+
+    public void setCurrentHospital(Hospital hospital) {
+        editor = mSettings.edit();
+        editor.putInt(APP_SETTINGS_HOSPITAL_ID, hospital.getIdLPU());
+        editor.putString(APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
+        editor.putString(APP_SETTINGS_HOSPITAL_NAME_FULL, hospital.getLpuName());
+        editor.apply();
+    }
+
+    public void clearSettings() {
+        editor = mSettings.edit();
+        editor.clear().apply();
     }
 }

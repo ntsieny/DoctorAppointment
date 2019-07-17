@@ -15,9 +15,18 @@ public class SpecialityModel {
 
     private List<Speciality> specialities;
     private HospitalApi hospitalApi;
+    private Speciality chosenSpeciality;
 
     public SpecialityModel() {
         hospitalApi = HospitalController.getApi();
+    }
+
+    public Speciality getChosenSpeciality() {
+        return chosenSpeciality;
+    }
+
+    public void setChosenSpeciality(Speciality chosenSpeciality) {
+        this.chosenSpeciality = chosenSpeciality;
     }
 
     public void getSpecialities(String hospitalId, String historyId, String patientAriaNumber, String patientId, final OnFinishedListener onFinishedListener) {

@@ -1,5 +1,7 @@
 package com.bigblackboy.doctorappointment.model;
 
+import android.content.SharedPreferences;
+
 import com.bigblackboy.doctorappointment.api.AppointmentListApiResponse;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
 import com.bigblackboy.doctorappointment.controller.HospitalController;
@@ -22,8 +24,17 @@ public class AppointmentModel {
 
     private SpringApi springApi;
     private HospitalApi hospitalApi;
+    private SharedPreferences mSettings;
+    private SharedPreferencesManager prefManager;
 
     public AppointmentModel() {
+        springApi = SpringController.getApi();
+        hospitalApi = HospitalController.getApi();
+    }
+
+    public AppointmentModel(SharedPreferences prefs) {
+        this.mSettings = prefs;
+        prefManager = new SharedPreferencesManager(mSettings);
         springApi = SpringController.getApi();
         hospitalApi = HospitalController.getApi();
     }
@@ -110,13 +121,38 @@ public class AppointmentModel {
         });
     }
 
+    public void createAppointment(Appointment app, final com.bigblackboy.doctorappointment.model.OnFinishedListener listener) {
+        springApi.createAppointment(app).enqueue(new Callback<com.bigblackboy.doctorappointment.pojos.springpojos.Response>() {
+            @Override
+            public void onResponse(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, retrofit2.Response<com.bigblackboy.doctorappointment.pojos.springpojos.Response> response) {
+                com.bigblackboy.doctorappointment.pojos.springpojos.Response resp = response.body();
+                if (response.isSuccessful()) {
+                    if (resp != null && resp.isSuccess()) listener.onFinished();
+                    else listener.onFailure(new Throwable("Запись не сделана"));
+                } else {
+                    try {
+                        JSONObject error = new JSONObject(response.errorBody().string());
+                        listener.onFailure(new Throwable(error.getString("message")));
+                    } catch (Exception e) {
+                        listener.onFailure(new Throwable(e.getMessage()));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.bigblackboy.doctorappointment.pojos.springpojos.Response> call, Throwable t) {
+                listener.onFailure(t);
+            }
+        });
+    }
+
     public interface OnFinishedListener {
         void onFinished(List<Appointment> appointments);
 
         void onFailure(Throwable t);
     }
 
-    // TODO как обобщить интерфейсы?
+    // TODO как обобщить интерфейсы
     public interface AppointmentDatesListener {
         void onFinished(List<AppointmentInfo> appointmentDates);
 

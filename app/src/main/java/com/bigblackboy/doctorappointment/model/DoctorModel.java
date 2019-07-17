@@ -17,9 +17,18 @@ public class DoctorModel {
 
     private HospitalApi hospitalApi;
     private List<Doctor> doctors;
+    private Doctor chosenDoctor;
 
     public DoctorModel() {
         hospitalApi = HospitalController.getApi();
+    }
+
+    public Doctor getChosenDoctor() {
+        return chosenDoctor;
+    }
+
+    public void setChosenDoctor(Doctor chosenDoctor) {
+        this.chosenDoctor = chosenDoctor;
     }
 
     public void getDoctors(String specialityId, String hospitalId, String patientId, String historyId, final OnFinishedListener onFinishedListener) {
