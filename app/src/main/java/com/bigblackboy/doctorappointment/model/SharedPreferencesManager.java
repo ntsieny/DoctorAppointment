@@ -3,8 +3,10 @@ package com.bigblackboy.doctorappointment.model;
 import android.content.SharedPreferences;
 
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Speciality;
 
 public class SharedPreferencesManager {
 
@@ -23,10 +25,12 @@ public class SharedPreferencesManager {
     public static final String APP_SETTINGS_PATIENT_DAYBIRTH = "patient_daybirth";
     public static final String APP_SETTINGS_PATIENT_MONTHBIRTH = "patient_monthbirth";
     public static final String APP_SETTINGS_PATIENT_YEARBIRTH = "patient_yearbirth";
+    public static final String APP_SETTINGS_DOCTOR_ID = "doctor_id";
+    public static final String APP_SETTINGS_DOCTOR_NAME = "doctor_name";
+    public static final String APP_SETTINGS_SPECIALITY_ID = "speciality_id";
+    public static final String APP_SETTINGS_SPECIALITY_NAME = "speciality_name";
     private SharedPreferences mSettings;
     private SharedPreferences.Editor editor;
-    private boolean userLoggedIn;
-    private boolean guestMode;
 
     public SharedPreferencesManager(SharedPreferences mSettings) {
         this.mSettings = mSettings;
@@ -121,6 +125,32 @@ public class SharedPreferencesManager {
         editor.putString(APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
         editor.putString(APP_SETTINGS_HOSPITAL_NAME_FULL, hospital.getLpuName());
         editor.apply();
+    }
+
+    public void setCurrentDoctor(Doctor doctor) {
+        editor = mSettings.edit();
+        editor.putString(APP_SETTINGS_DOCTOR_ID, doctor.getIdDoc());
+        editor.putString(APP_SETTINGS_DOCTOR_NAME, doctor.getName());
+        editor.apply();
+    }
+
+    public Doctor getCurrentDoctor() {
+        String id = mSettings.getString(APP_SETTINGS_DOCTOR_ID, null);
+        String name = mSettings.getString(APP_SETTINGS_DOCTOR_NAME, null);
+        return new Doctor(id, name);
+    }
+
+    public void setCurrentSpeciality(Speciality speciality) {
+        editor = mSettings.edit();
+        editor.putString(APP_SETTINGS_SPECIALITY_ID, speciality.getIdSpeciality());
+        editor.putString(APP_SETTINGS_SPECIALITY_NAME, speciality.getNameSpeciality());
+        editor.apply();
+    }
+
+    public Speciality getCurrentSpeciality() {
+        String id = mSettings.getString(APP_SETTINGS_SPECIALITY_ID, null);
+        String name = mSettings.getString(APP_SETTINGS_SPECIALITY_NAME, null);
+        return new Speciality(id, name);
     }
 
     public void clearSettings() {

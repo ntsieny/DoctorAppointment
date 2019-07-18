@@ -1,5 +1,7 @@
 package com.bigblackboy.doctorappointment.model;
 
+import android.content.SharedPreferences;
+
 import com.bigblackboy.doctorappointment.api.DoctorsApiResponse;
 import com.bigblackboy.doctorappointment.api.ScheduleApiResponse;
 import com.bigblackboy.doctorappointment.controller.HospitalApi;
@@ -17,18 +19,25 @@ public class DoctorModel {
 
     private HospitalApi hospitalApi;
     private List<Doctor> doctors;
-    private Doctor chosenDoctor;
+    private SharedPreferences mSettings;
+    private SharedPreferencesManager prefManager;
 
     public DoctorModel() {
         hospitalApi = HospitalController.getApi();
     }
 
+    public DoctorModel(SharedPreferences prefs) {
+        hospitalApi = HospitalController.getApi();
+        mSettings = prefs;
+        prefManager = new SharedPreferencesManager(mSettings);
+    }
+
     public Doctor getChosenDoctor() {
-        return chosenDoctor;
+        return prefManager.getCurrentDoctor();
     }
 
     public void setChosenDoctor(Doctor chosenDoctor) {
-        this.chosenDoctor = chosenDoctor;
+        prefManager.setCurrentDoctor(chosenDoctor);
     }
 
     public void getDoctors(String specialityId, String hospitalId, String patientId, String historyId, final OnFinishedListener onFinishedListener) {

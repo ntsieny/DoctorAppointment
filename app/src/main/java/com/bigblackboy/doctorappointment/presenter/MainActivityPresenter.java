@@ -28,13 +28,12 @@ public class MainActivityPresenter {
     private SpecialityModel specialityModel;
     private DoctorModel doctorModel;
 
-
     public MainActivityPresenter(SharedPreferences prefs) {
         appointmentModel = new AppointmentModel(prefs);
         patientModel = new PatientModel(prefs);
         userModel = new UserModel(prefs);
-        specialityModel = new SpecialityModel();
-        doctorModel = new DoctorModel();
+        specialityModel = new SpecialityModel(prefs);
+        doctorModel = new DoctorModel(prefs);
     }
 
     public void attachView(MainActivity view) {
