@@ -57,8 +57,7 @@ public class UserModel {
     }
 
     public void setUserLoggedIn(boolean value) {
-        editor = mSettings.edit();
-        editor.putBoolean(APP_SETTINGS_USER_LOGGED_IN, value).apply();
+        prefManager.setUserLoggedIn(value);
     }
 
     public boolean isUserLoggedIn() {
