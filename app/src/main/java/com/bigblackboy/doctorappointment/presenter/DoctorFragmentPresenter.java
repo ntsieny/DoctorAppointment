@@ -1,7 +1,10 @@
 package com.bigblackboy.doctorappointment.presenter;
 
+import android.content.SharedPreferences;
+
 import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.model.DoctorModel;
+import com.bigblackboy.doctorappointment.model.SpecialityModel;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
 import com.bigblackboy.doctorappointment.view.fragment.DoctorFragment;
 
@@ -9,11 +12,13 @@ import java.util.List;
 
 public class DoctorFragmentPresenter implements MVPBaseInterface.Presenter {
 
-    private DoctorModel model;
+    private DoctorModel doctorModel;
+    private SpecialityModel specialityModel;
     private MVPBaseInterface.View view;
 
-    public DoctorFragmentPresenter() {
-        model = new DoctorModel();
+    public DoctorFragmentPresenter(SharedPreferences prefs) {
+        doctorModel = new DoctorModel();
+        specialityModel = new SpecialityModel(prefs);
     }
 
     @Override
@@ -32,7 +37,7 @@ public class DoctorFragmentPresenter implements MVPBaseInterface.Presenter {
     }
 
     public void getDoctors(String specialityId, String hospitalId, String patientId, String historyId) {
-        model.getDoctors(specialityId, hospitalId, patientId, historyId, new DoctorModel.OnFinishedListener() {
+        doctorModel.getDoctors(specialityId, hospitalId, patientId, historyId, new DoctorModel.OnFinishedListener() {
             @Override
             public void onFinished(List<Doctor> doctors) {
                 ((DoctorFragment) view).showDoctors(doctors);
@@ -45,5 +50,9 @@ public class DoctorFragmentPresenter implements MVPBaseInterface.Presenter {
                 view.showToast(t.getMessage());
             }
         });
+    }
+
+    public void onDoctorReviewsPopupItemClick(Doctor doctor) {
+        ((DoctorFragment) view).startReviewActivity(doctor, specialityModel.getChosenSpeciality());
     }
 }

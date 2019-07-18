@@ -2,6 +2,7 @@ package com.bigblackboy.doctorappointment.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,8 +19,12 @@ import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
+import com.bigblackboy.doctorappointment.model.SharedPreferencesManager;
+import com.bigblackboy.doctorappointment.model.SpecialityModel;
 import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Speciality;
 import com.bigblackboy.doctorappointment.presenter.DoctorFragmentPresenter;
+import com.bigblackboy.doctorappointment.presenter.MainActivityPresenter;
 import com.bigblackboy.doctorappointment.recyclerviewadapter.DoctorRecyclerViewAdapter;
 import com.bigblackboy.doctorappointment.view.activity.MainActivity;
 import com.bigblackboy.doctorappointment.view.activity.ReviewActivity;
@@ -40,17 +45,21 @@ public class DoctorFragment extends Fragment implements MVPBaseInterface.View, D
     public void onDoctorPopupMenuItemClick(MenuItem item, int position) {
         switch (item.getItemId()) {
             case R.id.doctorReviewsPopupItem:
-                Intent reviewsIntent = new Intent(getContext(), ReviewActivity.class);
-                Bundle args = new Bundle();
-                args.putInt("fragToLoad", ReviewActivity.FRAGMENT_DOCTOR_REVIEWS);
-                args.putString("doctorId", adapter.getItem(position).getIdDoc());
-                args.putString("doctorName", adapter.getItem(position).getName());
-                args.putString("specialityId", ((MainActivity)getActivity()).getSpeciality().getIdSpeciality());
-                args.putString("specialityName", ((MainActivity)getActivity()).getSpeciality().getNameSpeciality());
-                reviewsIntent.putExtras(args);
-                startActivity(reviewsIntent);
+                presenter.onDoctorReviewsPopupItemClick(adapter.getItem(position));
                 break;
         }
+    }
+
+    public void startReviewActivity(Doctor doctor, Speciality speciality) {
+        Intent reviewsIntent = new Intent(getContext(), ReviewActivity.class);
+        Bundle args = new Bundle();
+        args.putInt("fragToLoad", ReviewActivity.FRAGMENT_DOCTOR_REVIEWS);
+        args.putString("doctorId", doctor.getIdDoc());
+        args.putString("doctorName", doctor.getName());
+        args.putString("specialityId", speciality.getIdSpeciality());
+        args.putString("specialityName", speciality.getNameSpeciality());
+        reviewsIntent.putExtras(args);
+        startActivity(reviewsIntent);
     }
 
     @Override
@@ -90,7 +99,8 @@ public class DoctorFragment extends Fragment implements MVPBaseInterface.View, D
         adapter = new DoctorRecyclerViewAdapter(getContext());
         adapter.setClickListener(this);
 
-        presenter = new DoctorFragmentPresenter();
+        SharedPreferences mSettings = getActivity().getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE);
+        presenter = new DoctorFragmentPresenter(mSettings);
         presenter.attachView(this);
     }
 
