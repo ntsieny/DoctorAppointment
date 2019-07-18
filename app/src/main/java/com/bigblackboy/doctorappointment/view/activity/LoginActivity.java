@@ -23,7 +23,6 @@ public class LoginActivity extends AppCompatActivity implements MVPBaseInterface
     private static final String LOG_TAG = "myLog: LoginActivity";
     private EditText etLogin, etPassword;
     private Button btnLogin;
-    private SharedPreferences mSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +34,8 @@ public class LoginActivity extends AppCompatActivity implements MVPBaseInterface
         etLogin = findViewById(R.id.etLogin);
         etPassword = findViewById(R.id.etPassword);
 
-        mSettings = getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
-
-        UserModel userModel = new UserModel(mSettings);
-        presenter = new LoginActivityPresenter(userModel);
+        SharedPreferences mSettings = getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
+        presenter = new LoginActivityPresenter(mSettings);
         presenter.attachView(this);
     }
 

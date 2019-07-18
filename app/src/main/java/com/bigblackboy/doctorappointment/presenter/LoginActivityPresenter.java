@@ -1,5 +1,6 @@
 package com.bigblackboy.doctorappointment.presenter;
 
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.bigblackboy.doctorappointment.R;
@@ -12,8 +13,8 @@ public class LoginActivityPresenter {
     private LoginActivity view;
     private UserModel model;
 
-    public LoginActivityPresenter(UserModel model) {
-        this.model = model;
+    public LoginActivityPresenter(SharedPreferences prefs) {
+        model = new UserModel(prefs);
     }
 
     public void attachView(LoginActivity activity) {
