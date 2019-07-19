@@ -33,7 +33,6 @@ import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.A
 import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_PATIENT_MONTHBIRTH;
 import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_PATIENT_NAME;
 import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_PATIENT_YEARBIRTH;
-import static com.bigblackboy.doctorappointment.model.SharedPreferencesManager.APP_SETTINGS_USER_LOGGED_IN;
 
 public class UserModel {
 
@@ -43,10 +42,12 @@ public class UserModel {
     private SharedPreferences.Editor editor;
     private SpringApi springApi;
     private HospitalApi hospitalApi;
+    private User user;
 
     public UserModel() {
         springApi = SpringController.getApi();
         hospitalApi = HospitalController.getApi();
+        user = new User();
     }
 
     public UserModel(SharedPreferences mSettings) {
@@ -54,6 +55,15 @@ public class UserModel {
         prefManager = new SharedPreferencesManager(mSettings);
         springApi = SpringController.getApi();
         hospitalApi = HospitalController.getApi();
+        user = new User();
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public void setUserLoggedIn(boolean value) {
@@ -73,11 +83,28 @@ public class UserModel {
     }
 
     public void setDistrict(District district) {
+        user.setDistrictId(Integer.valueOf(district.getId()));
+        user.setDistrictName(district.getName());
         prefManager.setCurrentDistrict(district);
     }
 
+    public District getDistrict() {
+        return prefManager.getCurrentDistrict();
+    }
+
     public void setHospital(Hospital hospital) {
+        user.setHospitalId(hospital.getIdLPU());
+        user.setLpuNameShort(hospital.getLPUShortName());
+        user.setLpuNameFull(hospital.getLpuName());
+        user.setLpuAddress(hospital.getFullAddress());
+        user.setLpuEmail(hospital.getEmail());
+        user.setLpuType(hospital.getLpuType());
+        user.setLpuWorkTime(hospital.getWorkTime());
         prefManager.setCurrentHospital(hospital);
+    }
+
+    public Hospital getHospital() {
+        return prefManager.getCurrentHospital();
     }
 
     public void clearSettings() {

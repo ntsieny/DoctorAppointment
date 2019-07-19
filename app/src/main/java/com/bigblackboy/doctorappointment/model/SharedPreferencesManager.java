@@ -18,6 +18,10 @@ public class SharedPreferencesManager {
     public static final String APP_SETTINGS_HOSPITAL_ID = "hospital_id";
     public static final String APP_SETTINGS_HOSPITAL_NAME_SHORT = "hospital_name_short";
     public static final String APP_SETTINGS_HOSPITAL_NAME_FULL = "hospital_name_full";
+    public static final String APP_SETTINGS_HOSPITAL_ADDRESS = "hospital_address";
+    public static final String APP_SETTINGS_HOSPITAL_EMAIL = "hospital_email";
+    public static final String APP_SETTINGS_HOSPITAL_TYPE = "hospital_type";
+    public static final String APP_SETTINGS_HOSPITAL_WORKTIME = "hospital_worktime";
     public static final String APP_SETTINGS_PATIENT_ID = "patient_id";
     public static final String APP_SETTINGS_PATIENT_NAME = "patient_name";
     public static final String APP_SETTINGS_PATIENT_LASTNAME = "patient_lastname";
@@ -109,13 +113,21 @@ public class SharedPreferencesManager {
     }
 
     public Hospital getCurrentHospital() {
-        int hospitalId = mSettings.getInt(APP_SETTINGS_HOSPITAL_ID, -1);
-        String hospitalNameShort = mSettings.getString(APP_SETTINGS_HOSPITAL_NAME_SHORT, null);
-        String hospitalNameFull = mSettings.getString(APP_SETTINGS_HOSPITAL_NAME_FULL, null);
+        int id = mSettings.getInt(APP_SETTINGS_HOSPITAL_ID, -1);
+        String nameShort = mSettings.getString(APP_SETTINGS_HOSPITAL_NAME_SHORT, null);
+        String nameFull = mSettings.getString(APP_SETTINGS_HOSPITAL_NAME_FULL, null);
+        String address = mSettings.getString(APP_SETTINGS_HOSPITAL_ADDRESS, null);
+        String email = mSettings.getString(APP_SETTINGS_HOSPITAL_EMAIL, null);
+        String type = mSettings.getString(APP_SETTINGS_HOSPITAL_TYPE, null);
+        String worktime = mSettings.getString(APP_SETTINGS_HOSPITAL_WORKTIME, null);
         Hospital hospital = new Hospital();
-        hospital.setIdLPU(hospitalId);
-        hospital.setLPUShortName(hospitalNameShort);
-        hospital.setLpuName(hospitalNameFull);
+        hospital.setIdLPU(id);
+        hospital.setLPUShortName(nameShort);
+        hospital.setLpuName(nameFull);
+        hospital.setFullAddress(address);
+        hospital.setEmail(email);
+        hospital.setLpuType(type);
+        hospital.setWorkTime(worktime);
         return hospital;
     }
 
@@ -124,6 +136,10 @@ public class SharedPreferencesManager {
         editor.putInt(APP_SETTINGS_HOSPITAL_ID, hospital.getIdLPU());
         editor.putString(APP_SETTINGS_HOSPITAL_NAME_SHORT, hospital.getLPUShortName());
         editor.putString(APP_SETTINGS_HOSPITAL_NAME_FULL, hospital.getLpuName());
+        editor.putString(APP_SETTINGS_HOSPITAL_ADDRESS, hospital.getFullAddress());
+        editor.putString(APP_SETTINGS_HOSPITAL_EMAIL, hospital.getEmail());
+        editor.putString(APP_SETTINGS_HOSPITAL_TYPE, hospital.getLpuType());
+        editor.putString(APP_SETTINGS_HOSPITAL_WORKTIME, hospital.getWorkTime());
         editor.apply();
     }
 
