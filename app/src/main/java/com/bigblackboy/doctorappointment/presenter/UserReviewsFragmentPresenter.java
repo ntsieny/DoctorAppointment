@@ -41,6 +41,7 @@ public class UserReviewsFragmentPresenter {
 
             @Override
             public void onFailure(Throwable t) {
+                view.hideProgressBar();
                 view.showToast(t.getMessage());
             }
         });
