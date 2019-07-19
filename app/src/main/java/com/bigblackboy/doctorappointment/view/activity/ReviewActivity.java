@@ -2,16 +2,22 @@ package com.bigblackboy.doctorappointment.view.activity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.model.SharedPreferencesManager;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
+import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Speciality;
+import com.bigblackboy.doctorappointment.pojos.springpojos.Review;
+import com.bigblackboy.doctorappointment.pojos.springpojos.ReviewsResponse;
 import com.bigblackboy.doctorappointment.presenter.ReviewActivityPresenter;
 import com.bigblackboy.doctorappointment.view.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.view.fragment.DoctorFragment;
@@ -23,13 +29,6 @@ import com.bigblackboy.doctorappointment.view.fragment.ReviewMainFragment;
 import com.bigblackboy.doctorappointment.view.fragment.SpecialityFragment;
 import com.bigblackboy.doctorappointment.view.fragment.UserCommentsFragment;
 import com.bigblackboy.doctorappointment.view.fragment.UserReviewsFragment;
-import com.bigblackboy.doctorappointment.pojos.hospitalpojos.District;
-import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Doctor;
-import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Hospital;
-import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Patient;
-import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Speciality;
-import com.bigblackboy.doctorappointment.pojos.springpojos.Review;
-import com.bigblackboy.doctorappointment.pojos.springpojos.ReviewsResponse;
 
 public class ReviewActivity extends AppCompatActivity implements MVPBaseInterface.View, DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
         DoctorReviewsFragment.OnDoctorReviewsFragmentDataListener, DoctorReviewDetailedFragment.OnDoctorReviewDetailedFragmentDataListener, ReviewMainFragment.OnReviewMainFragmentDataListener,
@@ -133,11 +132,6 @@ public class ReviewActivity extends AppCompatActivity implements MVPBaseInterfac
         EditReviewFragment editReviewFragment = EditReviewFragment.newInstance(patientServiceId, review);
         fm.beginTransaction().replace(R.id.fragContainerReview, editReviewFragment).addToBackStack("doctor_reviews_fragment").commit();
     }
-
-    /*public void replaceToDoctorReviewsFragment() {
-        DoctorReviewsFragment fragment = DoctorReviewsFragment.newInstance(doctor.getIdDoc(), doctor.getName(), prefManager.getCurrentPatient().getServiceId());
-        fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("doctor_fragment").commit();
-    }*/
 
     public void replaceToDoctorReviewsFragment(String doctorId, String doctorName, String patientServiceId) {
         DoctorReviewsFragment fragment = DoctorReviewsFragment.newInstance(doctorId, doctorName, patientServiceId);
