@@ -21,6 +21,7 @@ public class DoctorModel {
     private List<Doctor> doctors;
     private SharedPreferences mSettings;
     private SharedPreferencesManager prefManager;
+    private Doctor doctor;
 
     public DoctorModel() {
         hospitalApi = HospitalController.getApi();
@@ -32,12 +33,20 @@ public class DoctorModel {
         prefManager = new SharedPreferencesManager(mSettings);
     }
 
-    public Doctor getChosenDoctor() {
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    public Doctor getSavedDoctor() {
         return prefManager.getCurrentDoctor();
     }
 
-    public void setChosenDoctor(Doctor chosenDoctor) {
-        prefManager.setCurrentDoctor(chosenDoctor);
+    public void saveDoctor(Doctor doctor) {
+        prefManager.setCurrentDoctor(doctor);
     }
 
     public void getDoctors(String specialityId, String hospitalId, String patientId, String historyId, final OnFinishedListener onFinishedListener) {

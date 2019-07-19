@@ -129,13 +129,13 @@ public class MainActivityPresenter {
     }
 
     public void onGetSpecialityFragmentData(Speciality speciality) {
-        specialityModel.setChosenSpeciality(speciality);
+        specialityModel.saveSpeciality(speciality);
         Patient patient = patientModel.getCurrentPatient();
         view.replaceToDoctorFragment(String.valueOf(patient.getHospital().getIdLPU()), patient.getServiceId(), speciality.getIdSpeciality());
     }
 
     public void onGetDoctorFragmentData(Doctor doctor) {
-        doctorModel.setChosenDoctor(doctor);
+        doctorModel.saveDoctor(doctor);
         Patient patient = patientModel.getCurrentPatient();
         view.replaceToChooseAppointmentFragment(doctor.getIdDoc(), String.valueOf(patient.getHospital().getIdLPU()), patient.getServiceId());
     }
@@ -152,10 +152,10 @@ public class MainActivityPresenter {
         app.setLpuId(patient.getHospital().getIdLPU());
         app.setLpuNameShort(patient.getHospital().getLPUShortName());
         app.setLpuNameFull(patient.getHospital().getLpuName());
-        app.setSpecId(Integer.valueOf(specialityModel.getChosenSpeciality().getIdSpeciality()));
-        app.setSpecName(specialityModel.getChosenSpeciality().getNameSpeciality());
-        app.setDocId(Integer.valueOf(doctorModel.getChosenDoctor().getIdDoc()));
-        app.setDocName(doctorModel.getChosenDoctor().getName());
+        app.setSpecId(Integer.valueOf(specialityModel.getSavedSpeciality().getIdSpeciality()));
+        app.setSpecName(specialityModel.getSavedSpeciality().getNameSpeciality());
+        app.setDocId(Integer.valueOf(doctorModel.getSavedDoctor().getIdDoc()));
+        app.setDocName(doctorModel.getSavedDoctor().getName());
         app.setDateTime(appInfo.getDateStart().getDateTime());
 
         view.popBackStack();

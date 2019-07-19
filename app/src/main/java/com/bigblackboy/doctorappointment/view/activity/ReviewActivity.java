@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bigblackboy.doctorappointment.MVPBaseInterface;
 import com.bigblackboy.doctorappointment.R;
 import com.bigblackboy.doctorappointment.model.SharedPreferencesManager;
+import com.bigblackboy.doctorappointment.presenter.ReviewActivityPresenter;
 import com.bigblackboy.doctorappointment.view.fragment.DistrictFragment;
 import com.bigblackboy.doctorappointment.view.fragment.DoctorFragment;
 import com.bigblackboy.doctorappointment.view.fragment.DoctorReviewDetailedFragment;
@@ -29,7 +31,7 @@ import com.bigblackboy.doctorappointment.pojos.hospitalpojos.Speciality;
 import com.bigblackboy.doctorappointment.pojos.springpojos.Review;
 import com.bigblackboy.doctorappointment.pojos.springpojos.ReviewsResponse;
 
-public class ReviewActivity extends AppCompatActivity implements DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
+public class ReviewActivity extends AppCompatActivity implements MVPBaseInterface.View, DistrictFragment.OnDistrictFragmentDataListener, HospitalFragment.OnHospitalFragmentDataListener, SpecialityFragment.OnSpecialityFragmentDataListener, DoctorFragment.OnDoctorFragmentDataListener,
         DoctorReviewsFragment.OnDoctorReviewsFragmentDataListener, DoctorReviewDetailedFragment.OnDoctorReviewDetailedFragmentDataListener, ReviewMainFragment.OnReviewMainFragmentDataListener,
         UserReviewsFragment.OnUserReviewsFragmentDataListener, UserCommentsFragment.OnUserCommentsFragmentDataListener {
 
@@ -40,15 +42,7 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
 
     private static final String LOG_TAG = "myLog: ReviewActivity";
     private FragmentManager fm;
-    private SharedPreferences mSettings;
-    private SharedPreferencesManager prefManager;
-    private boolean guestMode;
-    private Patient patient;
-    private Speciality speciality;
-    private Doctor doctor;
-    private District district;
-    private Hospital hospital;
-    private boolean useSharedPrefsPatientInfo = true;
+    private ReviewActivityPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,49 +51,56 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
 
         fm = getSupportFragmentManager();
 
-        mSettings = getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE);
-        prefManager = new SharedPreferencesManager(mSettings);
-        patient = prefManager.getCurrentPatient();
-
-        guestMode = prefManager.isGuestMode();
+        SharedPreferences mSettings = getSharedPreferences(SharedPreferencesManager.APP_SETTINGS, Context.MODE_PRIVATE);
+        presenter = new ReviewActivityPresenter(mSettings);
+        presenter.attachView(this);
 
         if (getIntent().hasExtra("fragToLoad")) {
             int fragToLoad = getIntent().getExtras().getInt("fragToLoad");
             switch (fragToLoad) {
                 case FRAGMENT_MAIN_MENU:
-                    addFragmentToContainer(new ReviewMainFragment(), R.id.fragContainerReview);
+                    presenter.onMainMenuFragmentLoad();
                     break;
                 case FRAGMENT_MY_REVIEWS:
-                    replaceToUserReviewsFragment(patient.getServiceId());
+                    presenter.onMyReviewsFragmentLoad();
                     break;
                 case FRAGMENT_MY_COMMENTS:
-                    replaceToUserCommentsFragment(patient.getServiceId());
+                    presenter.onMyCommentsFragmentLoad();
                     break;
                 case FRAGMENT_DOCTOR_REVIEWS:
                     if(getIntent().hasExtra("doctorId") && getIntent().hasExtra("doctorName")) {
-                        this.doctor = new Doctor();
+                        Doctor doctor = new Doctor();
                         String doctorId = getIntent().getStringExtra("doctorId");
                         String doctorName = getIntent().getStringExtra("doctorName");
                         doctor.setIdDoc(doctorId);
                         doctor.setName(doctorName);
+
+                        Speciality speciality = new Speciality();
                         String specId = getIntent().getStringExtra("specialityId");
                         String specName = getIntent().getStringExtra("specialityName");
-                        this.speciality = new Speciality();
                         speciality.setIdSpeciality(specId);
                         speciality.setNameSpeciality(specName);
-                        addFragmentToContainer(DoctorReviewsFragment.newInstance(doctorId, doctorName, prefManager.getCurrentPatient().getServiceId()), R.id.fragContainerReview);
+                        presenter.onDoctorReviewsFragmentLoad(doctor, speciality);
                     }
                     break;
             }
         }
     }
 
-    private void replaceToUserReviewsFragment(String serviceId) {
+    public void addReviewMainFragment() {
+        addFragmentToContainer(new ReviewMainFragment(), R.id.fragContainerReview);
+    }
+
+    public void addDoctorReviewsFragment(String doctorId, String doctorName, String patientServiceId) {
+        addFragmentToContainer(DoctorReviewsFragment.newInstance(doctorId, doctorName, patientServiceId), R.id.fragContainerReview);
+    }
+
+    public void replaceToUserReviewsFragment(String serviceId) {
         UserReviewsFragment userReviewsFragment = UserReviewsFragment.newInstance(serviceId);
         fm.beginTransaction().replace(R.id.fragContainerReview, userReviewsFragment).commit();
     }
 
-    private void replaceToUserCommentsFragment(String serviceId) {
+    public void replaceToUserCommentsFragment(String serviceId) {
         UserCommentsFragment userCommentsFragment = UserCommentsFragment.newInstance(serviceId);
         fm.beginTransaction().replace(R.id.fragContainerReview, userCommentsFragment).commit();
     }
@@ -113,66 +114,54 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
         fm.beginTransaction().replace(R.id.fragContainerReview, districtFragment).addToBackStack("review_main_menu").commit();
     }
 
-    private void replaceToHospitalFragment(District district) {
+    public void replaceToHospitalFragment(District district) {
         HospitalFragment hospitalFragment = HospitalFragment.newInstance(district);
         fm.beginTransaction().replace(R.id.fragContainerReview, hospitalFragment).addToBackStack("district_fragment").commit();
     }
 
-    public void replaceToSpecialityFragment() {
-        String hospitalId;
-        if (useSharedPrefsPatientInfo) {
-            hospitalId = String.valueOf(patient.getHospital().getIdLPU());
-        } else hospitalId = String.valueOf(hospital.getIdLPU());
-        SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patient.getServiceId());
+    public void replaceToSpecialityFragment(String hospitalId, String patientServiceId) {
+        SpecialityFragment specialityFragment = SpecialityFragment.newInstance(hospitalId, patientServiceId);
         fm.beginTransaction().replace(R.id.fragContainerReview, specialityFragment).addToBackStack("ReviewActivityMain").commit();
     }
 
-    private void replaceToEditReviewFragment() {
-        EditReviewFragment editReviewFragment;
-        if(useSharedPrefsPatientInfo) {
-            editReviewFragment = EditReviewFragment.newInstance(prefManager.getCurrentDistrict(), speciality, doctor, prefManager.getCurrentHospital(), prefManager.getCurrentPatient().getServiceId());
-        } else editReviewFragment = EditReviewFragment.newInstance(district, speciality, doctor, hospital, prefManager.getCurrentPatient().getServiceId());
+    public void replaceToEditReviewFragment(District district, Speciality speciality, Doctor doctor, Hospital hospital, String patientServiceId) {
+        EditReviewFragment editReviewFragment = EditReviewFragment.newInstance(district, speciality, doctor, hospital, patientServiceId);
         fm.beginTransaction().replace(R.id.fragContainerReview, editReviewFragment).addToBackStack("doctor_reviews_fragment").commit();
     }
 
-    private void replaceToEditReviewFragment(Review review) {
-        EditReviewFragment editReviewFragment = EditReviewFragment.newInstance(prefManager.getCurrentPatient().getServiceId(), review);
+    public void replaceToEditReviewFragment(Review review, String patientServiceId) {
+        EditReviewFragment editReviewFragment = EditReviewFragment.newInstance(patientServiceId, review);
         fm.beginTransaction().replace(R.id.fragContainerReview, editReviewFragment).addToBackStack("doctor_reviews_fragment").commit();
     }
 
-    private void replaceToDoctorReviewsFragment() {
+    /*public void replaceToDoctorReviewsFragment() {
         DoctorReviewsFragment fragment = DoctorReviewsFragment.newInstance(doctor.getIdDoc(), doctor.getName(), prefManager.getCurrentPatient().getServiceId());
         fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("doctor_fragment").commit();
-    }
+    }*/
 
-    private void replaceToDoctorReviewsFragment(String doctorId, String doctorName) {
-        DoctorReviewsFragment fragment = DoctorReviewsFragment.newInstance(doctorId, doctorName, prefManager.getCurrentPatient().getServiceId());
+    public void replaceToDoctorReviewsFragment(String doctorId, String doctorName, String patientServiceId) {
+        DoctorReviewsFragment fragment = DoctorReviewsFragment.newInstance(doctorId, doctorName, patientServiceId);
         fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("my_reviews_fragment").commit();
     }
 
-    private void replaceToDoctorReviewDetailedFragment(int reviewId) {
-        DoctorReviewDetailedFragment fragment = DoctorReviewDetailedFragment.newInstance(reviewId, prefManager.getCurrentPatient().getServiceId());
+    public void replaceToDoctorReviewDetailedFragment(int reviewId, String patientServiceId) {
+        DoctorReviewDetailedFragment fragment = DoctorReviewDetailedFragment.newInstance(reviewId, patientServiceId);
         fm.beginTransaction().replace(R.id.fragContainerReview, fragment).addToBackStack("review_full_fragment").commit();
     }
 
-    @Override
-    public void onSpecialityFragmentDataListener(Speciality speciality) {
-        this.speciality = speciality;
-        String hospitalId;
-        if (useSharedPrefsPatientInfo) {
-            hospitalId = String.valueOf(patient.getHospital().getIdLPU());
-        } else hospitalId = String.valueOf(hospital.getIdLPU());
-        String specialityId = speciality.getIdSpeciality();
-        DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patient.getServiceId(), specialityId);
+    public void replaceToDoctorFragment(String hospitalId, String patientServiceId, String specialityId) {
+        DoctorFragment doctorFragment = DoctorFragment.newInstance(hospitalId, patientServiceId, specialityId);
         fm.beginTransaction().replace(R.id.fragContainerReview, doctorFragment).addToBackStack("spec_fragment").commit();
     }
 
     @Override
+    public void onSpecialityFragmentDataListener(Speciality speciality) {
+        presenter.onGetSpecialityFragmentData(speciality);
+    }
+
+    @Override
     public void onDoctorFragmentDataListener(Doctor doctor) {
-        this.doctor = doctor;
-        String doctorId = doctor.getIdDoc();
-        String hospitalId = String.valueOf(patient.getHospital().getIdLPU());
-        replaceToDoctorReviewsFragment();
+        presenter.onGetDoctorFragmentData(doctor);
     }
 
 
@@ -180,51 +169,46 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
     public void onDoctorReviewsFragmentBtnClickListener(View v, ReviewsResponse review) {
         switch (v.getId()) {
             case R.id.btnAddReview:
-                if (!guestMode) {
-                    replaceToEditReviewFragment();
-                } else Toast.makeText(this, R.string.toast_you_have_to_login_for_action, Toast.LENGTH_SHORT).show();
+                presenter.onBtnAddReviewClick();
                 break;
             case R.id.imBtnComments:
-                replaceToDoctorReviewDetailedFragment(review.getReviewId());
+                presenter.onImBtnCommentsClick(review);
                 break;
         }
     }
 
     @Override
-    public void onDoctorReviewsFragmentDataListener(ReviewsResponse review) {
-        replaceToDoctorReviewDetailedFragment(review.getReviewId());
+    public void onDoctorReviewsFragmentItemClick(ReviewsResponse review) {
+        presenter.onDoctorReviewsFragmentItemClick(review);
     }
 
     @Override
     public void onDoctorReviewDetailedFragmentBtnClick(View v, ReviewsResponse rev) {
         switch (v.getId()) {
             case R.id.imBtnEditReview:
-                replaceToEditReviewFragment(rev);
+                presenter.onImBtnEditReviewClick(rev);
                 break;
         }
     }
 
     @Override
     public void onDistrictFragmentDataListener(District district) {
-        this.district = district;
-        replaceToHospitalFragment(district);
+        presenter.onGetDistrictFragmentData(district);
     }
 
     @Override
     public void onHospitalFragmentDataListener(Hospital hospital) {
-        this.hospital = hospital;
-        replaceToSpecialityFragment();
+        presenter.onGetHospitalFragmentData(hospital);
     }
 
     @Override
     public void onReviewMainFragmentBtnClick(View v) {
         switch (v.getId()) {
             case R.id.btnMyDoctorReviewMain:
-                replaceToSpecialityFragment();
+                presenter.onBtnMyDoctorReviewMainClick();
                 break;
             case R.id.btnChangeHospitalReviewMain:
-                useSharedPrefsPatientInfo = false;
-                replaceToDistrictFragment();
+                presenter.onBtnChangeHospitalReviewMainClick();
                 break;
         }
     }
@@ -233,18 +217,44 @@ public class ReviewActivity extends AppCompatActivity implements DistrictFragmen
     public void onUserReviewsFragmentBtnClick(View v, Review review) {
         switch (v.getId()) {
             case R.id.imBtnEditReview:
-                replaceToEditReviewFragment(review);
+                presenter.onImBtnEditReviewClick(review);
                 break;
         }
     }
 
     @Override
     public void onUserReviewsFragmentDataListener(Review review) {
-        replaceToDoctorReviewsFragment(String.valueOf(review.getDoctorId()), review.getDoctorName());
+        presenter.onGetUserReviewsFragmentData(review);
     }
 
     @Override
     public void onUserCommentsFragmentDataListener(int reviewId) {
-        replaceToDoctorReviewDetailedFragment(reviewId);
+        presenter.onGetUserCommentsFragmentData(reviewId);
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showProgressBar() {
+
+    }
+
+    @Override
+    public void hideProgressBar() {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

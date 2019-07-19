@@ -11,6 +11,15 @@ import java.util.concurrent.ExecutionException;
 public class DistrictModel {
 
     private ArrayList<District> districts;
+    private District district;
+
+    public District getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(District district) {
+        this.district = district;
+    }
 
     public void getDistricts(OnFinishedListener onFinishedListener) {
         AsyncRequest request = new AsyncRequest();

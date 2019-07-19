@@ -19,6 +19,7 @@ public class SpecialityModel {
     private HospitalApi hospitalApi;
     private SharedPreferences mSettings;
     private SharedPreferencesManager prefManager;
+    private Speciality speciality;
 
     public SpecialityModel() {
         hospitalApi = HospitalController.getApi();
@@ -30,12 +31,20 @@ public class SpecialityModel {
         prefManager = new SharedPreferencesManager(mSettings);
     }
 
-    public Speciality getChosenSpeciality() {
+    public Speciality getSpeciality() {
+        return speciality;
+    }
+
+    public void setSpeciality(Speciality speciality) {
+        this.speciality = speciality;
+    }
+
+    public Speciality getSavedSpeciality() {
         return prefManager.getCurrentSpeciality();
     }
 
-    public void setChosenSpeciality(Speciality chosenSpeciality) {
-        prefManager.setCurrentSpeciality(chosenSpeciality);
+    public void saveSpeciality(Speciality speciality) {
+        prefManager.setCurrentSpeciality(speciality);
     }
 
     public void getSpecialities(String hospitalId, String historyId, String patientAriaNumber, String patientId, final OnFinishedListener onFinishedListener) {

@@ -49,7 +49,7 @@ public class DoctorReviewsFragment extends Fragment implements MVPBaseInterface.
 
     public interface OnDoctorReviewsFragmentDataListener {
         void onDoctorReviewsFragmentBtnClickListener(View v, ReviewsResponse review);
-        void onDoctorReviewsFragmentDataListener(ReviewsResponse review);
+        void onDoctorReviewsFragmentItemClick(ReviewsResponse review);
     }
 
     public static DoctorReviewsFragment newInstance(String doctorId, String doctorName, String serviceId) {
@@ -172,7 +172,7 @@ public class DoctorReviewsFragment extends Fragment implements MVPBaseInterface.
 
     @Override
     public void onItemClick(View v, int position) {
-        mListener.onDoctorReviewsFragmentDataListener(adapter.getItem(position));
+        mListener.onDoctorReviewsFragmentItemClick(adapter.getItem(position));
     }
 
     @Override

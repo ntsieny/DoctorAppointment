@@ -53,6 +53,6 @@ public class DoctorFragmentPresenter implements MVPBaseInterface.Presenter {
     }
 
     public void onDoctorReviewsPopupItemClick(Doctor doctor) {
-        ((DoctorFragment) view).startReviewActivity(doctor, specialityModel.getChosenSpeciality());
+        ((DoctorFragment) view).startReviewActivity(doctor, specialityModel.getSavedSpeciality());
     }
 }

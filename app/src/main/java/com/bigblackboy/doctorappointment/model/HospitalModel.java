@@ -15,9 +15,18 @@ public class HospitalModel {
 
     private List<Hospital> hospitals;
     private HospitalApi hospitalApi;
+    private Hospital hospital;
 
     public HospitalModel() {
         hospitalApi = HospitalController.getApi();
+    }
+
+    public Hospital getHospital() {
+        return hospital;
+    }
+
+    public void setHospital(Hospital hospital) {
+        this.hospital = hospital;
     }
 
     public void getHospitals(String districtId, final OnFinishedListener onFinishedListener) {
